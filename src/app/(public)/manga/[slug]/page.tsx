@@ -9,7 +9,6 @@ import { MangaReactions } from "@/components/manga/MangaReactions";
 import { MangaReadingStatus } from "@/components/manga/MangaReadingStatus";
 import { MangaPrimaryReadCta } from "@/components/manga/MangaPrimaryReadCta";
 import { MangaChaptersWithComments } from "@/components/manga/MangaChaptersWithComments";
-import { MangaComments } from "@/components/manga/MangaComments";
 import { MangaReaderCounter } from "@/components/manga/MangaReaderCounter";
 import { getAuthenticatedUserIdServer } from "@/lib/auth-session";
 import { canViewMangaInCatalog } from "@/lib/manga-visibility";
@@ -484,14 +483,6 @@ export default async function MangaDetailPage({ params }: PageProps) {
             };
           })}
         />
-
-        <div className="mt-8 border-t border-border pt-6">
-          <MangaComments
-            mangaSlug={manga.slug}
-            isAuthenticated={isAuthenticated}
-            currentUserId={currentUser?.id ?? null}
-          />
-        </div>
       </section>
     </main>
   );

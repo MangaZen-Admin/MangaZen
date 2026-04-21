@@ -64,6 +64,8 @@ type ChapterCommentsProps = {
   isAuthenticated: boolean;
   currentUserId: string | null;
   isMangaLevel?: boolean;
+  /** When the parent already renders the section title (e.g. collapsible), skip the internal h2. */
+  showSectionTitle?: boolean;
 };
 
 const LOCALE_LABEL_KEYS = {
@@ -84,9 +86,11 @@ export function ChapterComments({
   chapterId,
   isAuthenticated,
   currentUserId,
-  isMangaLevel: _isMangaLevel = false,
+  isMangaLevel = false,
+  showSectionTitle = true,
 }: ChapterCommentsProps) {
   const t = useTranslations("chapterComments");
+  const tManga = useTranslations("mangaComments");
   const tBadges = useTranslations("badges");
   const appLocale = useLocale();
   const dateLocale = dateFnsLocaleFromAppLocale(appLocale);
@@ -266,11 +270,20 @@ export function ChapterComments({
     );
   }, []);
 
+  const headingId = isMangaLevel ? "manga-comments-heading" : "chapter-comments-heading";
+  const sectionLabel = isMangaLevel ? tManga("title") : t("title");
+
   return (
-    <section className="space-y-4" aria-labelledby="chapter-comments-heading">
-      <h2 id="chapter-comments-heading" className="text-base font-semibold text-foreground">
-        {t("title")}
-      </h2>
+    <section
+      className="space-y-4"
+      aria-labelledby={showSectionTitle ? headingId : undefined}
+      aria-label={!showSectionTitle ? sectionLabel : undefined}
+    >
+      {showSectionTitle ? (
+        <h2 id={headingId} className="text-base font-semibold text-foreground">
+          {sectionLabel}
+        </h2>
+      ) : null}
 
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">{t("filterLabel")}</span>
