@@ -20,6 +20,7 @@
     "@uploadthing/react": "^7.3.3",
     "axios": "^1.14.0",
     "class-variance-authority": "^0.7.1",
+    "cloudinary": "^2.9.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "dotenv": "^17.4.1",

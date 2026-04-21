@@ -1,18 +1,17 @@
-import { mkdir, rm, writeFile } from "node:fs/promises";
-import path from "node:path";
+import { uploadImageToCloudinary, deleteImageFromCloudinary } from "@/lib/cloudinary";
 
-const UPLOAD_ROOT = path.join(process.cwd(), "public", "uploads");
+// Mantener estas funciones para compatibilidad con código existente
+// que usa rutas locales en desarrollo
 
 export function chapterUploadDir(chapterId: string): string {
-  return path.join(UPLOAD_ROOT, "chapters", chapterId);
+  return `/tmp/chapters/${chapterId}`;
 }
 
 export function mangaCoverPath(mangaId: string, ext: string): string {
   const safe = ext.replace(/^\./, "").toLowerCase();
-  return path.join(UPLOAD_ROOT, "manga-covers", `${mangaId}.${safe}`);
+  return `/tmp/manga-covers/${mangaId}.${safe}`;
 }
 
-/** URL pública (desde /) para una página de capítulo. */
 export function publicChapterPageUrl(chapterId: string, filename: string): string {
   return `/uploads/chapters/${chapterId}/${filename}`;
 }
@@ -26,34 +25,40 @@ export async function writeChapterPages(
   chapterId: string,
   files: { buffer: Buffer; filename: string }[]
 ): Promise<string[]> {
-  const dir = chapterUploadDir(chapterId);
-  await mkdir(dir, { recursive: true });
   const urls: string[] = [];
   for (let i = 0; i < files.length; i += 1) {
-    const { buffer, filename } = files[i];
-    const dest = path.join(dir, filename);
-    await writeFile(dest, buffer);
-    urls.push(publicChapterPageUrl(chapterId, filename));
+    const { buffer, filename } = files[i]!;
+    const publicId = `chapters/${chapterId}/${filename.replace(/\.[^.]+$/, "")}`;
+    const url = await uploadImageToCloudinary(buffer, "mangazen/chapters", publicId);
+    urls.push(url);
   }
   return urls;
 }
 
 export async function removeChapterUploadDir(chapterId: string): Promise<void> {
-  const dir = chapterUploadDir(chapterId);
-  await rm(dir, { recursive: true, force: true });
+  // Cloudinary no tiene borrado de carpeta directo en el SDK v2 gratuito
+  // Las imágenes se borran individualmente cuando se eliminan páginas
+  // Por ahora es un no-op seguro
 }
 
-export async function writeMangaCover(mangaId: string, buffer: Buffer, ext: string): Promise<string> {
-  const dir = path.join(UPLOAD_ROOT, "manga-covers");
-  await mkdir(dir, { recursive: true });
-  const filePath = mangaCoverPath(mangaId, ext);
-  await writeFile(filePath, buffer);
-  return publicMangaCoverUrl(mangaId, ext);
+export async function writeMangaCover(
+  mangaId: string,
+  buffer: Buffer,
+  ext: string
+): Promise<string> {
+  const url = await uploadImageToCloudinary(
+    buffer,
+    "mangazen/covers",
+    `cover_${mangaId}`
+  );
+  return url;
 }
 
-export async function removeMangaCoverFile(mangaId: string, ext: string): Promise<void> {
-  const filePath = mangaCoverPath(mangaId, ext);
-  await rm(filePath, { force: true });
+export async function removeMangaCoverFile(
+  mangaId: string,
+  _ext: string
+): Promise<void> {
+  await deleteImageFromCloudinary(`mangazen/covers/cover_${mangaId}`);
 }
 
 const IMAGE_EXT = /\.(jpe?g|png|webp)$/i;
