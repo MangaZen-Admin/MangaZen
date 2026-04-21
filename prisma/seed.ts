@@ -9,9 +9,9 @@ import { PrismaClient } from "@prisma/client";
 import { randomBytes, scryptSync } from "node:crypto";
 import { SEED_BADGES } from "../src/lib/badges/catalog";
 
-// Prisma 7 lee la URL desde process.env.DATABASE_URL
-// La seteamos manualmente antes de instanciar el cliente
-process.env.DATABASE_URL = "file:./dev.db";
+process.env.DATABASE_URL = process.env.DATABASE_URL?.startsWith("postgresql")
+  ? process.env.DATABASE_URL
+  : "postgresql://neondb_owner:npg_96JwUklHCTVI@ep-odd-pine-ac1fi286.sa-east-1.aws.neon.tech/neondb?sslmode=require";
 
 const prisma = new PrismaClient();
 const KEY_LENGTH = 64;
@@ -60,7 +60,7 @@ async function main() {
   console.log("🌱 Iniciando seed...");
 
   // Limpiar en orden correcto (respetar foreign keys)
-  await prisma.adSlot.deleteMany();
+  await prisma.adScript.deleteMany();
   await prisma.userFavorite.deleteMany();
   await prisma.vote.deleteMany();
   await prisma.comment.deleteMany();
@@ -422,35 +422,35 @@ async function main() {
 
   // ── 4. Slots de publicidad ────────────────────────────────────────────────────
 
-  await prisma.adSlot.createMany({
+  await prisma.adScript.createMany({
     data: [
       {
-        name: "Banner entre hero y últimas novedades",
-        placement: "HOME_HERO",
+        slotId: "HOME_HERO",
+        label: "Banner entre hero y últimas novedades",
         isActive: true,
         script: "<!-- AdSense HOME_HERO placeholder -->",
       },
       {
-        name: "Banner entre secciones homepage",
-        placement: "HOME_MID",
+        slotId: "HOME_MID",
+        label: "Banner entre secciones homepage",
         isActive: true,
         script: "<!-- AdSense HOME_MID placeholder -->",
       },
       {
-        name: "Integrado en grilla de biblioteca",
-        placement: "LIBRARY_GRID",
+        slotId: "LIBRARY_GRID",
+        label: "Integrado en grilla de biblioteca",
         isActive: false,
-        script: null,
+        script: "",
       },
       {
-        name: "Sidebar del hub del manga",
-        placement: "MANGA_HUB",
+        slotId: "MANGA_HUB",
+        label: "Sidebar del hub del manga",
         isActive: true,
         script: "<!-- AdSense MANGA_HUB placeholder -->",
       },
       {
-        name: "Al final del capítulo (post-lectura)",
-        placement: "READER_END",
+        slotId: "READER_END",
+        label: "Al final del capítulo (post-lectura)",
         isActive: true,
         script: "<!-- AdSense READER_END placeholder -->",
       },
