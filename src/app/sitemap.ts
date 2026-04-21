@@ -22,12 +22,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   );
 
-  const mangas = await prisma.manga.findMany({
-    where: { reviewStatus: "APPROVED" },
-    select: { slug: true, updatedAt: true },
-    orderBy: { updatedAt: "desc" },
-    take: 1000,
-  });
+  let mangas: { slug: string; updatedAt: Date }[] = [];
+  let users: { username: string | null; updatedAt: Date }[] = [];
+  try {
+    mangas = await prisma.manga.findMany({
+      where: { reviewStatus: "APPROVED" },
+      select: { slug: true, updatedAt: true },
+      orderBy: { updatedAt: "desc" },
+      take: 1000,
+    });
+    users = await prisma.user.findMany({
+      where: {
+        isProfilePublic: true,
+        username: { not: null },
+      },
+      select: { username: true, updatedAt: true },
+      take: 500,
+    });
+  } catch {
+    mangas = [];
+    users = [];
+  }
 
   const mangaEntries: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
     mangas.map((manga) => ({
@@ -37,15 +52,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     }))
   );
-
-  const users = await prisma.user.findMany({
-    where: {
-      isProfilePublic: true,
-      username: { not: null },
-    },
-    select: { username: true, updatedAt: true },
-    take: 500,
-  });
 
   const profileEntries: MetadataRoute.Sitemap = users
     .filter((u): u is typeof u & { username: string } => u.username !== null)
