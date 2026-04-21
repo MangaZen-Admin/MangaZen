@@ -109,8 +109,9 @@ export async function POST(request: Request) {
   let coverUrl: string;
   try {
     coverUrl = await writeMangaCover(mangaId, coverBuf, ext);
-  } catch {
-    return NextResponse.json({ error: "COVER_WRITE_FAILED" }, { status: 500 });
+  } catch (err) {
+    console.error("[scan/manga] cover upload error:", err);
+    return NextResponse.json({ error: "COVER_UPLOAD_FAILED" }, { status: 500 });
   }
 
   try {
