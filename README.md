@@ -65,8 +65,13 @@ Abrí [http://localhost:3000](http://localhost:3000)
 
 ```env
 # Base
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
 DATABASE_URL="file:./dev.db"
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+
+# Cloudinary (imágenes en producción)
+CLOUDINARY_CLOUD_NAME=your_cloud_name_here
+CLOUDINARY_API_KEY=your_api_key_here
+CLOUDINARY_API_SECRET=your_api_secret_here
 
 # Lemon Squeezy (pagos)
 LEMON_SQUEEZY_API_KEY=
