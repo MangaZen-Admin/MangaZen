@@ -1,0 +1,207 @@
+{
+  "scanPanel": {
+    "header": {
+      "title": "扫图面板",
+      "subtitle": "上传章节、跟踪投稿并添加新系列。"
+    },
+    "tabs": {
+      "stats": "统计",
+      "upload": "上传章节",
+      "myUploads": "我的上传",
+      "newManga": "添加漫画"
+    },
+    "stats": {
+      "heading": "统计",
+      "periodAria": "时间范围",
+      "period": {
+        "today": "今天",
+        "week": "本周",
+        "month": "本月"
+      },
+      "cards": {
+        "chaptersInPeriod": "已上传章节（区间内）",
+        "viewsInPeriod": "约计浏览（区间内）",
+        "zenEstimated": "估算 Zen-Points（区间内）",
+        "zenBalance": "当前 Zen 余额"
+      },
+      "zenDisclaimer": "区间内的 Zen-Points 由浏览量估算（在交易账本上线前为占位数据）。",
+      "chartTitle": "上传趋势",
+      "chartSeriesUploads": "上传",
+      "chartEmpty": "该区间内没有上传。",
+      "statusHeading": "投稿状态（全部时间）",
+      "statusSubtitle": "统计你的章节投稿数量。",
+      "status": {
+        "APPROVED": "已通过",
+        "PENDING": "待审核",
+        "REJECTED": "已拒绝"
+      },
+      "totalsChapters": "累计上传章节",
+      "totalsMangas": "参与贡献的漫画系列",
+      "topChaptersTitle": "按阅读量排序的热门章节",
+      "topMangasTitle": "按阅读量排序的热门漫画",
+      "colChapter": "章节",
+      "colManga": "漫画",
+      "colViews": "阅读",
+      "colStatus": "状态",
+      "colCover": "封面",
+      "colTitle": "标题",
+      "colChaptersUploaded": "你的话",
+      "chapterLabel": "第{n}话",
+      "uploadStatus": {
+        "APPROVED": "已通过",
+        "PENDING": "待审核",
+        "REJECTED": "已拒绝"
+      },
+      "emptyTopChapters": "你的章节尚无阅读数据。",
+      "emptyTopMangas": "尚无漫画数据。",
+      "loadError": "无法加载统计。"
+    },
+    "localeOption": {
+      "es-ar": "拉丁西班牙语",
+      "es-es": "西班牙语（西班牙）",
+      "en-us": "英语（美国）",
+      "en-gb": "英语（英国）",
+      "pt-br": "葡萄牙语（巴西）",
+      "ja-jp": "日语",
+      "ko-kr": "韩语",
+      "zh-cn": "中文（简体）"
+    },
+    "upload": {
+      "heading": "上传章节",
+      "hint": "选择目录中的作品、章节号与页面（图片或 ZIP）。在通过审核前将保持待处理。",
+      "mangaSearch": "查找漫画",
+      "mangaSearchPlaceholder": "至少输入标题的两个字符…",
+      "searching": "搜索中…",
+      "clearManga": "更换",
+      "chapterNumber": "章节号",
+      "chapterTitleOptional": "章节标题（可选）",
+      "localeLabel": "章节语言 / 界面语言",
+      "sourceLabel": "页面来源",
+      "sourceFiles": "单张图片",
+      "sourceZip": "ZIP 压缩包",
+      "pagesLabel": "图片（顺序即阅读顺序）",
+      "zipLabel": "图片 ZIP",
+      "reorderHint": "拖动缩略图排序，上传时会保留顺序。",
+      "removePage": "移除页面",
+      "progress": "{pct}% 完成",
+      "submit": "提交章节",
+      "submitting": "上传中…",
+      "success": "章节已提交。",
+      "pickManga": "请从列表中选择一部漫画。",
+      "invalidNumber": "章节号无效。",
+      "noPages": "请至少添加一张图片。",
+      "noZip": "请选择 ZIP 文件。",
+      "startsWithSinglePageLabel": "跨页的第一页单独显示",
+      "startsWithSinglePageTooltip": "若本章以单独封面开始请开启；若从第 1 页就是跨页则关闭。"
+    },
+    "myUploads": {
+      "heading": "我的上传",
+      "refresh": "刷新",
+      "loading": "加载中…",
+      "empty": "你尚未上传任何章节。",
+      "emptyTitle": "暂无上传",
+      "emptyDescription": "在「上传」标签提交章节后会显示在这里。",
+      "colManga": "漫画",
+      "colChapter": "章节",
+      "colLocale": "语言区域",
+      "colDate": "日期",
+      "colStatus": "状态",
+      "colActions": "操作",
+      "read": "阅读",
+      "delete": "删除",
+      "confirmDelete": "确认",
+      "cancelDelete": "取消",
+      "deleted": "已移除上传。"
+    },
+    "status": {
+      "PENDING": "投稿待审核",
+      "APPROVED": "投稿已通过",
+      "REJECTED": "投稿已拒绝"
+    },
+    "chapterStatus": {
+      "PENDING": "话·待审",
+      "APPROVED": "话·已上线",
+      "REJECTED": "话·已拒绝"
+    },
+    "newManga": {
+      "heading": "添加新漫画",
+      "hint": "填写详情与封面，系列将绑定到你的账号。",
+      "title": "标题",
+      "alternativeTitle": "副标题",
+      "description": "简介",
+      "author": "作者",
+      "artist": "作画",
+      "status": "连载状态",
+      "type": "类型",
+      "demographic": "受众",
+      "demographicNone": "未指定",
+      "contentRating": "内容分级",
+      "tags": "题材 / 标签",
+      "cover": "封面图",
+      "coverRequired": "必须提供封面图。",
+      "progress": "{pct}% 完成",
+      "submit": "创建漫画",
+      "submitting": "创建中…",
+      "success": "漫画创建成功。"
+    },
+    "mangaStatus": {
+      "ONGOING": "连载中",
+      "COMPLETED": "已完结",
+      "HIATUS": "休刊",
+      "CANCELLED": "已取消"
+    },
+    "mangaType": {
+      "MANGA": "日漫",
+      "MANHWA": "韩漫",
+      "MANHUA": "国漫",
+      "NOVEL": "小说",
+      "ONE_SHOT": "单篇",
+      "DOUJINSHI": "同人",
+      "OEL": "OEL"
+    },
+    "demographic": {
+      "SEINEN": "青年",
+      "SHOUNEN": "少年",
+      "SHOUJO": "少女",
+      "JOSEI": "女性",
+      "KODOMO": "儿童"
+    },
+    "contentRating": {
+      "EVERYONE": "全年龄",
+      "TEEN": "青少年",
+      "MATURE_SUGGESTIVE": "成人（性暗示）"
+    },
+    "errors": {
+      "GENERIC": "出现问题，请重试。",
+      "UNAUTHORIZED": "你需要先登录。",
+      "FORBIDDEN": "你没有执行此操作的权限。",
+      "VALIDATION": "请检查输入的数据。",
+      "INVALID_NUMBER": "章节号无效。",
+      "MANGA_NOT_FOUND": "未找到漫画。",
+      "CHAPTER_EXISTS": "该章节号已存在。",
+      "ZIP_REQUIRED": "需要 ZIP 文件。",
+      "ZIP_IMAGES": "ZIP 中没有有效图片或页面过多。",
+      "FILES_REQUIRED": "需要图片。",
+      "INVALID_FILE_TYPE": "仅允许图片文件。",
+      "WRITE_FAILED": "无法保存文件。",
+      "DB_ERROR": "保存时数据库出错。",
+      "INVALID_FORM": "表单数据无效。",
+      "TITLE_REQUIRED": "标题为必填。",
+      "INVALID_STATUS": "连载状态无效。",
+      "INVALID_TYPE": "类型无效。",
+      "INVALID_TAGS": "标签无效。",
+      "COVER_REQUIRED": "封面为必填。",
+      "INVALID_COVER": "封面不是有效图片。",
+      "INVALID_TAG_IDS": "包含不存在的标签。",
+      "COVER_WRITE_FAILED": "无法保存封面文件。",
+      "ZIP_TOO_LARGE": "压缩后的 ZIP 超出套餐限制。",
+      "ZIP_INVALID": "不是有效的 ZIP。",
+      "ZIP_DECOMPRESSED_LIMIT": "解压后体积超出允许上限。",
+      "INVALID_IMAGE": "存在非 JPEG、PNG 或 WEBP 的图片。",
+      "IMAGE_TOO_LARGE": "某张图片超过套餐最大尺寸。",
+      "RATE_LIMITED": "搜索过于频繁，请几秒后重试。",
+      "ID_REQUIRED": "需要标识符。",
+      "NOT_FOUND": "未找到资源。"
+    }
+  }
+}

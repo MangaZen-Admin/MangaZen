@@ -1,0 +1,207 @@
+{
+  "scanPanel": {
+    "header": {
+      "title": "스캔 패널",
+      "subtitle": "회차를 업로드하고 제출을 추적하며 새 시리즈를 추가합니다."
+    },
+    "tabs": {
+      "stats": "통계",
+      "upload": "회차 업로드",
+      "myUploads": "내 업로드",
+      "newManga": "만화 추가"
+    },
+    "stats": {
+      "heading": "통계",
+      "periodAria": "기간",
+      "period": {
+        "today": "오늘",
+        "week": "이번 주",
+        "month": "이번 달"
+      },
+      "cards": {
+        "chaptersInPeriod": "업로드한 회(기간)",
+        "viewsInPeriod": "대략 조회수(기간)",
+        "zenEstimated": "추정 Zen-Points(기간)",
+        "zenBalance": "현재 Zen 잔액"
+      },
+      "zenDisclaimer": "기간 내 Zen-Points는 조회수로 추정합니다(거래 원장이 생기기 전까지의 임시값).",
+      "chartTitle": "시간별 업로드",
+      "chartSeriesUploads": "업로드",
+      "chartEmpty": "이 기간에 업로드가 없습니다.",
+      "statusHeading": "제출 상태(전체 기간)",
+      "statusSubtitle": "회차 제출 건수입니다.",
+      "status": {
+        "APPROVED": "승인됨",
+        "PENDING": "대기",
+        "REJECTED": "거절됨"
+      },
+      "totalsChapters": "업로드한 회차 합계",
+      "totalsMangas": "기여한 만화 시리즈 수",
+      "topChaptersTitle": "조회수 상위 회차",
+      "topMangasTitle": "조회수 상위 만화",
+      "colChapter": "회",
+      "colManga": "만화",
+      "colViews": "조회",
+      "colStatus": "상태",
+      "colCover": "표지",
+      "colTitle": "제목",
+      "colChaptersUploaded": "내 회",
+      "chapterLabel": "{n}화",
+      "uploadStatus": {
+        "APPROVED": "승인됨",
+        "PENDING": "대기",
+        "REJECTED": "거절됨"
+      },
+      "emptyTopChapters": "회차 조회 데이터가 아직 없습니다.",
+      "emptyTopMangas": "아직 만화 데이터가 없습니다.",
+      "loadError": "통계를 불러올 수 없습니다."
+    },
+    "localeOption": {
+      "es-ar": "라틴 스페인어",
+      "es-es": "스페인어(스페인)",
+      "en-us": "영어(미국)",
+      "en-gb": "영어(영국)",
+      "pt-br": "포르투갈어(브라질)",
+      "ja-jp": "일본어",
+      "ko-kr": "한국어",
+      "zh-cn": "중국어(간체)"
+    },
+    "upload": {
+      "heading": "회차 업로드",
+      "hint": "카탈로그 작품, 회 번호, 페이지(이미지 또는 ZIP)를 선택합니다. 승인 전까지 대기 상태입니다.",
+      "mangaSearch": "만화 검색",
+      "mangaSearchPlaceholder": "제목을 2글자 이상 입력…",
+      "searching": "검색 중…",
+      "clearManga": "변경",
+      "chapterNumber": "회 번호",
+      "chapterTitleOptional": "회 제목(선택)",
+      "localeLabel": "회차 언어 / UI 로케일",
+      "sourceLabel": "페이지 소스",
+      "sourceFiles": "개별 이미지",
+      "sourceZip": "ZIP 아카이브",
+      "pagesLabel": "이미지(순서=읽기 순서)",
+      "zipLabel": "이미지 ZIP",
+      "reorderHint": "썸네일을 끌어 순서 변경. 업로드 시 순서가 유지됩니다.",
+      "removePage": "페이지 제거",
+      "progress": "{pct}% 완료",
+      "submit": "회차 제출",
+      "submitting": "업로드 중…",
+      "success": "회차를 제출했습니다.",
+      "pickManga": "목록에서 만화를 선택하세요.",
+      "invalidNumber": "회 번호가 유효하지 않습니다.",
+      "noPages": "이미지를 1장 이상 추가하세요.",
+      "noZip": "ZIP 파일을 선택하세요.",
+      "startsWithSinglePageLabel": "두 페이지 펼침에서 첫 장을 단독으로",
+      "startsWithSinglePageTooltip": "표지만 단독이면 켜세요. 1페이지부터 펼침이 시작되면 끄세요."
+    },
+    "myUploads": {
+      "heading": "내 업로드",
+      "refresh": "새로고침",
+      "loading": "불러오는 중…",
+      "empty": "아직 업로드한 회가 없습니다.",
+      "emptyTitle": "업로드 없음",
+      "emptyDescription": "업로드 탭에서 회를 제출하면 여기에 표시됩니다.",
+      "colManga": "만화",
+      "colChapter": "회",
+      "colLocale": "로케일",
+      "colDate": "날짜",
+      "colStatus": "상태",
+      "colActions": "작업",
+      "read": "읽기",
+      "delete": "삭제",
+      "confirmDelete": "확인",
+      "cancelDelete": "취소",
+      "deleted": "업로드를 삭제했습니다."
+    },
+    "status": {
+      "PENDING": "제출 대기",
+      "APPROVED": "제출 승인",
+      "REJECTED": "제출 거절"
+    },
+    "chapterStatus": {
+      "PENDING": "회·대기",
+      "APPROVED": "회·공개",
+      "REJECTED": "회·거절"
+    },
+    "newManga": {
+      "heading": "새 만화 추가",
+      "hint": "상세 정보와 표지를 입력합니다. 시리즈는 계정에 연결됩니다.",
+      "title": "제목",
+      "alternativeTitle": "부제",
+      "description": "줄거리",
+      "author": "작가",
+      "artist": "그림",
+      "status": "연재 상태",
+      "type": "유형",
+      "demographic": "독자층",
+      "demographicNone": "미지정",
+      "contentRating": "콘텐츠 등급",
+      "tags": "장르 / 태그",
+      "cover": "표지 이미지",
+      "coverRequired": "표지 이미지는 필수입니다.",
+      "progress": "{pct}% 완료",
+      "submit": "만화 만들기",
+      "submitting": "만드는 중…",
+      "success": "만화를 만들었습니다."
+    },
+    "mangaStatus": {
+      "ONGOING": "연재 중",
+      "COMPLETED": "완결",
+      "HIATUS": "휴재",
+      "CANCELLED": "중단"
+    },
+    "mangaType": {
+      "MANGA": "만화",
+      "MANHWA": "Manhwa",
+      "MANHUA": "Manhua",
+      "NOVEL": "소설",
+      "ONE_SHOT": "단편",
+      "DOUJINSHI": "동인지",
+      "OEL": "OEL"
+    },
+    "demographic": {
+      "SEINEN": "세인엔",
+      "SHOUNEN": "소년",
+      "SHOUJO": "소녀",
+      "JOSEI": "여성",
+      "KODOMO": "아동"
+    },
+    "contentRating": {
+      "EVERYONE": "전체",
+      "TEEN": "청소년",
+      "MATURE_SUGGESTIVE": "성인(선정적)"
+    },
+    "errors": {
+      "GENERIC": "문제가 발생했습니다. 다시 시도하세요.",
+      "UNAUTHORIZED": "로그인이 필요합니다.",
+      "FORBIDDEN": "이 작업을 할 권한이 없습니다.",
+      "VALIDATION": "입력 내용을 확인하세요.",
+      "INVALID_NUMBER": "회 번호가 유효하지 않습니다.",
+      "MANGA_NOT_FOUND": "만화를 찾을 수 없습니다.",
+      "CHAPTER_EXISTS": "해당 회 번호가 이미 있습니다.",
+      "ZIP_REQUIRED": "ZIP 파일이 필요합니다.",
+      "ZIP_IMAGES": "ZIP에 유효한 이미지가 없거나 페이지가 너무 많습니다.",
+      "FILES_REQUIRED": "이미지가 필요합니다.",
+      "INVALID_FILE_TYPE": "이미지 파일만 허용됩니다.",
+      "WRITE_FAILED": "파일을 저장할 수 없습니다.",
+      "DB_ERROR": "저장 중 데이터베이스 오류가 발생했습니다.",
+      "INVALID_FORM": "폼 데이터가 유효하지 않습니다.",
+      "TITLE_REQUIRED": "제목은 필수입니다.",
+      "INVALID_STATUS": "연재 상태가 유효하지 않습니다.",
+      "INVALID_TYPE": "유형이 유효하지 않습니다.",
+      "INVALID_TAGS": "태그가 유효하지 않습니다.",
+      "COVER_REQUIRED": "표지는 필수입니다.",
+      "INVALID_COVER": "표지가 유효한 이미지가 아닙니다.",
+      "INVALID_TAG_IDS": "존재하지 않는 태그가 포함되어 있습니다.",
+      "COVER_WRITE_FAILED": "표지 파일을 저장할 수 없습니다.",
+      "ZIP_TOO_LARGE": "압축 ZIP이 요금제 한도를 초과합니다.",
+      "ZIP_INVALID": "유효한 ZIP이 아닙니다.",
+      "ZIP_DECOMPRESSED_LIMIT": "압축 해제 크기가 허용 한도를 초과합니다.",
+      "INVALID_IMAGE": "JPEG, PNG, WEBP가 아닌 이미지가 있습니다.",
+      "IMAGE_TOO_LARGE": "이미지가 요금제 최대 크기를 초과합니다.",
+      "RATE_LIMITED": "검색이 너무 많습니다. 잠시 후 다시 시도하세요.",
+      "ID_REQUIRED": "식별자가 필요합니다.",
+      "NOT_FOUND": "리소스를 찾을 수 없습니다."
+    }
+  }
+}

@@ -1,0 +1,611 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  engineType      = "library" // <-- Agregá esta línea
+}
+
+// ─────────────────────────────────────────
+// USUARIOS Y AUTENTICACIÓN (NextAuth v5)
+// ─────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  /// Identificador público opcional para URL /user/[username]; si es null, se usa id en la URL.
+  username      String?   @unique
+  name          String?
+  email         String?   @unique
+  passwordHash  String?
+  /// @deprecated Reemplazado por zenCoins/zenShards. Se mantiene para compatibilidad temporal.
+  zenPoints     Int       @default(0)
+  /// Moneda premium adquirida con pago real (1,000 ZC ~= 1 USD).
+  zenCoins      Int       @default(0)
+  /// Moneda gratuita por actividad (sin valor de salida).
+  zenShards     Int       @default(0)
+  /// Último premio diario de login (control 1 vez por día).
+  lastDailyLoginAt DateTime?
+  /// Premium temporal: si vence, isPro debe apagarse automáticamente.
+  proExpiresAt  DateTime?
+  /// Premium: lectura Early Access sin gastar moneda.
+  isPro         Boolean   @default(false)
+  role          UserRole  @default(USER)
+  requirePasswordForPoints  Boolean @default(true)
+  requireEmailCodeForPoints Boolean @default(true)
+  emailVerified DateTime?
+  image         String?
+  /// Si es true, no aparece en rankings públicos de la comunidad.
+  hideFromRankings Boolean @default(false)
+  /// Perfil visible para usuarios logueados (visitantes sin sesión solo ven nombre/avatar y CTA).
+  isProfilePublic Boolean @default(true)
+  /// Link externo opcional para donaciones (Ko-fi, PayPal, etc.).
+  externalDonationLink String?
+  /// Ocultar Zen-Points en el perfil público (para terceros).
+  hideZenFromPublic Boolean @default(false)
+  hideFavoritesFromPublic Boolean @default(false)
+  hideReadingStatsFromPublic Boolean @default(false)
+  isBanned      Boolean   @default(false)
+  bannedAt      DateTime?
+  banReason     String?
+  suspendedUntil DateTime?
+  suspendReason  String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // NextAuth relations
+  accounts      Account[]
+  sessions      Session[]
+
+  // App relations
+  uploadedMangas  Manga[]          @relation("MangaUploader")
+  creatorRoleRequests     CreatorRoleRequest[] @relation("CreatorRoleRequestUser")
+  reviewedCreatorRequests CreatorRoleRequest[] @relation("CreatorRoleRequestReviewer")
+  chapterUploads  ChapterUpload[]
+  comments        Comment[]
+  votes           Vote[]
+  favorites       UserFavorite[]
+  mangaProgress   MangaProgress[]
+  badges          Badge[]
+  feedbacks       Feedback[]
+  feedbackVotes   FeedbackVote[]
+  chapterUnlocks  ChapterUnlock[]
+  zenTransactions ZenTransaction[]
+  notifications   Notification[]
+  mangaRequests   MangaRequest[]
+  donationLinks   DonationLink[]
+}
+
+model DonationLink {
+  id        String   @id @default(cuid())
+  userId    String
+  platform  String // "patreon" | "kofi" | "buymeacoffee" | "paypal" | "cafecito" | "mercadopago" | "apoiase" | "fanbox" | "fantia" | "postype" | "afdian"
+  url       String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AdScript {
+  id        String   @id @default(cuid())
+  slotId    String   @unique
+  script    String
+  isActive  Boolean  @default(true)
+  label     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ZenCurrency {
+  COINS
+  SHARDS
+}
+
+enum ZenTransactionType {
+  COIN_PURCHASE
+  COIN_DONATION
+  COIN_UNLOCK_CHAPTER
+  COIN_ADMIN_GRANT
+  COIN_ADMIN_DEDUCT
+  COIN_BOOST_AD
+  SHARD_BOOST_AD
+  SHARD_ACTIVITY_READ
+  SHARD_ACTIVITY_COMMENT
+  SHARD_DAILY_LOGIN
+  SHARD_ADMIN_GRANT
+  SHARD_UNLOCK_CHAPTER
+}
+
+model ZenTransaction {
+  id              String             @id @default(cuid())
+  userId          String
+  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currency        ZenCurrency
+  type            ZenTransactionType
+  /// Positivo = crédito, negativo = débito.
+  amount          Int
+  /// Saldo resultante de la moneda correspondiente tras esta transacción.
+  balanceAfter    Int
+  description     String?
+  paymentProvider String?
+  paymentId       String?            @unique
+  createdAt       DateTime           @default(now())
+
+  @@index([userId, createdAt])
+  @@index([userId, currency, createdAt])
+  @@index([userId, type, createdAt])
+}
+
+enum NotificationType {
+  CHAPTER_APPROVED
+  CHAPTER_REJECTED
+  MANGA_APPROVED
+  MANGA_REJECTED
+  MANGA_REQUEST_APPROVED
+  MANGA_REQUEST_REJECTED
+}
+
+enum MangaRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model MangaRequest {
+  id        String             @id @default(cuid())
+  userId    String
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  author    String?
+  notes     String?
+  status    MangaRequestStatus @default(PENDING)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  @@index([userId, status])
+  @@index([status, createdAt])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  /// Id del capítulo o del manga según el tipo.
+  entityId  String
+  /// Texto libre (p. ej. motivo de rechazo) o vacío.
+  message   String           @default("")
+  /// Datos para enlaces y textos localizados en el cliente.
+  payload   Json?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  @@index([userId, read])
+  @@index([userId, createdAt])
+}
+
+enum UserRole {
+  ADMIN
+  SCAN
+  CREATOR
+  USER
+}
+
+enum CreatorRoleRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ReadingStatus {
+  READING
+  COMPLETED
+  DROPPED
+  PLAN_TO_READ
+}
+
+enum MangaReviewStatus {
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+}
+
+model MangaProgress {
+  id             String        @id @default(cuid())
+  status         ReadingStatus
+  userId         String
+  mangaId        String
+  lastChapterId  String?
+  lastPageNumber Int           @default(1)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  manga       Manga    @relation(fields: [mangaId], references: [id], onDelete: Cascade)
+  lastChapter Chapter? @relation("ProgressLastChapter", fields: [lastChapterId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, mangaId])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  lastIp       String?
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum FeedbackCategory {
+  BUG
+  SUGGESTION
+  PRAISE
+}
+
+enum FeedbackStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+model Feedback {
+  id        String           @id @default(cuid())
+  title     String
+  body      String
+  category  FeedbackCategory
+  status    FeedbackStatus   @default(OPEN)
+  userId    String
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  votes     FeedbackVote[]
+}
+
+model FeedbackVote {
+  id         String   @id @default(cuid())
+  feedbackId String
+  userId     String
+  value      Int
+  feedback   Feedback @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([feedbackId, userId])
+}
+
+// ─────────────────────────────────────────
+// CATÁLOGO
+// ─────────────────────────────────────────
+
+model Manga {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  alternativeTitle String?
+  author      String?
+  artist      String?
+  description String?
+  coverImage  String?
+  bannerImage String?
+
+  // ONGOING | COMPLETED | HIATUS | CANCELLED
+  status      String   @default("ONGOING")
+
+  // MANGA | MANHWA | MANHUA | NOVEL | ONE_SHOT | DOUJINSHI | OEL
+  type        String   @default("MANGA")
+
+  // SEINEN | SHOUNEN | SHOUJO | JOSEI | KODOMO
+  demographic String?
+
+  // EVERYONE | TEEN | MATURE_SUGGESTIVE
+  // NOTA: 'explicit_prohibited' nunca puede asignarse aquí.
+  // Ver src/lib/constants/content-policy.ts
+  contentRating String @default("EVERYONE")
+
+  isWebcomic   Boolean @default(false)
+  isYonkoma    Boolean @default(false)
+  isAmateur    Boolean @default(false)
+
+  // Puntuación calculada (desnormalizada para performance)
+  scoreAvg    Float    @default(0)
+  scoreCount  Int      @default(0)
+
+  /// Contador agregado de vistas del manga (incrementado al abrir cualquier capítulo APPROVED).
+  totalViews  Int      @default(0)
+
+  /// Alta desde Panel Scan: pendiente hasta revisión admin. Catálogo público solo APPROVED.
+  reviewStatus          MangaReviewStatus @default(APPROVED)
+  isFeatured            Boolean           @default(false)
+  reviewRejectionReason   String?
+
+  /// Hasta cuándo aparece destacado en Home (Boost).
+  boostExpiresAt DateTime?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  uploaderId  String
+  uploader    User     @relation("MangaUploader", fields: [uploaderId], references: [id])
+
+  chapters    Chapter[]
+  tags        MangaTag[]
+  votes       Vote[]
+  comments    Comment[]
+  favorites   UserFavorite[]
+  progress    MangaProgress[]
+}
+
+model Badge {
+  id            String  @id @default(cuid())
+  name          String  @unique
+  description   String
+  iconUrl       String?
+  /// Nombre del icono en lucide-react (p. ej. Shield), para UI sin imagen
+  iconKey       String?
+  /// Insignia destacada (glow / borde especial en BadgeIcon)
+  isHighlighted Boolean @default(false)
+  /// Umbral automático: ZEN_POINTS_TOTAL, CHAPTERS_READ, etc.; MANUAL o null = sin regla automática desde BD.
+  triggerType     String?
+  triggerThreshold  Int?
+
+  users User[]
+}
+
+model Tag {
+  id       String     @id @default(cuid())
+  name     String     @unique
+  // GENRE | THEME | FORMAT
+  category String     @default("GENRE")
+
+  mangas   MangaTag[]
+}
+
+model MangaTag {
+  mangaId String
+  tagId   String
+
+  manga   Manga @relation(fields: [mangaId], references: [id], onDelete: Cascade)
+  tag     Tag   @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([mangaId, tagId])
+}
+
+model Chapter {
+  id        String   @id @default(cuid())
+  number    Float
+  title     String?
+  language  String   @default("ES")
+  locale    String   @default("es-AR")
+  // PENDING | APPROVED | REJECTED
+  status    String   @default("APPROVED")
+
+  /// Early Access: restringe lectura hasta earlyAccessUntil (salvo Premium o desbloqueo).
+  isEarlyAccess    Boolean   @default(false)
+  earlyAccessUntil DateTime?
+  /// Coste en Zen-Points; null = usar precio por defecto (50) en lógica de negocio.
+  earlyAccessPrice   Int?
+
+  /// Si es true, en modo doble página la pág. 1 va sola (p. ej. portada). Si es false, el primer spread es 1–2.
+  startsWithSinglePage Boolean @default(true)
+
+  /// Contador de vistas del capítulo (incrementado una vez por montaje del lector).
+  viewCount Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  mangaId   String
+  manga     Manga    @relation(fields: [mangaId], references: [id], onDelete: Cascade)
+
+  pages            Page[]
+  uploads          ChapterUpload[]
+  votes            Vote[]
+  comments         Comment[]
+  lastReadProgress MangaProgress[] @relation("ProgressLastChapter")
+  unlocks          ChapterUnlock[]
+}
+
+/// Desbloqueo permanente de un capítulo Early Access pagado con Zen-Points.
+model ChapterUnlock {
+  id         String   @id @default(cuid())
+  userId     String
+  chapterId  String
+  unlockedAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, chapterId])
+  @@index([chapterId])
+}
+
+model Page {
+  id          String  @id @default(cuid())
+  pageNumber  Int
+  imageUrl    String
+  // URL de miniatura para la galería de previsualización
+  thumbUrl    String?
+  width       Int?
+  height      Int?
+
+  chapterId   String
+  chapter     Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@unique([chapterId, pageNumber])
+}
+
+// ─────────────────────────────────────────
+// UPLOAD COMUNITARIO
+// ─────────────────────────────────────────
+
+/// Solicitud de rol CREATOR (autor independiente) revisada por un admin.
+model CreatorRoleRequest {
+  id           String                   @id @default(cuid())
+  userId       String
+  user         User                     @relation("CreatorRoleRequestUser", fields: [userId], references: [id], onDelete: Cascade)
+  projectName  String
+  description  String
+  sampleLink   String?
+  status       CreatorRoleRequestStatus @default(PENDING)
+  createdAt    DateTime                 @default(now())
+  reviewedAt   DateTime?
+  reviewedById String?
+  reviewedBy   User?                    @relation("CreatorRoleRequestReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([status])
+}
+
+model ChapterUpload {
+  id          String   @id @default(cuid())
+  // PENDING | APPROVED | REJECTED
+  status      String   @default("PENDING")
+  notes       String?
+
+  submittedAt DateTime @default(now())
+  reviewedAt  DateTime?
+
+  chapterId   String
+  chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  uploaderId  String
+  uploader    User     @relation(fields: [uploaderId], references: [id])
+}
+
+// ─────────────────────────────────────────
+// INTERACCIONES
+// ─────────────────────────────────────────
+
+model Vote {
+  id         String   @id @default(cuid())
+  // 1 = like, -1 = dislike
+  value      Int
+  createdAt  DateTime @default(now())
+
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Polimórfico: MANGA | CHAPTER | COMMENT (votos a obra, capítulo o comentario)
+  targetType String
+  mangaId    String?
+  chapterId  String?
+  commentId  String?
+
+  manga      Manga?   @relation(fields: [mangaId], references: [id], onDelete: Cascade)
+  chapter    Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  comment    Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, targetType, mangaId])
+  @@unique([userId, targetType, chapterId])
+  @@unique([userId, targetType, commentId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  body      String
+  /// Locale de la interfaz al publicar (next-intl), p. ej. es-ar
+  locale    String   @default("es-ar")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Polimórfico: MANGA | CHAPTER
+  targetType String
+  mangaId    String?
+  chapterId  String?
+
+  manga     Manga?   @relation(fields: [mangaId], references: [id], onDelete: Cascade)
+  chapter   Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  // Respuestas anidadas (un nivel)
+  parentId  String?
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies   Comment[] @relation("CommentReplies")
+
+  votes     Vote[]
+}
+
+model UserFavorite {
+  userId    String
+  mangaId   String
+  // READING | COMPLETED | PLAN_TO_READ | ON_HOLD | DROPPED
+  listType  String   @default("READING")
+  addedAt   DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  manga     Manga    @relation(fields: [mangaId], references: [id], onDelete: Cascade)
+
+  @@id([userId, mangaId])
+}
+
+// ─────────────────────────────────────────
+// PUBLICIDAD
+// ─────────────────────────────────────────
+
+model AdSlot {
+  id          String   @id @default(cuid())
+  name        String
+  // HOME_HERO | HOME_MID | HOME_FOOTER | LIBRARY_GRID | MANGA_HUB | READER_END
+  placement   String
+  isActive    Boolean  @default(true)
+  // Script HTML del proveedor (AdSense, etc.)
+  script      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────
+// NOVEDADES / ANUNCIOS
+// ─────────────────────────────────────────
+
+model Announcement {
+  id          String   @id @default(cuid())
+  title       String
+  body        String
+  imageUrl    String?
+  isPinned    Boolean  @default(false)
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model GlobalBanner {
+  id            String    @id @default(cuid())
+  message       String
+  type          String    @default("info") // "info" | "warning" | "urgent"
+  isActive      Boolean   @default(true)
+  isDismissible Boolean   @default(true)
+  expiresAt     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}

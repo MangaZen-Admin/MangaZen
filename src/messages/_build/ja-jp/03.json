@@ -1,0 +1,207 @@
+{
+  "scanPanel": {
+    "header": {
+      "title": "スキャンパネル",
+      "subtitle": "章をアップロードし、投稿を追跡し、新しいシリーズを追加します。"
+    },
+    "tabs": {
+      "stats": "統計",
+      "upload": "章をアップロード",
+      "myUploads": "自分のアップロード",
+      "newManga": "マンガを追加"
+    },
+    "stats": {
+      "heading": "統計",
+      "periodAria": "期間",
+      "period": {
+        "today": "今日",
+        "week": "今週",
+        "month": "今月"
+      },
+      "cards": {
+        "chaptersInPeriod": "アップロードした章（期間内）",
+        "viewsInPeriod": "おおよその閲覧数（期間内）",
+        "zenEstimated": "推定 Zen-Points（期間内）",
+        "zenBalance": "現在の Zen 残高"
+      },
+      "zenDisclaimer": "期間内の Zen-Points は閲覧数から推定しています（取引台帳ができるまでの仮値です）。",
+      "chartTitle": "時系列のアップロード",
+      "chartSeriesUploads": "アップロード",
+      "chartEmpty": "この期間にアップロードはありません。",
+      "statusHeading": "投稿の状態（全期間）",
+      "statusSubtitle": "章の投稿に関する件数です。",
+      "status": {
+        "APPROVED": "承認済",
+        "PENDING": "保留中",
+        "REJECTED": "却下"
+      },
+      "totalsChapters": "アップロードした章の合計",
+      "totalsMangas": "貢献したマンガシリーズ数",
+      "topChaptersTitle": "閲覧数の多い章",
+      "topMangasTitle": "閲覧数の多いマンガ",
+      "colChapter": "章",
+      "colManga": "マンガ",
+      "colViews": "閲覧",
+      "colStatus": "状態",
+      "colCover": "表紙",
+      "colTitle": "タイトル",
+      "colChaptersUploaded": "自分の章",
+      "chapterLabel": "第{n}話",
+      "uploadStatus": {
+        "APPROVED": "承認済",
+        "PENDING": "保留中",
+        "REJECTED": "却下"
+      },
+      "emptyTopChapters": "章の閲覧データはまだありません。",
+      "emptyTopMangas": "まだマンガのデータがありません。",
+      "loadError": "統計を読み込めませんでした。"
+    },
+    "localeOption": {
+      "es-ar": "ラテンスペイン語",
+      "es-es": "スペイン語（スペイン）",
+      "en-us": "英語（米国）",
+      "en-gb": "英語（英国）",
+      "pt-br": "ポルトガル語（ブラジル）",
+      "ja-jp": "日本語",
+      "ko-kr": "韓国語",
+      "zh-cn": "中国語（簡体字）"
+    },
+    "upload": {
+      "heading": "章をアップロード",
+      "hint": "カタログの作品、章番号、ページ（画像または ZIP）を選びます。承認まで保留のままです。",
+      "mangaSearch": "マンガを検索",
+      "mangaSearchPlaceholder": "タイトルを 2 文字以上入力…",
+      "searching": "検索中…",
+      "clearManga": "変更",
+      "chapterNumber": "章番号",
+      "chapterTitleOptional": "章タイトル（任意）",
+      "localeLabel": "章の言語 / UI の言語",
+      "sourceLabel": "ページのソース",
+      "sourceFiles": "個別の画像",
+      "sourceZip": "ZIP アーカイブ",
+      "pagesLabel": "画像（順序＝読み順）",
+      "zipLabel": "画像の ZIP",
+      "reorderHint": "サムネイルをドラッグして並べ替え。アップロード時に順序が保持されます。",
+      "removePage": "ページを削除",
+      "progress": "{pct}% 完了",
+      "submit": "章を送信",
+      "submitting": "アップロード中…",
+      "success": "章を送信しました。",
+      "pickManga": "一覧からマンガを選んでください。",
+      "invalidNumber": "章番号が無効です。",
+      "noPages": "画像を 1 枚以上追加してください。",
+      "noZip": "ZIP ファイルを選んでください。",
+      "startsWithSinglePageLabel": "見開きの最初を単独ページにする",
+      "startsWithSinglePageTooltip": "表紙だけが単独の場合はオン。1 ページ目から見開きが始まる場合はオフ。"
+    },
+    "myUploads": {
+      "heading": "自分のアップロード",
+      "refresh": "更新",
+      "loading": "読み込み中…",
+      "empty": "まだ章をアップロードしていません。",
+      "emptyTitle": "アップロードなし",
+      "emptyDescription": "「アップロード」タブから章を送るとここに表示されます。",
+      "colManga": "マンガ",
+      "colChapter": "章",
+      "colLocale": "ロケール",
+      "colDate": "日付",
+      "colStatus": "状態",
+      "colActions": "操作",
+      "read": "読む",
+      "delete": "削除",
+      "confirmDelete": "確認",
+      "cancelDelete": "キャンセル",
+      "deleted": "アップロードを削除しました。"
+    },
+    "status": {
+      "PENDING": "投稿保留中",
+      "APPROVED": "投稿承認済",
+      "REJECTED": "投稿却下"
+    },
+    "chapterStatus": {
+      "PENDING": "章・保留",
+      "APPROVED": "章・公開中",
+      "REJECTED": "章・却下"
+    },
+    "newManga": {
+      "heading": "新しいマンガを追加",
+      "hint": "詳細と表紙を入力します。シリーズはあなたのアカウントに紐づきます。",
+      "title": "タイトル",
+      "alternativeTitle": "別名",
+      "description": "あらすじ",
+      "author": "作者",
+      "artist": "作画",
+      "status": "連載状態",
+      "type": "種別",
+      "demographic": "対象読者",
+      "demographicNone": "未指定",
+      "contentRating": "コンテンツ区分",
+      "tags": "ジャンル / タグ",
+      "cover": "表紙画像",
+      "coverRequired": "表紙画像は必須です。",
+      "progress": "{pct}% 完了",
+      "submit": "マンガを作成",
+      "submitting": "作成中…",
+      "success": "マンガを作成しました。"
+    },
+    "mangaStatus": {
+      "ONGOING": "連載中",
+      "COMPLETED": "完結",
+      "HIATUS": "休載",
+      "CANCELLED": "打ち切り"
+    },
+    "mangaType": {
+      "MANGA": "マンガ",
+      "MANHWA": "Manhwa",
+      "MANHUA": "Manhua",
+      "NOVEL": "小説",
+      "ONE_SHOT": "読み切り",
+      "DOUJINSHI": "同人誌",
+      "OEL": "OEL"
+    },
+    "demographic": {
+      "SEINEN": "青年",
+      "SHOUNEN": "少年",
+      "SHOUJO": "少女",
+      "JOSEI": "女性",
+      "KODOMO": "子ども向け"
+    },
+    "contentRating": {
+      "EVERYONE": "全年齢",
+      "TEEN": "ティーン",
+      "MATURE_SUGGESTIVE": "成人向け（性的示唆）"
+    },
+    "errors": {
+      "GENERIC": "問題が発生しました。もう一度お試しください。",
+      "UNAUTHORIZED": "サインインが必要です。",
+      "FORBIDDEN": "この操作を行う権限がありません。",
+      "VALIDATION": "入力内容を確認してください。",
+      "INVALID_NUMBER": "章番号が無効です。",
+      "MANGA_NOT_FOUND": "マンガが見つかりません。",
+      "CHAPTER_EXISTS": "その章番号はすでに存在します。",
+      "ZIP_REQUIRED": "ZIP ファイルが必要です。",
+      "ZIP_IMAGES": "ZIP に有効な画像がないか、ページ数が多すぎます。",
+      "FILES_REQUIRED": "画像が必要です。",
+      "INVALID_FILE_TYPE": "画像ファイルのみ使用できます。",
+      "WRITE_FAILED": "ファイルを保存できませんでした。",
+      "DB_ERROR": "保存中にデータベースエラーが発生しました。",
+      "INVALID_FORM": "フォームのデータが無効です。",
+      "TITLE_REQUIRED": "タイトルは必須です。",
+      "INVALID_STATUS": "連載状態が無効です。",
+      "INVALID_TYPE": "種別が無効です。",
+      "INVALID_TAGS": "タグが無効です。",
+      "COVER_REQUIRED": "表紙は必須です。",
+      "INVALID_COVER": "表紙が有効な画像ではありません。",
+      "INVALID_TAG_IDS": "存在しないタグが含まれています。",
+      "COVER_WRITE_FAILED": "表紙ファイルを保存できませんでした。",
+      "ZIP_TOO_LARGE": "圧縮後の ZIP がプランの上限を超えています。",
+      "ZIP_INVALID": "有効な ZIP ではありません。",
+      "ZIP_DECOMPRESSED_LIMIT": "解凍後のサイズが許容上限を超えています。",
+      "INVALID_IMAGE": "JPEG / PNG / WEBP 以外の画像があります。",
+      "IMAGE_TOO_LARGE": "画像がプランの最大サイズを超えています。",
+      "RATE_LIMITED": "検索が多すぎます。数秒後にもう一度お試しください。",
+      "ID_REQUIRED": "識別子が必要です。",
+      "NOT_FOUND": "リソースが見つかりません。"
+    }
+  }
+}
