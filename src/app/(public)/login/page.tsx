@@ -39,7 +39,7 @@ async function loginAction(formData: FormData) {
     select: { id: true },
   });
   const passwordRows = await prisma.$queryRaw<{ id: string; passwordHash: string | null }[]>`
-    SELECT id, passwordHash
+    SELECT id, "passwordHash"
     FROM "User"
     WHERE email = ${email}
     LIMIT 1
