@@ -82,6 +82,11 @@ async function getMangaBySlug(slug: string) {
           isEarlyAccess: true,
           earlyAccessUntil: true,
           earlyAccessPrice: true,
+          pages: {
+            orderBy: { pageNumber: "asc" },
+            take: 8,
+            select: { imageUrl: true },
+          },
           _count: {
             select: {
               pages: true,
@@ -477,6 +482,7 @@ export default async function MangaDetailPage({ params }: PageProps) {
               createdAt: chapter.createdAt.toISOString(),
               locale: chapter.locale,
               pagesCount: chapter._count.pages,
+              pageUrls: chapter.pages.map((p) => p.imageUrl),
               eaActive: !!eaActive,
               earlyAccessUntil: until?.toISOString() ?? null,
               userHasAccess,

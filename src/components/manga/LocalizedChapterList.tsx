@@ -16,6 +16,7 @@ type ChapterItem = {
   createdAt: string;
   locale: string;
   pagesCount: number;
+  pageUrls?: string[];
   eaActive?: boolean;
   earlyAccessUntil?: string | null;
   userHasAccess?: boolean;
@@ -241,17 +242,36 @@ export function LocalizedChapterList({
                   </div>
 
                   <div className="grid grid-cols-4 gap-1.5 sm:grid-cols-6 md:grid-cols-8">
-                    {previewPages.map((page) => (
-                      <Link
-                        key={`${chapter.id}-${page}`}
-                        href={`/${locale}/read/${chapter.id}?page=${page}`}
-                        className="group aspect-[3/4] cursor-pointer rounded border border-primary/25 bg-gradient-to-b from-secondary to-primary/15 transition-colors duration-200 hover:border-primary/50 hover:from-primary/20 hover:to-primary/25 dark:from-slate-200/15 dark:to-violet-300/20 dark:hover:from-violet-300/25 dark:hover:to-violet-500/25"
-                      >
-                        <div className="flex h-full items-end justify-center pb-1 text-[10px] font-medium text-foreground/85">
-                          {tCat("mangaPageNumber", { page })}
-                        </div>
-                      </Link>
-                    ))}
+                    {previewPages.map((page, index) => {
+                      const imageUrl = chapter.pageUrls?.[index];
+                      return (
+                        <Link
+                          key={`${chapter.id}-${page}`}
+                          href={`/${locale}/read/${chapter.id}?page=${page}`}
+                          className="group relative aspect-[3/4] cursor-pointer overflow-hidden rounded border border-primary/25 bg-muted transition-colors duration-200 hover:border-primary/50"
+                        >
+                          {imageUrl ? (
+                            <Image
+                              src={imageUrl}
+                              alt={tCat("mangaPageNumber", { page })}
+                              fill
+                              sizes="(max-width: 640px) 25vw, (max-width: 768px) 16vw, 12vw"
+                              className="object-cover transition-transform duration-200 group-hover:scale-105"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <div className="flex h-full items-end justify-center bg-gradient-to-b from-secondary to-primary/15 pb-1 dark:from-slate-200/15 dark:to-violet-300/20">
+                              <span className="text-[10px] font-medium text-foreground/85">
+                                {tCat("mangaPageNumber", { page })}
+                              </span>
+                            </div>
+                          )}
+                          <div className="absolute bottom-0 left-0 right-0 bg-black/40 py-0.5 text-center text-[9px] text-white opacity-0 transition-opacity group-hover:opacity-100">
+                            {tCat("mangaPageNumber", { page })}
+                          </div>
+                        </Link>
+                      );
+                    })}
                   </div>
                 </div>
               </article>

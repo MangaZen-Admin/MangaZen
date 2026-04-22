@@ -14,6 +14,7 @@ type ChapterItem = {
   createdAt: string;
   locale: string;
   pagesCount: number;
+  pageUrls?: string[];
   eaActive?: boolean;
   earlyAccessUntil?: string | null;
   userHasAccess?: boolean;
