@@ -258,6 +258,7 @@ export function LocalizedChapterList({
                               sizes="(max-width: 640px) 25vw, (max-width: 768px) 16vw, 12vw"
                               className="object-cover transition-transform duration-200 group-hover:scale-105"
                               loading="lazy"
+                              unoptimized
                             />
                           ) : (
                             <div className="flex h-full items-end justify-center bg-gradient-to-b from-secondary to-primary/15 pb-1 dark:from-slate-200/15 dark:to-violet-300/20">
