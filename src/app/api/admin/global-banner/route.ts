@@ -72,16 +72,26 @@ export async function POST(request: Request) {
     data: { isActive: false },
   });
 
-  const banner = await prisma.globalBanner.create({
+  const created = await prisma.globalBanner.create({
     data: {
       type,
       isDismissible,
       expiresAt,
       isActive: true,
-      translations: { create: rows },
     },
+  });
+
+  await prisma.globalBannerTranslation.createMany({
+    data: rows.map((r) => ({ ...r, bannerId: created.id })),
+  });
+
+  const banner = await prisma.globalBanner.findUnique({
+    where: { id: created.id },
     include: { translations: true },
   });
+  if (!banner) {
+    return NextResponse.json({ error: "CREATE_FAILED" }, { status: 500 });
+  }
 
   return NextResponse.json({ banner });
 }

@@ -67,21 +67,34 @@ export async function PATCH(request: Request, context: RouteParams) {
     data.publishedAt = new Date(o.publishedAt);
   }
 
+  let translationRows: ReturnType<typeof parseTranslationRows> | null = null;
   if (Array.isArray(o.translations)) {
     const fallbackImage =
       typeof o.imageUrl === "string" && o.imageUrl.trim() ? o.imageUrl.trim() : null;
-    const rows = parseTranslationRows(o.translations, fallbackImage);
-    if (rows.length === 0) {
+    translationRows = parseTranslationRows(o.translations, fallbackImage);
+    if (translationRows.length === 0) {
       return NextResponse.json({ error: "MISSING_TRANSLATIONS" }, { status: 400 });
     }
-    data.translations = { deleteMany: {}, create: rows };
   }
 
-  const announcement = await prisma.announcement.update({
+  if (Object.keys(data).length > 0) {
+    await prisma.announcement.update({ where: { id }, data });
+  }
+
+  if (translationRows && translationRows.length > 0) {
+    await prisma.announcementTranslation.deleteMany({ where: { announcementId: id } });
+    await prisma.announcementTranslation.createMany({
+      data: translationRows.map((r) => ({ ...r, announcementId: id })),
+    });
+  }
+
+  const announcement = await prisma.announcement.findUnique({
     where: { id },
-    data,
     include: { translations: true },
   });
+  if (!announcement) {
+    return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  }
 
   return NextResponse.json({ announcement });
 }

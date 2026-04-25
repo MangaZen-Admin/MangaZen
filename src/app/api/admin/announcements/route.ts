@@ -81,14 +81,24 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "MISSING_TRANSLATIONS" }, { status: 400 });
   }
 
-  const announcement = await prisma.announcement.create({
+  const created = await prisma.announcement.create({
     data: {
       isPinned,
       ...(publishedAt ? { publishedAt } : {}),
-      translations: { create: rows },
     },
+  });
+
+  await prisma.announcementTranslation.createMany({
+    data: rows.map((r) => ({ ...r, announcementId: created.id })),
+  });
+
+  const announcement = await prisma.announcement.findUnique({
+    where: { id: created.id },
     include: { translations: true },
   });
+  if (!announcement) {
+    return NextResponse.json({ error: "CREATE_FAILED" }, { status: 500 });
+  }
 
   return NextResponse.json({ announcement });
 }
