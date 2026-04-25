@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+import { getBadgeDescI18nKey, getBadgeI18nKey } from "@/lib/badges/badge-i18n";
 import { BADGE_LUCIDE_MAP } from "@/lib/badges/badge-icons";
 
 type BadgeIconProps = {
@@ -20,6 +22,12 @@ export function BadgeIcon({
   iconKey = null,
   isHighlighted = false,
 }: BadgeIconProps) {
+  const t = useTranslations("badges");
+  const nameKey = getBadgeI18nKey(name);
+  const descKey = getBadgeDescI18nKey(name);
+  const displayName = t.has(nameKey) ? t(nameKey) : name;
+  const displayDesc = t.has(descKey) ? t(descKey) : description;
+
   const LucideIcon =
     iconKey && typeof iconKey === "string" ? (BADGE_LUCIDE_MAP[iconKey] ?? null) : null;
   const highlighted =
@@ -72,8 +80,8 @@ export function BadgeIcon({
         }}
         role="tooltip"
       >
-        <p className="font-semibold leading-snug text-foreground">{name}</p>
-        <p className="mt-1.5 leading-relaxed text-muted-foreground">{description}</p>
+        <p className="font-semibold leading-snug text-foreground">{displayName}</p>
+        <p className="mt-1.5 leading-relaxed text-muted-foreground">{displayDesc}</p>
       </div>,
       document.body
     );
@@ -98,7 +106,7 @@ export function BadgeIcon({
       >
         {iconUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={iconUrl} alt={name} className="h-full w-full object-cover" />
+          <img src={iconUrl} alt={displayName} className="h-full w-full object-cover" />
         ) : LucideIcon != null ? (
           <LucideIcon
             className={cn(
@@ -110,7 +118,7 @@ export function BadgeIcon({
           />
         ) : (
           <span className="text-sm font-semibold text-foreground">
-            {name.slice(0, 1).toUpperCase()}
+            {displayName.slice(0, 1).toUpperCase()}
           </span>
         )}
       </div>

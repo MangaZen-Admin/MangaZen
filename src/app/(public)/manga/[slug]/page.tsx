@@ -84,7 +84,6 @@ async function getMangaBySlug(slug: string) {
           earlyAccessPrice: true,
           pages: {
             orderBy: { pageNumber: "asc" },
-            take: 8,
             select: { imageUrl: true },
           },
           _count: {

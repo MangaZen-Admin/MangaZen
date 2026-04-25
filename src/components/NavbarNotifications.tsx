@@ -59,6 +59,16 @@ export function NavbarNotifications({ initialUnread }: NavbarNotificationsProps)
     if (open && items === null) void load();
   }, [open, items, load]);
 
+  async function markAllRead(): Promise<void> {
+    try {
+      await fetch("/api/user/notifications/read-all", { method: "PATCH" });
+      setItems([]);
+      setUnread(0);
+    } catch {
+      /* ignorar */
+    }
+  }
+
   async function markRead(id: string): Promise<boolean> {
     try {
       const res = await fetch(`/api/user/notifications/${encodeURIComponent(id)}/read`, {
@@ -142,8 +152,17 @@ export function NavbarNotifications({ initialUnread }: NavbarNotificationsProps)
 
       {open && (
         <div className="fixed left-2 right-2 top-16 z-[60] rounded-xl border border-border bg-card p-0 shadow-lg dark:shadow-2xl sm:absolute sm:left-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-[22rem]">
-          <div className="border-b border-border px-3 py-2">
+          <div className="flex items-center justify-between border-b border-border px-3 py-2">
             <p className="text-sm font-medium text-foreground">{t("dropdownTitle")}</p>
+            {items && items.length > 0 && (
+              <button
+                type="button"
+                onClick={() => void markAllRead()}
+                className="text-xs text-primary hover:underline"
+              >
+                {t("markAllRead")}
+              </button>
+            )}
           </div>
           <div className="max-h-80 overflow-y-auto p-1">
             {loading && items === null ? (

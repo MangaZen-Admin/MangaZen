@@ -27,6 +27,7 @@ export async function GET(request: Request) {
       email: true,
       image: true,
       role: true,
+      acceptedScanTermsAt: true,
       isBanned: true,
       bannedAt: true,
       banReason: true,

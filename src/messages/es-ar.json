@@ -7,6 +7,10 @@
     "placeholder": "Publicidad",
     "label": "Anuncio"
   },
+  "adultContent": {
+    "title": "🔞 Contenido +18",
+    "subtitle": "Próximamente disponible."
+  },
   "auth": {
     "loginTitle": "Iniciar sesión",
     "loginSubtitle": "Entrá a tu cuenta para votar, guardar favoritos y seguir tus mangas.",
@@ -65,6 +69,8 @@
     "balanceLine": "Saldo: {balance} {currency}",
     "cancel": "Cancelar",
     "confirm": "Confirmar",
+    "reauthLabel": "Contraseña de confirmación",
+    "reauthPlaceholder": "Ingresá tu contraseña...",
     "toastBoosted": "Promoción aplicada.",
     "errors": {
       "generic": "No se pudo aplicar el boost.",
@@ -540,7 +546,12 @@
       "noPages": "Agrega al menos una imagen.",
       "noZip": "Selecciona un archivo ZIP.",
       "startsWithSinglePageLabel": "Primera página sola en modo doble página",
-      "startsWithSinglePageTooltip": "Activa esta opción si el capítulo empieza con una página de portada sola. Desactívala si el primer spread ocupa las páginas 1 y 2."
+      "startsWithSinglePageTooltip": "Activa esta opción si el capítulo empieza con una página de portada sola. Desactívala si el primer spread ocupa las páginas 1 y 2.",
+      "chooseFiles": "Elegir archivos",
+      "chooseFile": "Elegir archivo",
+      "noFilesSelected": "Ningún archivo seleccionado",
+      "noFileSelected": "Ningún archivo seleccionado",
+      "filesSelected": "{count} archivo(s) seleccionado(s)"
     },
     "myUploads": {
       "heading": "Mis subidas",
@@ -703,7 +714,15 @@
       "tabNovedades": "Novedades",
       "tabMensajes": "Mensajes",
       "tabModeracion": "Moderación",
-      "tabPublicidad": "Publicidad"
+      "tabPublicidad": "Publicidad",
+      "cancel": "Cancelar",
+      "scanRoleDialogTitle": "Asignar rol {role}",
+      "scanRoleDialogSubtitle": "Descargo de responsabilidad — Leé antes de confirmar:",
+      "scanRoleDialogBody1": "Al aceptar este rol, el usuario declara ser propietario o tener autorización expresa para subir y distribuir el contenido que publique en MangaZen.",
+      "scanRoleDialogBody2": "MangaZen no se hace responsable por infracciones de derechos de autor u otros problemas legales derivados del contenido subido por este usuario.",
+      "scanRoleDialogBody3": "El incumplimiento de estas condiciones puede resultar en la suspensión o eliminación de la cuenta y el contenido publicado.",
+      "scanRoleDialogConfirm": "Entiendo y confirmo el cambio de rol",
+      "scanTermsAcceptedAt": "Términos aceptados el"
     },
     "ads": {
       "title": "Publicidad",
@@ -967,6 +986,7 @@
   "notifications": {
     "bellAria": "Notificaciones",
     "dropdownTitle": "Notificaciones",
+    "markAllRead": "Marcar todas como leídas",
     "loading": "Cargando…",
     "empty": "No tienes notificaciones sin leer.",
     "generic": "Actualización",
@@ -1014,7 +1034,49 @@
     "catalogDeleteConfirm": "¿Eliminar la insignia \"{name}\" del catálogo y desvincularla de todos los usuarios?",
     "catalogDeleteDialogTitle": "¿Eliminar insignia del catálogo?",
     "catalogDeleteDialogDescription": "¿Eliminar la insignia «{name}» del catálogo y desvincularla de todos los usuarios? No se puede deshacer.",
-    "catalogHighlightedTag": "VIP"
+    "catalogHighlightedTag": "VIP",
+    "badgeNames": {
+      "pilar_de_la_comunidad": "Pilar de la Comunidad",
+      "primera_pagina": "Primera página",
+      "explorador_de_estanterias": "Explorador de estanterías",
+      "viajero_de_mundos": "Viajero de mundos",
+      "primera_voz": "Primera voz",
+      "alma_del_foro": "Alma del foro",
+      "hilo_continuo": "Hilo continuo",
+      "corazon_manga": "Corazón manga",
+      "pulgar_arriba_zen": "Pulgar arriba zen",
+      "voces_del_mundo": "Voces del mundo",
+      "puntero_zen": "Puntero Zen",
+      "arcoiris_zen": "Arcoíris Zen",
+      "primera_entrega": "Primera entrega",
+      "motor_de_sala": "Motor de sala",
+      "buho_mangazen": "Búho MangaZen",
+      "plan_maestro": "Plan maestro",
+      "final_feliz": "Final feliz",
+      "autor_en_la_obra": "Autor en la obra",
+      "mecenas_mangazen": "Mecenas MangaZen"
+    },
+    "badgeDescriptions": {
+      "pilar_de_la_comunidad": "Apoyás MangaZen navegando sin bloqueador de anuncios. ¡Gracias por sostener el proyecto!",
+      "primera_pagina": "Guardaste tu primera posición de lectura en un capítulo.",
+      "explorador_de_estanterias": "Tenés progreso de lectura en al menos 5 obras distintas.",
+      "viajero_de_mundos": "Tenés progreso de lectura en 15 obras o más. ¡No hay un solo género que se te escape!",
+      "primera_voz": "Publicaste tu primer comentario en un capítulo.",
+      "alma_del_foro": "Llegaste a 10 comentarios en capítulos. La comunidad te escucha.",
+      "hilo_continuo": "Dejaste 5 respuestas en hilos de comentarios. Te gusta la conversación.",
+      "corazon_manga": "Agregaste tu primer manga a favoritos.",
+      "pulgar_arriba_zen": "Diste tu primer me gusta a una obra.",
+      "voces_del_mundo": "Comentaste usando 3 idiomas distintos de la app (locales de interfaz).",
+      "puntero_zen": "Alcanzaste 100 Zen-Points en tu saldo.",
+      "arcoiris_zen": "Superaste los 1.000 Zen-Points. Brillás con luz propia.",
+      "primera_entrega": "Subiste tu primer capítulo desde el panel de Scan.",
+      "motor_de_sala": "Registraste 10 envíos de capítulos como scanlator o creador.",
+      "buho_mangazen": "Leés de madrugada: guardaste progreso entre las 0:00 y las 4:59 (hora del servidor).",
+      "plan_maestro": "Tenés al menos 5 obras en Plan para leer.",
+      "final_feliz": "Marcaste 3 obras como completadas en tu lista de lectura.",
+      "autor_en_la_obra": "Tu rol de Creador fue aprobado. Bienvenido a publicar en MangaZen.",
+      "mecenas_mangazen": "Distinción especial otorgada manualmente por el equipo por apoyo excepcional a la plataforma."
+    }
   },
   "security": {
     "sectionTitle": "Seguridad",
@@ -1318,6 +1380,7 @@
     "metaDescription": "Últimas novedades, capítulos nuevos y anuncios de MangaZen.",
     "pageTitle": "Novedades",
     "pageSubtitle": "Anuncios, capítulos nuevos y últimas incorporaciones.",
+    "searchPlaceholder": "Buscar en novedades...",
     "tabAll": "Todo",
     "tabAnnouncements": "Anuncios",
     "tabChapters": "Capítulos",

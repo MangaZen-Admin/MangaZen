@@ -17,12 +17,28 @@ async function requireAdmin(request: Request) {
   return userId;
 }
 
+type MsgIn = { locale?: unknown; message?: unknown };
+
+function parseMessages(translations: unknown) {
+  if (!Array.isArray(translations)) return [];
+  const rows: { locale: string; message: string }[] = [];
+  for (const raw of translations) {
+    const t = raw as MsgIn;
+    if (typeof t.locale !== "string" || !t.locale.trim()) continue;
+    const message = typeof t.message === "string" ? t.message.trim() : "";
+    if (!message) continue;
+    rows.push({ locale: t.locale.trim(), message });
+  }
+  return rows;
+}
+
 export async function GET(request: Request) {
   const adminId = await requireAdmin(request);
   if (!adminId) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
   const banner = await prisma.globalBanner.findFirst({
     orderBy: { createdAt: "desc" },
+    include: { translations: true },
   });
   return NextResponse.json({ banner: banner ?? null });
 }
@@ -39,7 +55,6 @@ export async function POST(request: Request) {
   }
 
   const o = body as Record<string, unknown>;
-  const message = typeof o.message === "string" ? o.message.trim() : "";
   const type = ["info", "warning", "urgent"].includes(o.type as string)
     ? (o.type as string)
     : "info";
@@ -47,7 +62,8 @@ export async function POST(request: Request) {
   const expiresAt =
     typeof o.expiresAt === "string" && o.expiresAt ? new Date(o.expiresAt) : null;
 
-  if (!message) {
+  const rows = parseMessages(o.translations);
+  if (rows.length === 0) {
     return NextResponse.json({ error: "MISSING_MESSAGE" }, { status: 400 });
   }
 
@@ -57,7 +73,14 @@ export async function POST(request: Request) {
   });
 
   const banner = await prisma.globalBanner.create({
-    data: { message, type, isDismissible, expiresAt, isActive: true },
+    data: {
+      type,
+      isDismissible,
+      expiresAt,
+      isActive: true,
+      translations: { create: rows },
+    },
+    include: { translations: true },
   });
 
   return NextResponse.json({ banner });

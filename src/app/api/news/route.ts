@@ -1,13 +1,36 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { routing } from "@/i18n/routing";
 
 export const runtime = "nodejs";
 
-export async function GET() {
-  const [announcements, recentChapters, recentMangas, recentScans] = await Promise.all([
+function isAppLocale(s: string): boolean {
+  return (routing.locales as ReadonlyArray<string>).includes(s);
+}
+
+function localeFromRequest(request: Request): string {
+  const x = request.headers.get("x-locale");
+  if (x && isAppLocale(x)) return x;
+  const ref = request.headers.get("referer");
+  if (ref) {
+    try {
+      const first = new URL(ref).pathname.split("/").filter(Boolean)[0];
+      if (first && isAppLocale(first)) return first;
+    } catch {
+      // ignore
+    }
+  }
+  return "es-ar";
+}
+
+export async function GET(request: Request) {
+  const locale = localeFromRequest(request);
+
+  const [announcementRows, recentChapters, recentMangas, recentScans] = await Promise.all([
     prisma.announcement.findMany({
       orderBy: [{ isPinned: "desc" }, { publishedAt: "desc" }],
-      take: 10,
+      take: 20,
+      include: { translations: true },
     }),
     prisma.chapter.findMany({
       where: { status: "APPROVED" },
@@ -60,6 +83,21 @@ export async function GET() {
       },
     }),
   ]);
+
+  const announcements = announcementRows.map((a) => {
+    const translation =
+      a.translations.find((t) => t.locale === locale) ??
+      a.translations.find((t) => t.locale === "es-ar") ??
+      a.translations[0];
+    return {
+      id: a.id,
+      title: translation?.title ?? "",
+      body: translation?.body ?? "",
+      imageUrl: translation?.imageUrl ?? null,
+      isPinned: a.isPinned,
+      publishedAt: a.publishedAt.toISOString(),
+    };
+  });
 
   return NextResponse.json({
     announcements,

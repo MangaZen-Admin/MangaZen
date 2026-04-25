@@ -228,12 +228,11 @@ export function BillingPageClient({
                     {price}
                   </p>
                 )}
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {t("perCoin", {
-                    rate: ((pkg.prices[currency] ?? 0) / pkg.zenCoins).toFixed(3),
-                    currency,
-                  })}
-                </p>
+                {currency !== "ARS" && pkg.prices.ARS && (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    ≈ ARS {pkg.prices.ARS.toLocaleString(locale)}
+                  </p>
+                )}
               </div>
 
               <Button

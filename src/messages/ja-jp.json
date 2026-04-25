@@ -7,6 +7,10 @@
     "placeholder": "広告",
     "label": "広告"
   },
+  "adultContent": {
+    "title": "🔞 成人向けコンテンツ",
+    "subtitle": "近日公開。"
+  },
   "auth": {
     "loginTitle": "ログイン",
     "loginSubtitle": "ログインして投票、お気に入りの保存、作品のフォローができます。",
@@ -65,6 +69,8 @@
     "balanceLine": "残高: {balance} {currency}",
     "cancel": "キャンセル",
     "confirm": "確定",
+    "reauthLabel": "確認パスワード",
+    "reauthPlaceholder": "パスワードを入力...",
     "toastBoosted": "プロモーションを適用しました。",
     "errors": {
       "generic": "プロモーションに失敗しました。",
@@ -540,7 +546,12 @@
       "noPages": "画像を 1 枚以上追加してください。",
       "noZip": "ZIP ファイルを選んでください。",
       "startsWithSinglePageLabel": "見開きの最初を単独ページにする",
-      "startsWithSinglePageTooltip": "表紙だけが単独の場合はオン。1 ページ目から見開きが始まる場合はオフ。"
+      "startsWithSinglePageTooltip": "表紙だけが単独の場合はオン。1 ページ目から見開きが始まる場合はオフ。",
+      "chooseFiles": "ファイルを選択",
+      "chooseFile": "ファイルを選択",
+      "noFilesSelected": "ファイルが選択されていません",
+      "noFileSelected": "ファイルが選択されていません",
+      "filesSelected": "{count}件のファイルを選択"
     },
     "myUploads": {
       "heading": "自分のアップロード",
@@ -703,7 +714,15 @@
       "tabNovedades": "ニュース",
       "tabMensajes": "メッセージ",
       "tabModeracion": "モデレーション",
-      "tabPublicidad": "広告"
+      "tabPublicidad": "広告",
+      "cancel": "キャンセル",
+      "scanRoleDialogTitle": "{role}ロールを付与",
+      "scanRoleDialogSubtitle": "免責事項 — 確認前にお読みください：",
+      "scanRoleDialogBody1": "このロールを受け入れることで、ユーザーはMangaZenに投稿するコンテンツの所有者であるか、アップロード・配布の明示的な許可を持っていることを宣言します。",
+      "scanRoleDialogBody2": "MangaZenは、このユーザーがアップロードしたコンテンツによる著作権侵害やその他の法的問題について責任を負いません。",
+      "scanRoleDialogBody3": "これらの条件に違反した場合、アカウントと公開コンテンツの停止または削除につながる可能性があります。",
+      "scanRoleDialogConfirm": "理解した上でロール変更を確認します",
+      "scanTermsAcceptedAt": "利用規約の同意日"
     },
     "ads": {
       "title": "広告管理",
@@ -967,6 +986,7 @@
   "notifications": {
     "bellAria": "通知",
     "dropdownTitle": "通知",
+    "markAllRead": "すべて既読にする",
     "loading": "読み込み中…",
     "empty": "未読の通知はありません。",
     "generic": "更新",
@@ -1014,7 +1034,49 @@
     "catalogDeleteConfirm": "バッジ「{name}」をカタログから削除し、全ユーザーとの紐づけを外しますか？",
     "catalogDeleteDialogTitle": "カタログからバッジを削除？",
     "catalogDeleteDialogDescription": "バッジ「{name}」をカタログから削除し、全ユーザーとの紐づけを外しますか？この操作は取り消せません。",
-    "catalogHighlightedTag": "VIP"
+    "catalogHighlightedTag": "VIP",
+    "badgeNames": {
+      "pilar_de_la_comunidad": "コミュニティの柱",
+      "primera_pagina": "最初のページ",
+      "explorador_de_estanterias": "本棚の探検家",
+      "viajero_de_mundos": "世界の旅人",
+      "primera_voz": "最初の声",
+      "alma_del_foro": "フォーラムの魂",
+      "hilo_continuo": "継続の糸",
+      "corazon_manga": "マンガハート",
+      "pulgar_arriba_zen": "禅サムズアップ",
+      "voces_del_mundo": "世界の声",
+      "puntero_zen": "禅ポインター",
+      "arcoiris_zen": "禅レインボー",
+      "primera_entrega": "初めてのアップロード",
+      "motor_de_sala": "ルームエンジン",
+      "buho_mangazen": "MangaZenフクロウ",
+      "plan_maestro": "マスタープラン",
+      "final_feliz": "ハッピーエンド",
+      "autor_en_la_obra": "作品の作者",
+      "mecenas_mangazen": "MangaZenパトロン"
+    },
+    "badgeDescriptions": {
+      "pilar_de_la_comunidad": "広告ブロッカーを無効にしました。MangaZenをサポートしていただきありがとうございます。",
+      "primera_pagina": "チャプターで最初の読書位置を保存しました。",
+      "explorador_de_estanterias": "5つの異なるマンガのチャプターを読みました。",
+      "viajero_de_mundos": "20の異なるマンガのチャプターを読みました。",
+      "primera_voz": "チャプターに最初のコメントを残しました。",
+      "alma_del_foro": "チャプターのコメント数が10に達しました。",
+      "hilo_continuo": "チャプターのコメント数が50に達しました。",
+      "corazon_manga": "初めてマンガをお気に入りに追加しました。",
+      "pulgar_arriba_zen": "初めてチャプターにいいねしました。",
+      "voces_del_mundo": "3つの異なる言語でコメントしました。",
+      "puntero_zen": "ZenPointsが500を超えました。",
+      "arcoiris_zen": "ZenPointsが1,000を超えました。",
+      "primera_entrega": "最初のチャプターをアップロードしました。",
+      "motor_de_sala": "10のチャプターをアップロードしました。",
+      "buho_mangazen": "夜間読者：0:00から4:59の間に進捗を保存しました。",
+      "plan_maestro": "10のマンガを読書リストに追加しました。",
+      "final_feliz": "5つのマンガを完読としてマークしました。",
+      "autor_en_la_obra": "クリエイターロールが承認されました。",
+      "mecenas_mangazen": "ZenCoinsを初めて購入しました。"
+    }
   },
   "security": {
     "sectionTitle": "セキュリティ",
@@ -1244,6 +1306,7 @@
     "metaDescription": "最新ニュース、新しいチャプター、MangaZenのお知らせ。",
     "pageTitle": "ニュース",
     "pageSubtitle": "お知らせ、新チャプター、最新追加情報。",
+    "searchPlaceholder": "ニュースを検索...",
     "tabAll": "すべて",
     "tabAnnouncements": "お知らせ",
     "tabChapters": "チャプター",

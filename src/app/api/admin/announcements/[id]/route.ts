@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import type { Prisma } from "@prisma/client";
 import { authenticateRequestWithRotation } from "@/lib/auth-session";
 import { prisma } from "@/lib/db";
 
@@ -19,6 +20,33 @@ async function requireAdmin(request: Request) {
   return userId;
 }
 
+type TranslationIn = {
+  locale?: unknown;
+  title?: unknown;
+  body?: unknown;
+  imageUrl?: unknown;
+};
+
+function parseTranslationRows(
+  translations: unknown,
+  fallbackImage: string | null
+): { locale: string; title: string; body: string; imageUrl: string | null }[] {
+  if (!Array.isArray(translations)) return [];
+  const rows: { locale: string; title: string; body: string; imageUrl: string | null }[] = [];
+  for (const raw of translations) {
+    const t = raw as TranslationIn;
+    if (typeof t.locale !== "string" || !t.locale.trim()) continue;
+    const title = typeof t.title === "string" ? t.title.trim() : "";
+    const body = typeof t.body === "string" ? t.body.trim() : "";
+    if (!title || !body) continue;
+    const own =
+      typeof t.imageUrl === "string" && t.imageUrl.trim() ? t.imageUrl.trim() : null;
+    const imageUrl = own ?? fallbackImage;
+    rows.push({ locale: t.locale.trim(), title, body, imageUrl });
+  }
+  return rows;
+}
+
 export async function PATCH(request: Request, context: RouteParams) {
   const { id } = await context.params;
   const adminId = await requireAdmin(request);
@@ -32,18 +60,27 @@ export async function PATCH(request: Request, context: RouteParams) {
   }
 
   const o = body as Record<string, unknown>;
-  const data: Record<string, unknown> = {};
-  if (typeof o.title === "string") data.title = o.title.trim();
-  if (typeof o.body === "string") data.body = o.body.trim();
-  if ("imageUrl" in o) {
-    data.imageUrl =
-      typeof o.imageUrl === "string" && o.imageUrl.trim() ? o.imageUrl.trim() : null;
-  }
+  const data: Prisma.AnnouncementUpdateInput = {};
+
   if (typeof o.isPinned === "boolean") data.isPinned = o.isPinned;
+  if (typeof o.publishedAt === "string" && o.publishedAt) {
+    data.publishedAt = new Date(o.publishedAt);
+  }
+
+  if (Array.isArray(o.translations)) {
+    const fallbackImage =
+      typeof o.imageUrl === "string" && o.imageUrl.trim() ? o.imageUrl.trim() : null;
+    const rows = parseTranslationRows(o.translations, fallbackImage);
+    if (rows.length === 0) {
+      return NextResponse.json({ error: "MISSING_TRANSLATIONS" }, { status: 400 });
+    }
+    data.translations = { deleteMany: {}, create: rows };
+  }
 
   const announcement = await prisma.announcement.update({
     where: { id },
     data,
+    include: { translations: true },
   });
 
   return NextResponse.json({ announcement });

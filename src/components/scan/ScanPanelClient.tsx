@@ -635,14 +635,24 @@ function UploadChapterSection({ onDirtyChange }: { onDirtyChange?: (dirty: boole
         {source === "files" ? (
           <div>
             <label className="text-sm font-medium text-foreground">{t("upload.pagesLabel")}</label>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              className="mt-1.5 block w-full text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-3 file:py-2 file:text-sm file:font-medium file:text-primary-foreground"
-              onChange={(e) => onPickFiles(e.target.files)}
-              disabled={busy}
-            />
+            <div className="mt-1.5 flex items-center gap-3">
+              <label className="cursor-pointer rounded-lg border-0 bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90">
+                {t("upload.chooseFiles")}
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => onPickFiles(e.target.files)}
+                  disabled={busy}
+                />
+              </label>
+              <span className="text-sm text-muted-foreground">
+                {pageFiles.length > 0
+                  ? t("upload.filesSelected", { count: pageFiles.length })
+                  : t("upload.noFilesSelected")}
+              </span>
+            </div>
             <p className="mt-1 text-xs text-muted-foreground">{t("upload.reorderHint")}</p>
             {pageFiles.length > 0 && (
               <ul className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
@@ -678,13 +688,21 @@ function UploadChapterSection({ onDirtyChange }: { onDirtyChange?: (dirty: boole
         ) : (
           <div>
             <label className="text-sm font-medium text-foreground">{t("upload.zipLabel")}</label>
-            <input
-              type="file"
-              accept=".zip,application/zip"
-              className="mt-1.5 block w-full text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-3 file:py-2 file:text-sm file:font-medium file:text-primary-foreground"
-              onChange={(e) => setZipFile(e.target.files?.[0] ?? null)}
-              disabled={busy}
-            />
+            <div className="mt-1.5 flex items-center gap-3">
+              <label className="cursor-pointer rounded-lg border-0 bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90">
+                {t("upload.chooseFile")}
+                <input
+                  type="file"
+                  accept=".zip,application/zip"
+                  className="hidden"
+                  onChange={(e) => setZipFile(e.target.files?.[0] ?? null)}
+                  disabled={busy}
+                />
+              </label>
+              <span className="text-sm text-muted-foreground">
+                {zipFile ? zipFile.name : t("upload.noFileSelected")}
+              </span>
+            </div>
           </div>
         )}
 
@@ -917,6 +935,7 @@ function BoostSection() {
   const [selectedBoostManga, setSelectedBoostManga] = useState<BoostMangaRow | null>(null);
   const [boostDays, setBoostDays] = useState<1 | 7 | 30>(7);
   const [boostCurrency, setBoostCurrency] = useState<"coins" | "shards">("shards");
+  const [boostPassword, setBoostPassword] = useState("");
   const [boostSubmitting, setBoostSubmitting] = useState(false);
 
   const loadBoost = useCallback(async () => {
@@ -952,6 +971,7 @@ function BoostSection() {
     setSelectedBoostManga(m);
     setBoostDays(7);
     setBoostCurrency("shards");
+    setBoostPassword("");
     setBoostDialogOpen(true);
   }
 
@@ -976,6 +996,7 @@ function BoostSection() {
           mangaSlug: selectedBoostManga.slug,
           days: boostDays,
           currency: boostCurrency,
+          ...(boostCurrency === "coins" ? { reauth_password: boostPassword } : {}),
         }),
       });
       const data = (await res.json()) as {
@@ -1003,6 +1024,7 @@ function BoostSection() {
         prev.map((m) => (m.slug === selectedBoostManga.slug ? { ...m, boostExpiresAt: data.boostExpiresAt ?? null } : m))
       );
       toast.success(tBoost("toastBoosted"));
+      setBoostPassword("");
       setBoostDialogOpen(false);
     } catch {
       toast.error(tBoost("errors.generic"));
@@ -1079,7 +1101,13 @@ function BoostSection() {
         )}
       </div>
 
-      <Dialog open={boostDialogOpen} onOpenChange={setBoostDialogOpen}>
+      <Dialog
+        open={boostDialogOpen}
+        onOpenChange={(open) => {
+          setBoostDialogOpen(open);
+          if (!open) setBoostPassword("");
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{tBoost("dialogTitle")}</DialogTitle>
@@ -1157,6 +1185,19 @@ function BoostSection() {
                 <p className="mt-2 text-xs font-medium text-destructive">{tBoost("errors.insufficientBalance")}</p>
               ) : null}
             </div>
+
+            {boostCurrency === "coins" && (
+              <div className="mt-3">
+                <label className="text-xs font-medium text-muted-foreground">{tBoost("reauthLabel")}</label>
+                <input
+                  type="password"
+                  value={boostPassword}
+                  onChange={(e) => setBoostPassword(e.target.value)}
+                  placeholder={tBoost("reauthPlaceholder")}
+                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/25"
+                />
+              </div>
+            )}
           </div>
 
           <DialogFooter>
@@ -1413,14 +1454,22 @@ function NewMangaSection() {
 
         <div>
           <label className="text-sm font-medium text-foreground">{t("newManga.cover")}</label>
-          <input
-            type="file"
-            accept="image/*"
-            required
-            className="mt-1.5 block w-full text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-3 file:py-2 file:text-sm file:font-medium file:text-primary-foreground"
-            onChange={(e) => setCover(e.target.files?.[0] ?? null)}
-            disabled={busy}
-          />
+          <div className="mt-1.5 flex items-center gap-3">
+            <label className="cursor-pointer rounded-lg border-0 bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90">
+              {t("upload.chooseFile")}
+              <input
+                type="file"
+                accept="image/*"
+                required
+                className="hidden"
+                onChange={(e) => setCover(e.target.files?.[0] ?? null)}
+                disabled={busy}
+              />
+            </label>
+            <span className="text-sm text-muted-foreground">
+              {cover ? cover.name : t("upload.noFileSelected")}
+            </span>
+          </div>
         </div>
 
         {busy && (

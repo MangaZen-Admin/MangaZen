@@ -70,6 +70,9 @@ export async function POST(request: Request) {
     where: { id: body.userId },
     data: {
       ...(nextRole ? { role: nextRole } : {}),
+      ...(nextRole === "SCAN" || nextRole === "CREATOR"
+        ? { acceptedScanTermsAt: new Date() }
+        : {}),
       ...(delta !== 0 ? { zenCoins: nextCoins } : {}),
       ...(shardDelta !== 0
         ? { zenShards: Math.max(0, existing.zenShards + shardDelta) }
@@ -82,6 +85,7 @@ export async function POST(request: Request) {
       email: true,
       image: true,
       role: true,
+      acceptedScanTermsAt: true,
       zenCoins: true,
       zenShards: true,
       badges: {

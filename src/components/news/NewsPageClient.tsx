@@ -6,7 +6,7 @@ import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import type { Locale } from "date-fns";
 import { useTranslations } from "next-intl";
-import { Megaphone, BookOpen, BookMarked, Users, Pin } from "lucide-react";
+import { Megaphone, BookOpen, BookMarked, Users, Pin, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { dateFnsLocaleFromAppLocale } from "@/lib/date-fns-locale";
 import { AdSlot } from "@/components/AdSlot";
@@ -54,6 +54,12 @@ type NewsPayload = {
   recentScans: RecentScan[];
 };
 
+type FeedItem =
+  | { kind: "announcement"; data: Announcement; date: string }
+  | { kind: "chapter"; data: RecentChapter; date: string }
+  | { kind: "manga"; data: RecentManga; date: string }
+  | { kind: "scan"; data: RecentScan; date: string };
+
 type TabId = "all" | "announcements" | "chapters" | "mangas" | "scans";
 
 type TFn = ReturnType<typeof useTranslations<"news">>;
@@ -65,11 +71,12 @@ export function NewsPageClient({ locale, showAds }: { locale: string; showAds: b
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<TabId>("all");
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     void (async () => {
       try {
-        const res = await fetch("/api/news");
+        const res = await fetch("/api/news", { headers: { "x-locale": locale } });
         if (!res.ok) {
           setError(t("loadError"));
           return;
@@ -81,7 +88,7 @@ export function NewsPageClient({ locale, showAds }: { locale: string; showAds: b
         setLoading(false);
       }
     })();
-  }, [t]);
+  }, [t, locale]);
 
   const tabs: { id: TabId; label: string; icon: React.ElementType }[] = [
     { id: "all", label: t("tabAll"), icon: BookOpen },
@@ -105,12 +112,6 @@ export function NewsPageClient({ locale, showAds }: { locale: string; showAds: b
     return <p className="text-sm text-destructive">{error ?? t("loadError")}</p>;
   }
 
-  type FeedItem =
-    | { kind: "announcement"; data: Announcement; date: string }
-    | { kind: "chapter"; data: RecentChapter; date: string }
-    | { kind: "manga"; data: RecentManga; date: string }
-    | { kind: "scan"; data: RecentScan; date: string };
-
   const allFeed: FeedItem[] = [
     ...data.announcements.map((a) => ({ kind: "announcement" as const, data: a, date: a.publishedAt })),
     ...data.recentChapters.map((c) => ({ kind: "chapter" as const, data: c, date: c.createdAt })),
@@ -122,6 +123,44 @@ export function NewsPageClient({ locale, showAds }: { locale: string; showAds: b
     ...allFeed.filter((f) => f.kind === "announcement" && (f.data as Announcement).isPinned),
     ...allFeed.filter((f) => !(f.kind === "announcement" && (f.data as Announcement).isPinned)),
   ];
+
+  const filterBySearch = (items: FeedItem[]) => {
+    if (!search.trim()) return items;
+    const q = search.trim().toLowerCase();
+    return items.filter((item) => {
+      if (item.kind === "announcement") {
+        const a = item.data as Announcement;
+        return a.title.toLowerCase().includes(q) || a.body.toLowerCase().includes(q);
+      }
+      if (item.kind === "chapter") {
+        const c = item.data as RecentChapter;
+        return c.manga.title.toLowerCase().includes(q) || String(c.number).includes(q);
+      }
+      if (item.kind === "manga") {
+        const m = item.data as RecentManga;
+        return m.title.toLowerCase().includes(q);
+      }
+      if (item.kind === "scan") {
+        const s = item.data as RecentScan;
+        return (s.name ?? "").toLowerCase().includes(q) || (s.username ?? "").toLowerCase().includes(q);
+      }
+      return true;
+    });
+  };
+
+  const filteredAll = filterBySearch(pinnedFirst);
+  const filteredAnnouncements = filterBySearch(
+    data.announcements.map((a) => ({ kind: "announcement" as const, data: a, date: a.publishedAt }))
+  );
+  const filteredChapters = filterBySearch(
+    data.recentChapters.map((c) => ({ kind: "chapter" as const, data: c, date: c.createdAt }))
+  );
+  const filteredMangas = filterBySearch(
+    data.recentMangas.map((m) => ({ kind: "manga" as const, data: m, date: m.createdAt }))
+  );
+  const filteredScans = filterBySearch(
+    data.recentScans.map((s) => ({ kind: "scan" as const, data: s, date: s.createdAt }))
+  );
 
   return (
     <div>
@@ -144,9 +183,20 @@ export function NewsPageClient({ locale, showAds }: { locale: string; showAds: b
         ))}
       </div>
 
+      <div className="relative mb-4">
+        <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+        <input
+          type="search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder={t("searchPlaceholder")}
+          className="w-full rounded-lg border border-border/60 bg-card py-2 pl-8 pr-3 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/25"
+        />
+      </div>
+
       <div className="space-y-4">
         {tab === "all" &&
-          pinnedFirst.map((item, i) => {
+          filteredAll.map((item, i) => {
             const key = `${item.kind}-${i}`;
             const card =
               item.kind === "announcement" ? (
@@ -168,18 +218,43 @@ export function NewsPageClient({ locale, showAds }: { locale: string; showAds: b
             );
           })}
         {tab === "announcements" &&
-          data.announcements.map((a) => <AnnouncementCard key={a.id} item={a} dfLocale={dfLocale} t={t} />)}
+          filteredAnnouncements.map((f) => (
+            <AnnouncementCard
+              key={(f.data as Announcement).id}
+              item={f.data as Announcement}
+              dfLocale={dfLocale}
+              t={t}
+            />
+          ))}
         {tab === "chapters" &&
-          data.recentChapters.map((c) => (
-            <ChapterCard key={c.id} item={c} locale={locale} dfLocale={dfLocale} t={t} />
+          filteredChapters.map((f) => (
+            <ChapterCard
+              key={(f.data as RecentChapter).id}
+              item={f.data as RecentChapter}
+              locale={locale}
+              dfLocale={dfLocale}
+              t={t}
+            />
           ))}
         {tab === "mangas" &&
-          data.recentMangas.map((m) => (
-            <MangaCard key={m.slug} item={m} locale={locale} dfLocale={dfLocale} t={t} />
+          filteredMangas.map((f) => (
+            <MangaCard
+              key={(f.data as RecentManga).slug}
+              item={f.data as RecentManga}
+              locale={locale}
+              dfLocale={dfLocale}
+              t={t}
+            />
           ))}
         {tab === "scans" &&
-          data.recentScans.map((s) => (
-            <ScanCard key={s.id} item={s} locale={locale} dfLocale={dfLocale} t={t} />
+          filteredScans.map((f) => (
+            <ScanCard
+              key={(f.data as RecentScan).id}
+              item={f.data as RecentScan}
+              locale={locale}
+              dfLocale={dfLocale}
+              t={t}
+            />
           ))}
       </div>
     </div>

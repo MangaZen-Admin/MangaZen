@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale } from "next-intl";
 import { X, AlertTriangle, Info, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -14,13 +15,16 @@ type BannerData = {
 const STORAGE_KEY = "mangazen-dismissed-banner";
 
 export function GlobalBanner() {
+  const locale = useLocale();
   const [banner, setBanner] = useState<BannerData | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     void (async () => {
       try {
-        const res = await fetch("/api/global-banner");
+        const res = await fetch("/api/global-banner", {
+          headers: { "x-locale": locale },
+        });
         if (!res.ok) return;
         const data = (await res.json()) as { banner: BannerData | null };
         if (!data.banner) return;
@@ -33,7 +37,7 @@ export function GlobalBanner() {
         // ignorar
       }
     })();
-  }, []);
+  }, [locale]);
 
   function dismiss() {
     if (!banner) return;

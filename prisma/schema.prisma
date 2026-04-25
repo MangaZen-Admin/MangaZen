@@ -32,6 +32,8 @@ model User {
   /// Premium: lectura Early Access sin gastar moneda.
   isPro         Boolean   @default(false)
   role          UserRole  @default(USER)
+  /// Aceptación del descargo al asignar rol SCAN o CREATOR (panel admin).
+  acceptedScanTermsAt DateTime?
   requirePasswordForPoints  Boolean @default(true)
   requireEmailCodeForPoints Boolean @default(true)
   emailVerified DateTime?
@@ -590,22 +592,40 @@ model AdSlot {
 
 model Announcement {
   id          String   @id @default(cuid())
-  title       String
-  body        String
-  imageUrl    String?
   isPinned    Boolean  @default(false)
   publishedAt DateTime @default(now())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  translations AnnouncementTranslation[]
+}
+
+model AnnouncementTranslation {
+  id             String   @id @default(cuid())
+  announcementId String
+  locale         String
+  title          String
+  body           String
+  imageUrl       String?
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  @@unique([announcementId, locale])
 }
 
 model GlobalBanner {
-  id            String    @id @default(cuid())
-  message       String
-  type          String    @default("info") // "info" | "warning" | "urgent"
-  isActive      Boolean   @default(true)
-  isDismissible Boolean   @default(true)
+  id            String   @id @default(cuid())
+  type          String   @default("info")
+  isActive      Boolean  @default(true)
+  isDismissible Boolean  @default(true)
   expiresAt     DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  translations  GlobalBannerTranslation[]
+}
+
+model GlobalBannerTranslation {
+  id             String      @id @default(cuid())
+  bannerId       String
+  locale         String
+  message        String
+  banner         GlobalBanner @relation(fields: [bannerId], references: [id], onDelete: Cascade)
+  @@unique([bannerId, locale])
 }

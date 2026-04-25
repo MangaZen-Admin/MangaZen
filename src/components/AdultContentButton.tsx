@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 
 export function AdultContentButton() {
+  const t = useTranslations("adultContent");
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -27,12 +29,8 @@ export function AdultContentButton() {
       </Button>
       {open && (
         <div className="absolute right-0 top-10 z-[100] w-52 rounded-xl border border-border bg-card p-3 shadow-lg dark:shadow-2xl sm:left-1/2 sm:-translate-x-1/2 sm:right-auto">
-          <p className="text-center text-xs font-medium text-foreground">
-            🔞 Contenido +18
-          </p>
-          <p className="mt-1 text-center text-[11px] text-muted-foreground">
-            Próximamente disponible.
-          </p>
+          <p className="text-center text-xs font-medium text-foreground">{t("title")}</p>
+          <p className="mt-1 text-center text-[11px] text-muted-foreground">{t("subtitle")}</p>
         </div>
       )}
     </div>

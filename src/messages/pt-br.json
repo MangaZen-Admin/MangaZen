@@ -7,6 +7,10 @@
     "placeholder": "Publicidade",
     "label": "Anúncio"
   },
+  "adultContent": {
+    "title": "🔞 Conteúdo +18",
+    "subtitle": "Em breve."
+  },
   "auth": {
     "loginTitle": "Entrar",
     "loginSubtitle": "Acesse sua conta para votar, salvar favoritos e acompanhar seus mangás.",
@@ -65,6 +69,8 @@
     "balanceLine": "Saldo: {balance} {currency}",
     "cancel": "Cancelar",
     "confirm": "Confirmar",
+    "reauthLabel": "Senha de confirmação",
+    "reauthPlaceholder": "Digite sua senha...",
     "toastBoosted": "Promoção aplicada.",
     "errors": {
       "generic": "Não foi possível aplicar o boost.",
@@ -540,7 +546,12 @@
       "noPages": "Adicione pelo menos uma imagem.",
       "noZip": "Selecione um arquivo ZIP.",
       "startsWithSinglePageLabel": "Primeira página sozinha no modo página dupla",
-      "startsWithSinglePageTooltip": "Ative se o capítulo começa com uma capa sozinha. Desative se o primeiro spread começa nas páginas 1 e 2."
+      "startsWithSinglePageTooltip": "Ative se o capítulo começa com uma capa sozinha. Desative se o primeiro spread começa nas páginas 1 e 2.",
+      "chooseFiles": "Escolher arquivos",
+      "chooseFile": "Escolher arquivo",
+      "noFilesSelected": "Nenhum arquivo selecionado",
+      "noFileSelected": "Nenhum arquivo selecionado",
+      "filesSelected": "{count} arquivo(s) selecionado(s)"
     },
     "myUploads": {
       "heading": "Meus envios",
@@ -703,7 +714,15 @@
       "tabNovedades": "Novidades",
       "tabMensajes": "Mensagens",
       "tabModeracion": "Moderação",
-      "tabPublicidad": "Publicidade"
+      "tabPublicidad": "Publicidade",
+      "cancel": "Cancelar",
+      "scanRoleDialogTitle": "Atribuir papel {role}",
+      "scanRoleDialogSubtitle": "Aviso de responsabilidade — Leia antes de confirmar:",
+      "scanRoleDialogBody1": "Ao aceitar este papel, o usuário declara ser proprietário ou ter autorização expressa para enviar e distribuir o conteúdo que publicar no MangaZen.",
+      "scanRoleDialogBody2": "MangaZen não se responsabiliza por violações de direitos autorais ou outros problemas legais decorrentes do conteúdo enviado por este usuário.",
+      "scanRoleDialogBody3": "O descumprimento destas condições pode resultar na suspensão ou exclusão da conta e do conteúdo publicado.",
+      "scanRoleDialogConfirm": "Entendo e confirmo a mudança de papel",
+      "scanTermsAcceptedAt": "Termos aceitos em"
     },
     "ads": {
       "title": "Publicidade",
@@ -967,6 +986,7 @@
   "notifications": {
     "bellAria": "Notificações",
     "dropdownTitle": "Notificações",
+    "markAllRead": "Marcar todas como lidas",
     "loading": "Carregando…",
     "empty": "Sem notificações não lidas.",
     "generic": "Atualização",
@@ -1014,7 +1034,49 @@
     "catalogDeleteConfirm": "Excluir a insígnia \"{name}\" do catálogo e desvinculá-la de todos os usuários?",
     "catalogDeleteDialogTitle": "Excluir insígnia do catálogo?",
     "catalogDeleteDialogDescription": "Excluir a insígnia «{name}» do catálogo e desvinculá-la de todos os usuários? Isso não pode ser desfeito.",
-    "catalogHighlightedTag": "VIP"
+    "catalogHighlightedTag": "VIP",
+    "badgeNames": {
+      "pilar_de_la_comunidad": "Pilar da Comunidade",
+      "primera_pagina": "Primeira Página",
+      "explorador_de_estanterias": "Explorador de Prateleiras",
+      "viajero_de_mundos": "Viajante de Mundos",
+      "primera_voz": "Primeira Voz",
+      "alma_del_foro": "Alma do Fórum",
+      "hilo_continuo": "Fio Contínuo",
+      "corazon_manga": "Coração Mangá",
+      "pulgar_arriba_zen": "Polegar Zen",
+      "voces_del_mundo": "Vozes do Mundo",
+      "puntero_zen": "Ponteiro Zen",
+      "arcoiris_zen": "Arco-íris Zen",
+      "primera_entrega": "Primeira Entrega",
+      "motor_de_sala": "Motor da Sala",
+      "buho_mangazen": "Coruja MangaZen",
+      "plan_maestro": "Plano Mestre",
+      "final_feliz": "Final Feliz",
+      "autor_en_la_obra": "Autor na Obra",
+      "mecenas_mangazen": "Mecenas MangaZen"
+    },
+    "badgeDescriptions": {
+      "pilar_de_la_comunidad": "Você desativou o bloqueador de anúncios. Obrigado por apoiar o MangaZen.",
+      "primera_pagina": "Você salvou sua primeira posição de leitura em um capítulo.",
+      "explorador_de_estanterias": "Você leu capítulos de 5 mangás diferentes.",
+      "viajero_de_mundos": "Você leu capítulos de 20 mangás diferentes.",
+      "primera_voz": "Você deixou seu primeiro comentário em um capítulo.",
+      "alma_del_foro": "Você atingiu 10 comentários em capítulos.",
+      "hilo_continuo": "Você atingiu 50 comentários em capítulos.",
+      "corazon_manga": "Você adicionou seu primeiro mangá aos favoritos.",
+      "pulgar_arriba_zen": "Você curtiu um capítulo pela primeira vez.",
+      "voces_del_mundo": "Você comentou em 3 idiomas diferentes.",
+      "puntero_zen": "Você superou 500 ZenPoints.",
+      "arcoiris_zen": "Você superou 1.000 ZenPoints.",
+      "primera_entrega": "Você enviou seu primeiro capítulo.",
+      "motor_de_sala": "Você enviou 10 capítulos.",
+      "buho_mangazen": "Leitor noturno: você salvou progresso entre 0:00 e 4:59.",
+      "plan_maestro": "Você adicionou 10 mangás à sua lista de leitura.",
+      "final_feliz": "Você marcou 5 mangás como concluídos.",
+      "autor_en_la_obra": "Seu papel de Criador foi aprovado.",
+      "mecenas_mangazen": "Você fez sua primeira compra de ZenCoins."
+    }
   },
   "security": {
     "sectionTitle": "Segurança",
@@ -1244,6 +1306,7 @@
     "metaDescription": "Últimas novidades, novos capítulos e anúncios do MangaZen.",
     "pageTitle": "Novidades",
     "pageSubtitle": "Anúncios, novos capítulos e últimas adições.",
+    "searchPlaceholder": "Buscar novidades...",
     "tabAll": "Tudo",
     "tabAnnouncements": "Anúncios",
     "tabChapters": "Capítulos",

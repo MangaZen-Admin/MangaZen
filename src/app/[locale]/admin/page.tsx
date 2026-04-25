@@ -64,6 +64,7 @@ export default async function AdminPage({ params, searchParams }: AdminPageProps
         email: true,
         image: true,
         role: true,
+        acceptedScanTermsAt: true,
         zenCoins: true,
         zenShards: true,
         createdAt: true,

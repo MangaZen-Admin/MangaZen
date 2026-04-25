@@ -17,12 +17,40 @@ async function requireAdmin(request: Request) {
   return userId;
 }
 
+type TranslationIn = {
+  locale?: unknown;
+  title?: unknown;
+  body?: unknown;
+  imageUrl?: unknown;
+};
+
+function parseTranslationRows(
+  translations: unknown,
+  fallbackImage: string | null
+): { locale: string; title: string; body: string; imageUrl: string | null }[] {
+  if (!Array.isArray(translations)) return [];
+  const rows: { locale: string; title: string; body: string; imageUrl: string | null }[] = [];
+  for (const raw of translations) {
+    const t = raw as TranslationIn;
+    if (typeof t.locale !== "string" || !t.locale.trim()) continue;
+    const title = typeof t.title === "string" ? t.title.trim() : "";
+    const body = typeof t.body === "string" ? t.body.trim() : "";
+    if (!title || !body) continue;
+    const own =
+      typeof t.imageUrl === "string" && t.imageUrl.trim() ? t.imageUrl.trim() : null;
+    const imageUrl = own ?? fallbackImage;
+    rows.push({ locale: t.locale.trim(), title, body, imageUrl });
+  }
+  return rows;
+}
+
 export async function GET(request: Request) {
   const adminId = await requireAdmin(request);
   if (!adminId) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
   const announcements = await prisma.announcement.findMany({
     orderBy: [{ isPinned: "desc" }, { publishedAt: "desc" }],
+    include: { translations: true },
   });
 
   return NextResponse.json({ announcements });
@@ -40,18 +68,26 @@ export async function POST(request: Request) {
   }
 
   const o = body as Record<string, unknown>;
-  const title = typeof o.title === "string" ? o.title.trim() : "";
-  const bodyText = typeof o.body === "string" ? o.body.trim() : "";
-  const imageUrl =
-    typeof o.imageUrl === "string" && o.imageUrl.trim() ? o.imageUrl.trim() : null;
   const isPinned = o.isPinned === true;
+  const publishedAt =
+    typeof o.publishedAt === "string" && o.publishedAt
+      ? new Date(o.publishedAt)
+      : undefined;
+  const fallbackImage =
+    typeof o.imageUrl === "string" && o.imageUrl.trim() ? o.imageUrl.trim() : null;
 
-  if (!title || !bodyText) {
-    return NextResponse.json({ error: "MISSING_FIELDS" }, { status: 400 });
+  const rows = parseTranslationRows(o.translations, fallbackImage);
+  if (rows.length === 0) {
+    return NextResponse.json({ error: "MISSING_TRANSLATIONS" }, { status: 400 });
   }
 
   const announcement = await prisma.announcement.create({
-    data: { title, body: bodyText, imageUrl, isPinned },
+    data: {
+      isPinned,
+      ...(publishedAt ? { publishedAt } : {}),
+      translations: { create: rows },
+    },
+    include: { translations: true },
   });
 
   return NextResponse.json({ announcement });

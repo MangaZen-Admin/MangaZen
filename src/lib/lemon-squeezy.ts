@@ -26,31 +26,31 @@ export const ZEN_PACKAGES: ZenPackage[] = [
     id: "mini",
     zenCoins: 500,
     variantEnvKey: "LEMON_SQUEEZY_VARIANT_MINI",
-    prices: { ARS: 500 },
+    prices: { ARS: 1_500 },
   },
   {
     id: "starter",
     zenCoins: 1_000,
     variantEnvKey: "LEMON_SQUEEZY_VARIANT_STARTER",
-    prices: { USD: 1, ARS: 900, MXN: 17, BRL: 5 },
+    prices: { USD: 1, ARS: 2_000, MXN: 17, BRL: 5 },
   },
   {
     id: "basic",
     zenCoins: 5_000,
     variantEnvKey: "LEMON_SQUEEZY_VARIANT_BASIC",
-    prices: { USD: 5, ARS: 4_500, MXN: 85, BRL: 25 },
+    prices: { USD: 5, ARS: 9_500, MXN: 85, BRL: 25 },
   },
   {
     id: "plus",
     zenCoins: 12_000,
     variantEnvKey: "LEMON_SQUEEZY_VARIANT_PLUS",
-    prices: { USD: 10, ARS: 9_000, MXN: 170, BRL: 50 },
+    prices: { USD: 10, ARS: 18_000, MXN: 170, BRL: 50 },
   },
   {
     id: "pro",
     zenCoins: 25_000,
     variantEnvKey: "LEMON_SQUEEZY_VARIANT_PRO",
-    prices: { USD: 20, ARS: 18_000, MXN: 340, BRL: 100 },
+    prices: { USD: 20, ARS: 35_000, MXN: 340, BRL: 100 },
   },
 ];
 
