@@ -7,50 +7,41 @@ lemonSqueezySetup({
   },
 });
 
-export type ZenPackageId = "mini" | "starter" | "basic" | "plus" | "pro";
+export type ZenPackageId = "starter" | "basic" | "plus" | "pro";
 
 export type ZenPackage = {
   id: ZenPackageId;
   zenCoins: number;
   variantEnvKey: string;
   prices: {
-    USD?: number;
-    ARS: number;
-    MXN?: number;
-    BRL?: number;
+    USD: number;
   };
 };
 
 export const ZEN_PACKAGES: ZenPackage[] = [
   {
-    id: "mini",
-    zenCoins: 500,
-    variantEnvKey: "LEMON_SQUEEZY_VARIANT_MINI",
-    prices: { ARS: 1_500 },
-  },
-  {
     id: "starter",
     zenCoins: 1_000,
     variantEnvKey: "LEMON_SQUEEZY_VARIANT_STARTER",
-    prices: { USD: 1, ARS: 2_000, MXN: 17, BRL: 5 },
+    prices: { USD: 1 },
   },
   {
     id: "basic",
     zenCoins: 5_000,
     variantEnvKey: "LEMON_SQUEEZY_VARIANT_BASIC",
-    prices: { USD: 5, ARS: 9_500, MXN: 85, BRL: 25 },
+    prices: { USD: 5 },
   },
   {
     id: "plus",
     zenCoins: 12_000,
     variantEnvKey: "LEMON_SQUEEZY_VARIANT_PLUS",
-    prices: { USD: 10, ARS: 18_000, MXN: 170, BRL: 50 },
+    prices: { USD: 10 },
   },
   {
     id: "pro",
     zenCoins: 25_000,
     variantEnvKey: "LEMON_SQUEEZY_VARIANT_PRO",
-    prices: { USD: 20, ARS: 35_000, MXN: 340, BRL: 100 },
+    prices: { USD: 20 },
   },
 ];
 

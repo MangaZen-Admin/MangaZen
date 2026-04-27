@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import type { UserRole } from "@prisma/client";
 import type { LucideIcon } from "lucide-react";
 import {
   BarChart3,
@@ -103,7 +104,7 @@ function postFormDataWithProgress(
 
 const VALID_TABS: TabId[] = ["stats", "upload", "myUploads", "boost", "newManga"];
 
-export default function ScanPanelClient() {
+export default function ScanPanelClient({ role }: { role: UserRole }) {
   const t = useTranslations("scanPanel");
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -164,7 +165,7 @@ export default function ScanPanelClient() {
         </header>
 
         {tab === "stats" && <ScanStatsPanel />}
-        {tab === "upload" && <UploadChapterSection onDirtyChange={setUploadDirty} />}
+        {tab === "upload" && <UploadChapterSection role={role} onDirtyChange={setUploadDirty} />}
         {tab === "myUploads" && <MyUploadsSection />}
         {tab === "boost" && <BoostSection />}
         {tab === "newManga" && <NewMangaSection />}
@@ -205,7 +206,13 @@ function translateError(t: { has: (key: string) => boolean; (key: string): strin
   return t.has(key) ? t(key) : t("errors.GENERIC");
 }
 
-function UploadChapterSection({ onDirtyChange }: { onDirtyChange?: (dirty: boolean) => void }) {
+function UploadChapterSection({
+  role,
+  onDirtyChange,
+}: {
+  role: UserRole;
+  onDirtyChange?: (dirty: boolean) => void;
+}) {
   const t = useTranslations("scanPanel");
   const tEa = useTranslations("earlyAccess");
   const tBadges = useTranslations("badges");
@@ -227,6 +234,8 @@ function UploadChapterSection({ onDirtyChange }: { onDirtyChange?: (dirty: boole
   const [earlyAccessEnabled, setEarlyAccessEnabled] = useState(false);
   const [earlyAccessDays, setEarlyAccessDays] = useState("7");
   const [earlyAccessPrice, setEarlyAccessPrice] = useState("50");
+  const [earlyAccessCurrency, setEarlyAccessCurrency] = useState<"coins" | "shards">("shards");
+  const canUseCoins = role === "CREATOR" || role === "ADMIN";
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pageFilesRef = useRef(pageFiles);
   pageFilesRef.current = pageFiles;
@@ -241,6 +250,10 @@ function UploadChapterSection({ onDirtyChange }: { onDirtyChange?: (dirty: boole
   useEffect(() => {
     onDirtyChange?.(isDirty);
   }, [isDirty, onDirtyChange]);
+
+  useEffect(() => {
+    if (!canUseCoins) setEarlyAccessCurrency("shards");
+  }, [canUseCoins]);
 
   useEffect(() => {
     if (!isDirty) return;
@@ -346,6 +359,7 @@ function UploadChapterSection({ onDirtyChange }: { onDirtyChange?: (dirty: boole
     if (earlyAccessEnabled) {
       form.set("earlyAccessDays", earlyAccessDays.trim());
       form.set("earlyAccessPrice", earlyAccessPrice.trim());
+      form.set("earlyAccessCurrency", canUseCoins ? earlyAccessCurrency : "shards");
     }
     if (source === "zip" && zipFile) {
       form.set("zip", zipFile);
@@ -390,6 +404,8 @@ function UploadChapterSection({ onDirtyChange }: { onDirtyChange?: (dirty: boole
           toast.error(tEa("invalidDays"));
         } else if (code === "EARLY_ACCESS_PRICE") {
           toast.error(tEa("invalidPrice"));
+        } else if (code === "EARLY_ACCESS_CURRENCY_FORBIDDEN") {
+          toast.error(t("errors.FORBIDDEN"));
         } else {
           toast.error(translateError(t, code));
         }
@@ -550,7 +566,7 @@ function UploadChapterSection({ onDirtyChange }: { onDirtyChange?: (dirty: boole
           </div>
         </div>
 
-        <div className="rounded-lg border border-border bg-background/40 p-4">
+        <div className="rounded-lg border border-primary/15 bg-gradient-to-b from-primary/5 to-card p-4 shadow-sm dark:border-border dark:from-primary/10 dark:to-card">
           <label className="flex cursor-pointer items-start gap-3">
             <input
               type="checkbox"
@@ -565,38 +581,76 @@ function UploadChapterSection({ onDirtyChange }: { onDirtyChange?: (dirty: boole
             </span>
           </label>
           {earlyAccessEnabled && (
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              <div>
-                <label className="text-xs font-medium text-muted-foreground" htmlFor="ea-days">
-                  {tEa("scanDays")}
-                </label>
-                <input
-                  id="ea-days"
-                  type="number"
-                  min={3}
-                  max={30}
-                  required
-                  value={earlyAccessDays}
-                  onChange={(e) => setEarlyAccessDays(e.target.value)}
-                  disabled={busy}
-                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-medium text-muted-foreground" htmlFor="ea-price">
-                  {tEa("scanPrice")}
-                </label>
-                <input
-                  id="ea-price"
-                  type="number"
-                  min={10}
-                  max={500}
-                  required
-                  value={earlyAccessPrice}
-                  onChange={(e) => setEarlyAccessPrice(e.target.value)}
-                  disabled={busy}
-                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
-                />
+            <div className="mt-4 space-y-4">
+              {canUseCoins && (
+                <div>
+                  <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    {tEa("currencyLabel")}
+                  </p>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setEarlyAccessCurrency("shards")}
+                      className={cn(
+                        "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                        earlyAccessCurrency === "shards"
+                          ? "border-primary bg-primary/15 text-foreground"
+                          : "border-border bg-background/60 text-muted-foreground hover:border-primary/40"
+                      )}
+                    >
+                      <Gem className="h-3.5 w-3.5 text-primary" /> ZS
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEarlyAccessCurrency("coins")}
+                      className={cn(
+                        "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                        earlyAccessCurrency === "coins"
+                          ? "border-primary bg-primary/15 text-foreground"
+                          : "border-border bg-background/60 text-muted-foreground hover:border-primary/40"
+                      )}
+                    >
+                      <Coins className="h-3.5 w-3.5 text-yellow-500" /> ZC
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="rounded-lg border border-border bg-background/60 p-3">
+                  <label className="text-xs font-medium text-muted-foreground" htmlFor="ea-days">
+                    {tEa("scanDays")}
+                  </label>
+                  <input
+                    id="ea-days"
+                    type="number"
+                    min={3}
+                    max={30}
+                    required
+                    value={earlyAccessDays}
+                    onChange={(e) => setEarlyAccessDays(e.target.value)}
+                    disabled={busy}
+                    className="mt-2 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+                  />
+                  <p className="mt-1 text-[10px] text-muted-foreground">{tEa("daysHint")}</p>
+                </div>
+                <div className="rounded-lg border border-border bg-background/60 p-3">
+                  <label className="text-xs font-medium text-muted-foreground" htmlFor="ea-price">
+                    {tEa("scanPrice")} ({earlyAccessCurrency === "coins" ? "ZC" : "ZS"})
+                  </label>
+                  <input
+                    id="ea-price"
+                    type="number"
+                    min={10}
+                    max={500}
+                    required
+                    value={earlyAccessPrice}
+                    onChange={(e) => setEarlyAccessPrice(e.target.value)}
+                    disabled={busy}
+                    className="mt-2 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+                  />
+                  <p className="mt-1 text-[10px] text-muted-foreground">{tEa("priceHint")}</p>
+                </div>
               </div>
             </div>
           )}

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { translateCatalogTagName } from "@/lib/catalog-tag-i18n";
@@ -52,6 +53,10 @@ async function getMangaBySlug(slug: string) {
       uploaderId: true,
       uploader: {
         select: {
+          id: true,
+          username: true,
+          name: true,
+          image: true,
           role: true,
           externalDonationLink: true,
           donationLinks: {
@@ -338,6 +343,41 @@ export default async function MangaDetailPage({ params }: PageProps) {
 
           <div className="min-w-0 flex-1">
             <h1 className="text-2xl font-semibold tracking-tight">{manga.title}</h1>
+            {manga.uploader && (
+              <div className="mt-2 flex items-center gap-2">
+                <Link
+                  href={`/${locale}/user/${manga.uploader.username ?? manga.uploader.id}`}
+                  className="inline-flex items-center gap-2 rounded-lg border border-border bg-background/50 px-2.5 py-1.5 text-xs font-medium text-foreground transition hover:border-primary/40 hover:bg-primary/5"
+                >
+                  {manga.uploader.image ? (
+                    <Image
+                      src={manga.uploader.image}
+                      alt=""
+                      width={18}
+                      height={18}
+                      className="h-4 w-4 rounded-full object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="flex h-4 w-4 items-center justify-center rounded-full bg-primary/20 text-[9px] font-bold text-primary">
+                      {(manga.uploader.name ?? manga.uploader.username ?? "?").slice(0, 1).toUpperCase()}
+                    </div>
+                  )}
+                  <span className="max-w-[160px] truncate">
+                    {manga.uploader.name ?? manga.uploader.username ?? tCat("unknownUploader")}
+                  </span>
+                  <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-medium text-primary">
+                    {manga.uploader.role === "SCAN"
+                      ? "Scan"
+                      : manga.uploader.role === "CREATOR"
+                        ? "Creator"
+                        : manga.uploader.role === "ADMIN"
+                          ? "Admin"
+                          : "MangaZen"}
+                  </span>
+                </Link>
+              </div>
+            )}
             <div className="mt-2 flex flex-wrap items-center gap-1.5">
               {manga.demographic && (
                 <span className="rounded bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">

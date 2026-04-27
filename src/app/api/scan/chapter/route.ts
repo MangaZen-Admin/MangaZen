@@ -31,6 +31,7 @@ import { scanChapterFormSchema } from "@/lib/validation/scan-forms";
 import { watermarkImage } from "@/lib/watermark";
 import { isZipLocalFileHeader } from "@/lib/zip-binary";
 import { awardBadgeIfEarned } from "@/lib/badges/award-badge";
+import { SHARDS_TO_COINS_RATE } from "@/lib/zen-currency";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
@@ -38,6 +39,9 @@ export const maxDuration = 120;
 export async function POST(request: Request) {
   const gate = await requireScanAccess(request.headers);
   if (!gate.ok) return gate.response;
+
+  const userRole = gate.user.role;
+  const canUseCoins = userRole === "CREATOR" || userRole === "ADMIN";
 
   const plan = getUserPlan(gate.user);
   const maxPages = maxChapterPages(plan);
@@ -94,18 +98,35 @@ export async function POST(request: Request) {
     if (!Number.isFinite(days) || days < EARLY_ACCESS_DAYS_MIN || days > EARLY_ACCESS_DAYS_MAX) {
       return NextResponse.json({ error: "EARLY_ACCESS_DAYS" }, { status: 400 });
     }
+
+    const earlyAccessCurrencyRaw = String(form.get("earlyAccessCurrency") ?? "shards").trim().toLowerCase();
+    if (earlyAccessCurrencyRaw === "coins" && !canUseCoins) {
+      return NextResponse.json({ error: "EARLY_ACCESS_CURRENCY_FORBIDDEN" }, { status: 403 });
+    }
+    const earlyAccessCurrency =
+      earlyAccessCurrencyRaw === "coins" && canUseCoins ? "coins" : "shards";
+
     const priceParsed =
       earlyAccessPriceRaw === "" ? DEFAULT_EARLY_ACCESS_PRICE : Number(earlyAccessPriceRaw);
     if (!Number.isFinite(priceParsed)) {
       return NextResponse.json({ error: "EARLY_ACCESS_PRICE" }, { status: 400 });
     }
-    const price = Math.round(priceParsed);
-    if (price < EARLY_ACCESS_PRICE_MIN || price > EARLY_ACCESS_PRICE_MAX) {
+    const priceEntered = Math.round(priceParsed);
+    if (priceEntered < EARLY_ACCESS_PRICE_MIN || priceEntered > EARLY_ACCESS_PRICE_MAX) {
       return NextResponse.json({ error: "EARLY_ACCESS_PRICE" }, { status: 400 });
     }
+
+    let priceStored: number;
+    if (earlyAccessCurrency === "coins") {
+      priceStored = priceEntered;
+    } else {
+      const coinEquiv = Math.max(1, Math.round(priceEntered / SHARDS_TO_COINS_RATE));
+      priceStored = Math.min(EARLY_ACCESS_PRICE_MAX, Math.max(EARLY_ACCESS_PRICE_MIN, coinEquiv));
+    }
+
     isEarlyAccess = true;
     earlyAccessUntil = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
-    earlyAccessPrice = price;
+    earlyAccessPrice = priceStored;
   }
 
   const titleSan = titleField && titleField.length > 0 ? sanitizeScanPlainText(titleField, 500) : "";

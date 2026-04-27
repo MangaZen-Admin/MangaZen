@@ -18,12 +18,12 @@ export default async function ScanPage({ params }: ScanPageProps) {
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { role: true },
+    select: { role: true, isPro: true },
   });
 
   if (!user || !canUseScanPanel(user.role)) {
     redirect(`/${locale}`);
   }
 
-  return <ScanPanelClient />;
+  return <ScanPanelClient role={user.role} />;
 }

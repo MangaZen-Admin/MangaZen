@@ -126,7 +126,10 @@ export default function AdminPanelShell({
   const [tab, setTab] = useState<AdminTabValue>(() => normalizeTab(initialTab ?? undefined));
 
   useEffect(() => {
-    setTab(normalizeTab(searchParams.get("tab")));
+    const tabFromUrl = normalizeTab(searchParams.get("tab"));
+    if (tabFromUrl !== tab) {
+      setTab(tabFromUrl);
+    }
   }, [searchParams]);
 
   function navigateToTab(next: AdminTabValue) {

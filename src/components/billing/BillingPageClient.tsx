@@ -14,26 +14,8 @@ type Props = {
   locale: string;
 };
 
-function getCurrencyForLocale(locale: string): keyof ZenPackage["prices"] {
-  if (locale === "es-ar") return "ARS";
-  if (locale === "pt-br") return "BRL";
-  if (locale === "es-es") return "ARS";
-  return "USD";
-}
-
-function formatPrice(
-  pkg: ZenPackage,
-  currency: keyof ZenPackage["prices"]
-): string {
-  const price = pkg.prices[currency];
-  if (price == null) return "";
-  const symbols: Record<string, string> = {
-    USD: "US$",
-    ARS: "$",
-    MXN: "MX$",
-    BRL: "R$",
-  };
-  return `${symbols[currency] ?? ""}${price.toLocaleString()}`;
+function formatUsdPrice(pkg: ZenPackage): string {
+  return `US$${pkg.prices.USD.toLocaleString()}`;
 }
 
 const PACKAGE_HIGHLIGHTS: Record<string, boolean> = {
@@ -45,10 +27,9 @@ export function BillingPageClient({
   packages,
   initialZenCoins,
   initialZenShards,
-  locale,
+  locale: _locale,
 }: Props) {
   const t = useTranslations("billing");
-  const currency = getCurrencyForLocale(locale);
   const [loadingPkg, setLoadingPkg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [zenCoins, setZenCoins] = useState(initialZenCoins);
@@ -97,8 +78,6 @@ export function BillingPageClient({
   }, [isSuccess, initialZenCoins]);
 
   async function handlePurchase(pkg: ZenPackage) {
-    if (pkg.id === "mini" && currency !== "ARS") return;
-
     setError(null);
     setLoadingPkg(pkg.id);
     try {
@@ -128,11 +107,6 @@ export function BillingPageClient({
       setLoadingPkg(null);
     }
   }
-
-  const visiblePackages = packages.filter((pkg) => {
-    if (pkg.id === "mini") return currency === "ARS";
-    return pkg.prices[currency] != null;
-  });
 
   return (
     <div>
@@ -188,9 +162,9 @@ export function BillingPageClient({
       )}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {visiblePackages.map((pkg) => {
+        {packages.map((pkg) => {
           const highlighted = PACKAGE_HIGHLIGHTS[pkg.id] ?? false;
-          const price = formatPrice(pkg, currency);
+          const price = formatUsdPrice(pkg);
           const isLoading = loadingPkg === pkg.id;
 
           return (
@@ -226,11 +200,6 @@ export function BillingPageClient({
                 {price && (
                   <p className="mt-3 text-2xl font-semibold text-foreground">
                     {price}
-                  </p>
-                )}
-                {currency !== "ARS" && pkg.prices.ARS && (
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    ≈ ARS {pkg.prices.ARS.toLocaleString(locale)}
                   </p>
                 )}
               </div>
