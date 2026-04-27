@@ -23,7 +23,7 @@ export function AdultContentButton() {
         type="button"
         variant="outline"
         onClick={() => setOpen((p) => !p)}
-        className="h-8 touch-manipulation border-primary px-2 text-xs font-bold text-primary hover:bg-primary hover:text-primary-foreground"
+        className="h-8 touch-manipulation border-primary px-2 text-xs font-bold text-violet-300 hover:bg-primary hover:text-primary-foreground dark:text-violet-200"
       >
         +18
       </Button>

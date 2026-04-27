@@ -86,7 +86,7 @@ export async function BoostCarousel() {
                     src={manga.coverImage}
                     alt={tCat("coverAlt", { title: manga.title })}
                     fill
-                    sizes="220px"
+                    sizes="(max-width: 640px) 182px, (max-width: 1024px) 220px, 256px"
                     className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                   />
                 ) : null}

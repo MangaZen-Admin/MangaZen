@@ -62,7 +62,7 @@ export function AdSlot({ slotId, className = "", height = "h-24", adScript }: Ad
         <div
           className={`${height} animate-pulse rounded-lg border border-dashed border-border bg-muted/20`}
         />
-        <p className="mt-0.5 text-right text-[10px] text-muted-foreground/40">{t("label")}</p>
+        <p className="mt-0.5 text-right text-[10px] text-foreground/60">{t("label")}</p>
       </div>
     );
   }
@@ -71,7 +71,7 @@ export function AdSlot({ slotId, className = "", height = "h-24", adScript }: Ad
     return (
       <div className={`my-4 overflow-hidden ${className}`}>
         <div ref={containerRef} />
-        <p className="mt-0.5 text-right text-[10px] text-muted-foreground/40">{t("label")}</p>
+        <p className="mt-0.5 text-right text-[10px] text-foreground/60">{t("label")}</p>
       </div>
     );
   }
@@ -81,9 +81,9 @@ export function AdSlot({ slotId, className = "", height = "h-24", adScript }: Ad
       <div
         className={`${height} flex items-center justify-center rounded-lg border border-dashed border-border bg-muted/20`}
       >
-        <span className="text-xs text-muted-foreground/40">{t("placeholder")}</span>
+        <span className="text-xs text-foreground/60">{t("placeholder")}</span>
       </div>
-      <p className="mt-0.5 text-right text-[10px] text-muted-foreground/40">{t("label")}</p>
+      <p className="mt-0.5 text-right text-[10px] text-foreground/60">{t("label")}</p>
     </div>
   );
 }

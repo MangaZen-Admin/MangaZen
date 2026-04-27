@@ -100,7 +100,7 @@ export function MangaCard({ manga, userLocale = "es-ar", variant = "grid" }: Man
             src={manga.coverImage}
             alt={tCat("coverAlt", { title: manga.title })}
             fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+            sizes="(max-width: 640px) 182px, (max-width: 1024px) 220px, 256px"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (

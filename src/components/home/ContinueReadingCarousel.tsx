@@ -116,7 +116,7 @@ export function ContinueReadingCarousel({ items, locale }: ContinueReadingCarous
                         src={item.manga.coverImage}
                         alt={item.manga.title}
                         fill
-                        sizes="160px"
+                        sizes="(max-width: 640px) 182px, (max-width: 1024px) 220px, 256px"
                         className="object-cover transition hover:opacity-95"
                       />
                     ) : (
