@@ -73,13 +73,13 @@ export const SEED_BADGES: SeedBadgeRow[] = [
   },
   {
     name: "Puntero Zen",
-    description: "Alcanzaste 100 Zen-Points en tu saldo.",
+    description: "Alcanzaste 100 ZenShards en tu saldo.",
     iconKey: "Sparkles",
     isHighlighted: false,
   },
   {
     name: "Arcoíris Zen",
-    description: "Superaste los 1.000 Zen-Points. Brillás con luz propia.",
+    description: "Superaste los 1.000 ZenShards. Brillás con luz propia.",
     iconKey: "Gem",
     isHighlighted: true,
   },
