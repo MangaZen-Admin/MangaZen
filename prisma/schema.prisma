@@ -38,6 +38,7 @@ model User {
   requireEmailCodeForPoints Boolean @default(true)
   emailVerified DateTime?
   image         String?
+  bannerImage   String?
   /// Si es true, no aparece en rankings públicos de la comunidad.
   hideFromRankings Boolean @default(false)
   /// Perfil visible para usuarios logueados (visitantes sin sesión solo ven nombre/avatar y CTA).

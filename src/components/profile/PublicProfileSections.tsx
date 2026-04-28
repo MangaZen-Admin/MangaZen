@@ -59,83 +59,98 @@ export async function PublicProfileFull({
 
   return (
     <div className="space-y-8">
-      <header className="rounded-2xl border border-primary/20 bg-card p-6 shadow-sm dark:border-border dark:shadow-none">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-          <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl border border-border bg-muted">
-            {user.image ? (
-              <Image src={user.image} alt="" fill className="object-cover" unoptimized />
-            ) : (
-              <div className="flex h-full items-center justify-center text-2xl font-semibold text-primary">
-                {displayName.slice(0, 1).toUpperCase()}
-              </div>
-            )}
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-2xl font-semibold tracking-tight text-foreground">{displayName}</h1>
-              {roleShowsBadge && (
-                <span
-                  className={cn(
-                    "rounded-md border px-2 py-0.5 text-xs font-medium",
-                    user.role === "ADMIN" && "border-violet-500/50 bg-violet-500/15 text-violet-900 dark:text-violet-100",
-                    user.role === "SCAN" && "border-sky-500/50 bg-sky-500/15 text-sky-900 dark:text-sky-100",
-                    user.role === "CREATOR" && "border-fuchsia-500/50 bg-fuchsia-500/15 text-fuchsia-900 dark:text-fuchsia-100"
-                  )}
-                >
-                  {t(`role.${user.role}`)}
-                </span>
-              )}
-              {user.isPro && (
-                <span className="rounded-md border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-900 dark:text-amber-100">
-                  {t("proBadge")}
-                </span>
+      <header className="overflow-hidden rounded-2xl border border-primary/20 bg-card shadow-sm dark:border-border dark:shadow-none">
+        <div className="relative h-32 w-full bg-gradient-to-r from-primary/20 via-primary/10 to-violet-500/20 sm:h-40">
+          {user.bannerImage ? (
+            <Image
+              src={user.bannerImage}
+              alt=""
+              fill
+              className="object-cover"
+              unoptimized
+            />
+          ) : null}
+          <div className="absolute inset-0 bg-gradient-to-t from-card/60 to-transparent" />
+        </div>
+
+        <div className="relative px-6 pb-6">
+          <div className="relative -mt-12 mb-4 flex items-end justify-between">
+            <div className="relative h-24 w-24 overflow-hidden rounded-2xl border-4 border-card bg-muted shadow-lg">
+              {user.image ? (
+                <Image src={user.image} alt="" fill className="object-cover" unoptimized />
+              ) : (
+                <div className="flex h-full items-center justify-center text-2xl font-semibold text-primary">
+                  {displayName.slice(0, 1).toUpperCase()}
+                </div>
               )}
             </div>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {t("memberSince", { date: user.createdAt.toLocaleDateString(locale) })}
-            </p>
-            {donationLinks.length > 0 ? (
-              <div className="mt-4 flex flex-wrap gap-2">
-                {donationLinks.map((link) => {
-                  const platform = getPlatform(link.platform);
-                  return (
-                    <a
-                      key={link.id}
-                      href={link.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={cn(
-                        "inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition hover:opacity-80",
-                        platform
-                          ? cn(platform.color, platform.textColor)
-                          : "border-border bg-muted text-foreground"
-                      )}
-                    >
-                      {platform?.name ?? link.platform}
-                    </a>
-                  );
-                })}
-              </div>
-            ) : showDonationLegacy ? (
-              <a
-                href={user.externalDonationLink!}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-4 inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/12 px-4 py-2 text-sm font-medium text-foreground transition hover:bg-primary/15"
-              >
-                <Coffee className="h-4 w-4 text-primary" aria-hidden />
-                {tDon("supportButton")}
-              </a>
-            ) : null}
             {isSelf && (
               <Link
                 href={`/${locale}/profile`}
-                className="mt-4 inline-flex rounded-lg border border-primary/40 bg-primary/10 px-4 py-2 text-sm font-medium text-foreground transition hover:bg-primary/15"
+                className="inline-flex rounded-lg border border-primary/40 bg-primary/10 px-4 py-2 text-sm font-medium text-foreground transition hover:bg-primary/15"
               >
                 {t("editPrivateProfile")}
               </Link>
             )}
           </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground">{displayName}</h1>
+            {roleShowsBadge && (
+              <span
+                className={cn(
+                  "rounded-md border px-2 py-0.5 text-xs font-medium",
+                  user.role === "ADMIN" && "border-violet-500/50 bg-violet-500/15 text-violet-900 dark:text-violet-100",
+                  user.role === "SCAN" && "border-sky-500/50 bg-sky-500/15 text-sky-900 dark:text-sky-100",
+                  user.role === "CREATOR" && "border-fuchsia-500/50 bg-fuchsia-500/15 text-fuchsia-900 dark:text-fuchsia-100"
+                )}
+              >
+                {t(`role.${user.role}`)}
+              </span>
+            )}
+            {user.isPro && (
+              <span className="rounded-md border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-900 dark:text-amber-100">
+                {t("proBadge")}
+              </span>
+            )}
+          </div>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {t("memberSince", { date: user.createdAt.toLocaleDateString(locale) })}
+          </p>
+
+          {donationLinks.length > 0 ? (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {donationLinks.map((link) => {
+                const platform = getPlatform(link.platform);
+                return (
+                  <a
+                    key={link.id}
+                    href={link.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={cn(
+                      "inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition hover:opacity-80",
+                      platform
+                        ? cn(platform.color, platform.textColor)
+                        : "border-border bg-muted text-foreground"
+                    )}
+                  >
+                    {platform?.name ?? link.platform}
+                  </a>
+                );
+              })}
+            </div>
+          ) : showDonationLegacy ? (
+            <a
+              href={user.externalDonationLink!}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-4 inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/12 px-4 py-2 text-sm font-medium text-foreground transition hover:bg-primary/15"
+            >
+              <Coffee className="h-4 w-4 text-primary" aria-hidden />
+              {tDon("supportButton")}
+            </a>
+          ) : null}
         </div>
       </header>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -25,6 +26,7 @@ type ProfileAccountCardProps = {
   email: string | null;
   role: string;
   imageUrl: string | null;
+  bannerImage?: string | null;
   labels: {
     title: string;
     email: string;
@@ -46,6 +48,7 @@ export function ProfileAccountCard({
   email,
   role,
   imageUrl,
+  bannerImage: initialBannerImage,
   labels,
 }: ProfileAccountCardProps) {
   const t = useTranslations("profile");
@@ -57,6 +60,8 @@ export function ProfileAccountCard({
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(initialUsername ?? "");
   const [busy, setBusy] = useState(false);
+  const [bannerImage, setBannerImage] = useState(initialBannerImage ?? null);
+  const [bannerBusy, setBannerBusy] = useState(false);
   const [previewHost, setPreviewHost] = useState("mangazen.com");
 
   useEffect(() => {
@@ -133,8 +138,86 @@ export function ProfileAccountCard({
     }
   }, [draft, router, t]);
 
+  async function onBannerChange(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setBannerBusy(true);
+    try {
+      const form = new FormData();
+      form.set("banner", file);
+      const res = await fetch("/api/user/profile-banner", {
+        method: "POST",
+        body: form,
+      });
+      const data = (await res.json()) as { url?: string; error?: string };
+      if (res.ok && data.url) {
+        setBannerImage(data.url);
+        toast.success(t("bannerUpdated"));
+      } else {
+        toast.error(t("bannerError"));
+      }
+    } catch {
+      toast.error(t("bannerError"));
+    } finally {
+      setBannerBusy(false);
+    }
+  }
+
+  async function onBannerRemove() {
+    setBannerBusy(true);
+    try {
+      await fetch("/api/user/profile-banner", { method: "DELETE" });
+      setBannerImage(null);
+      toast.success(t("bannerRemoved"));
+    } catch {
+      toast.error(t("bannerError"));
+    } finally {
+      setBannerBusy(false);
+    }
+  }
+
   return (
     <div className="rounded-2xl border border-primary/20 bg-card p-6 shadow-sm dark:border-border dark:shadow-none">
+      <div className="relative -mx-0 -mt-0 mb-6 h-32 overflow-hidden rounded-xl border border-border bg-gradient-to-r from-primary/20 via-primary/10 to-violet-500/20 sm:h-40">
+        {bannerImage ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={bannerImage}
+            alt=""
+            className="h-full w-full object-cover"
+          />
+        ) : null}
+        <div className="absolute inset-0 bg-gradient-to-t from-card/40 to-transparent" />
+
+        <div className="absolute bottom-2 right-2 flex gap-2">
+          <label className={cn(
+            "cursor-pointer inline-flex items-center gap-1.5 rounded-lg border border-white/20 bg-black/40 px-2.5 py-1.5 text-xs font-medium text-white backdrop-blur-sm transition hover:bg-black/60",
+            bannerBusy && "cursor-not-allowed opacity-50"
+          )}>
+            <Pencil className="h-3.5 w-3.5" />
+            {t("bannerEdit")}
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={onBannerChange}
+              disabled={bannerBusy}
+            />
+          </label>
+          {bannerImage && (
+            <button
+              type="button"
+              onClick={() => void onBannerRemove()}
+              disabled={bannerBusy}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-white/20 bg-black/40 px-2.5 py-1.5 text-xs font-medium text-white backdrop-blur-sm transition hover:bg-red-500/60"
+            >
+              <X className="h-3.5 w-3.5" />
+              {t("bannerRemove")}
+            </button>
+          )}
+        </div>
+      </div>
+
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-border bg-background">
           {imageUrl ? (

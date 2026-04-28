@@ -56,6 +56,7 @@ export default async function ProfilePage() {
       name: true,
       email: true,
       image: true,
+      bannerImage: true,
       role: true,
       zenCoins: true,
       zenShards: true,
@@ -197,6 +198,7 @@ export default async function ProfilePage() {
           email={user.email}
           role={user.role}
           imageUrl={user.image}
+          bannerImage={user.bannerImage ?? null}
           labels={{
             title: t("title"),
             email: t("email"),

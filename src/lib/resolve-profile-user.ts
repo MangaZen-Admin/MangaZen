@@ -5,6 +5,7 @@ const publicProfileUserSelect = {
   username: true,
   name: true,
   image: true,
+  bannerImage: true,
   role: true,
   createdAt: true,
   zenCoins: true,
