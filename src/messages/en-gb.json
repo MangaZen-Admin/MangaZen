@@ -1237,6 +1237,8 @@
     "coverAlt": "Cover of {title}",
     "coverFallbackShort": "Cover",
     "unknownUploader": "Unknown group",
+    "relatedMangas": "Related manga",
+    "chaptersShort": "chs.",
     "browseLibrary": "Library",
     "libraryPageTitle": "Library",
     "libraryFilters": "Filters",

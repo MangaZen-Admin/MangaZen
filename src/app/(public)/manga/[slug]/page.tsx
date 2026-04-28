@@ -11,6 +11,7 @@ import { MangaReadingStatus } from "@/components/manga/MangaReadingStatus";
 import { MangaPrimaryReadCta } from "@/components/manga/MangaPrimaryReadCta";
 import { MangaChaptersWithComments } from "@/components/manga/MangaChaptersWithComments";
 import { MangaReaderCounter } from "@/components/manga/MangaReaderCounter";
+import { RelatedMangas } from "@/components/manga/RelatedMangas";
 import { getAuthenticatedUserIdServer } from "@/lib/auth-session";
 import { canViewMangaInCatalog } from "@/lib/manga-visibility";
 import { pickStartChapter } from "@/lib/manga-read-path";
@@ -111,6 +112,55 @@ async function getMangaBySlug(slug: string) {
   });
 }
 
+async function getRelatedMangas(
+  mangaId: string,
+  tagNames: string[],
+  limit = 6
+) {
+  if (tagNames.length === 0) {
+    return prisma.manga.findMany({
+      where: {
+        id: { not: mangaId },
+        reviewStatus: "APPROVED",
+      },
+      orderBy: { scoreAvg: "desc" },
+      take: limit,
+      select: {
+        slug: true,
+        title: true,
+        coverImage: true,
+        type: true,
+        scoreAvg: true,
+        _count: { select: { chapters: true } },
+      },
+    });
+  }
+
+  return prisma.manga.findMany({
+    where: {
+      id: { not: mangaId },
+      reviewStatus: "APPROVED",
+      tags: {
+        some: {
+          tag: {
+            name: { in: tagNames },
+          },
+        },
+      },
+    },
+    orderBy: { scoreAvg: "desc" },
+    take: limit,
+    select: {
+      slug: true,
+      title: true,
+      coverImage: true,
+      type: true,
+      scoreAvg: true,
+      _count: { select: { chapters: true } },
+    },
+  });
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const manga = await prisma.manga.findUnique({
@@ -182,6 +232,8 @@ export default async function MangaDetailPage({ params }: PageProps) {
   const manga = await getMangaBySlug(slug);
 
   if (!manga) notFound();
+  const tagNames = manga.tags.map((t) => t.tag.name);
+  const relatedMangas = await getRelatedMangas(manga.id, tagNames);
   const sessionUserId = await getAuthenticatedUserIdServer();
 
   const [favoriteCount, likeCount, dislikeCount, currentUser] = await Promise.all([
@@ -528,6 +580,8 @@ export default async function MangaDetailPage({ params }: PageProps) {
             };
           })}
         />
+
+        <RelatedMangas mangas={relatedMangas} />
       </section>
     </main>
   );

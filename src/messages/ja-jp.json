@@ -1237,6 +1237,8 @@
     "coverAlt": "「{title}」の表紙",
     "coverFallbackShort": "表紙",
     "unknownUploader": "不明なグループ",
+    "relatedMangas": "関連マンガ",
+    "chaptersShort": "話",
     "browseLibrary": "ライブラリ",
     "libraryPageTitle": "ライブラリ",
     "libraryFilters": "フィルター",
