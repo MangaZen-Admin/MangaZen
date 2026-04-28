@@ -160,6 +160,17 @@
       "dropped": "Dropped",
       "planToRead": "Plan to Read"
     },
+    "readingStatsTitle": "Reading Statistics",
+    "readingStatus": {
+      "READING": "Reading",
+      "COMPLETED": "Completed",
+      "DROPPED": "Dropped",
+      "PLAN_TO_READ": "Plan to Read"
+    },
+    "totalMangaProgress": "Manga with progress",
+    "mostReadManga": "Most advanced",
+    "upToChapter": "up to ch. {n}",
+    "noProgressYet": "No reading progress yet.",
     "buyMore": "Get more",
     "proStatus": "Pro status",
     "proActive": "Pro active",

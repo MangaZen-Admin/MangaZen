@@ -160,6 +160,17 @@
       "dropped": "Abandonados",
       "planToRead": "Planejados"
     },
+    "readingStatsTitle": "Estatísticas de leitura",
+    "readingStatus": {
+      "READING": "Lendo",
+      "COMPLETED": "Concluídos",
+      "DROPPED": "Abandonados",
+      "PLAN_TO_READ": "Quero ler"
+    },
+    "totalMangaProgress": "Mangás com progresso",
+    "mostReadManga": "Mais avançado",
+    "upToChapter": "até cap. {n}",
+    "noProgressYet": "Ainda não há progresso de leitura.",
     "buyMore": "Obter mais",
     "proStatus": "Status Pro",
     "proActive": "Pro ativo",

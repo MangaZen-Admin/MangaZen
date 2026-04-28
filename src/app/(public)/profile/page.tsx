@@ -141,6 +141,27 @@ export default async function ProfilePage() {
     },
   }));
 
+  const countsByStatus = {
+    READING: progressRows.filter((r) => r.status === "READING").length,
+    COMPLETED: progressRows.filter((r) => r.status === "COMPLETED").length,
+    DROPPED: progressRows.filter((r) => r.status === "DROPPED").length,
+    PLAN_TO_READ: progressRows.filter((r) => r.status === "PLAN_TO_READ").length,
+  };
+
+  const totalWithProgress = progressRows.length;
+
+  const mostRead = progressRows
+    .filter((r) => r.lastChapter?.number != null)
+    .sort((a, b) => (b.lastChapter?.number ?? 0) - (a.lastChapter?.number ?? 0))[0];
+
+  const mostReadData = mostRead
+    ? {
+        slug: mostRead.manga.slug,
+        title: mostRead.manga.title,
+        lastChapterNumber: mostRead.lastChapter?.number ?? 0,
+      }
+    : null;
+
   const displayName = user.name || user.email || t("anonymousName");
   const hasWhitelistBadge = user.badges.some((badge) => badge.name === "Pilar de la Comunidad");
   const [transactions, txCount] = await Promise.all([
@@ -265,6 +286,51 @@ export default async function ProfilePage() {
               )}
             </>
           )}
+        </section>
+
+        <section className="rounded-2xl border border-primary/20 bg-card p-6 shadow-sm dark:border-border dark:shadow-none">
+          <h2 className="text-lg font-semibold text-foreground">{t("readingStatsTitle")}</h2>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {(["READING", "COMPLETED", "DROPPED", "PLAN_TO_READ"] as const).map((key) => (
+              <div
+                key={key}
+                className="rounded-xl border border-border bg-background/60 px-4 py-3"
+              >
+                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  {t(`readingStatus.${key}`)}
+                </p>
+                <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">
+                  {countsByStatus[key]}
+                </p>
+              </div>
+            ))}
+          </div>
+          <dl className="mt-4 space-y-3 text-sm">
+            <div className="flex justify-between gap-4 rounded-lg border border-border/80 bg-background/50 px-4 py-3">
+              <dt className="text-muted-foreground">{t("totalMangaProgress")}</dt>
+              <dd className="font-semibold tabular-nums text-foreground">{totalWithProgress}</dd>
+            </div>
+            {mostReadData ? (
+              <div className="flex flex-col gap-2 rounded-lg border border-border/80 bg-background/50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                <dt className="text-muted-foreground">{t("mostReadManga")}</dt>
+                <dd>
+                  <Link
+                    href={`/${locale}/manga/${mostReadData.slug}`}
+                    className="font-medium text-primary hover:underline"
+                  >
+                    {mostReadData.title}
+                  </Link>
+                  {mostReadData.lastChapterNumber > 0 && (
+                    <span className="ml-2 text-xs text-muted-foreground">
+                      ({t("upToChapter", { n: mostReadData.lastChapterNumber })})
+                    </span>
+                  )}
+                </dd>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">{t("noProgressYet")}</p>
+            )}
+          </dl>
         </section>
 
         <ProfileLibrary

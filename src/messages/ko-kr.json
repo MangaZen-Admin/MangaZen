@@ -154,6 +154,17 @@
       "dropped": "하차",
       "planToRead": "읽을 예정"
     },
+    "readingStatsTitle": "독서 통계",
+    "readingStatus": {
+      "READING": "읽는 중",
+      "COMPLETED": "완독",
+      "DROPPED": "중단",
+      "PLAN_TO_READ": "읽을 예정"
+    },
+    "totalMangaProgress": "진행 중인 만화",
+    "mostReadManga": "가장 진행된",
+    "upToChapter": "{n}화까지",
+    "noProgressYet": "아직 독서 진행 상황이 없습니다.",
     "buyMore": "더 얻기",
     "proStatus": "Pro 상태",
     "proActive": "Pro 활성",

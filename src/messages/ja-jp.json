@@ -160,6 +160,17 @@
       "dropped": "中断",
       "planToRead": "読みたい"
     },
+    "readingStatsTitle": "読書統計",
+    "readingStatus": {
+      "READING": "読書中",
+      "COMPLETED": "完読",
+      "DROPPED": "中断",
+      "PLAN_TO_READ": "読む予定"
+    },
+    "totalMangaProgress": "進捗のあるマンガ",
+    "mostReadManga": "最も進んでいる",
+    "upToChapter": "第{n}話まで",
+    "noProgressYet": "まだ読書の進捗がありません。",
     "buyMore": "もっと入手",
     "proStatus": "Proステータス",
     "proActive": "Pro有効",

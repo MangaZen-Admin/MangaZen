@@ -154,6 +154,17 @@
       "dropped": "弃坑",
       "planToRead": "想读"
     },
+    "readingStatsTitle": "阅读统计",
+    "readingStatus": {
+      "READING": "阅读中",
+      "COMPLETED": "已完成",
+      "DROPPED": "已放弃",
+      "PLAN_TO_READ": "计划阅读"
+    },
+    "totalMangaProgress": "有进度的漫画",
+    "mostReadManga": "最进阶的",
+    "upToChapter": "到第{n}话",
+    "noProgressYet": "还没有阅读进度。",
     "buyMore": "获取更多",
     "proStatus": "Pro状态",
     "proActive": "Pro已激活",
