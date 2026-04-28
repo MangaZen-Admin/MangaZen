@@ -21,6 +21,8 @@ type LibraryPageProps = {
 
 type OrderKey = "latest" | "popular" | "rating" | "title";
 
+export const revalidate = 120;
+
 export default async function LibraryPage({ searchParams }: LibraryPageProps) {
   const locale = await getLocale();
   const tCat = await getTranslations("catalog");

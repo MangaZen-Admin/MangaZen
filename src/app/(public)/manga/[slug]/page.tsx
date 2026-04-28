@@ -45,6 +45,8 @@ type PageProps = {
   }>;
 };
 
+export const revalidate = 300;
+
 async function getMangaBySlug(slug: string) {
   return prisma.manga.findUnique({
     where: { slug },

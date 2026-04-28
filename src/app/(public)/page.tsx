@@ -528,11 +528,13 @@ export async function generateMetadata() {
   };
 }
 
-export const revalidate = 300; // 5 minutos
+export const revalidate = 60;
 
 export default async function HomePage() {
-  const locale = await getLocale();
-  const userId = await getAuthenticatedUserIdServer();
+  const [locale, userId] = await Promise.all([
+    getLocale(),
+    getAuthenticatedUserIdServer(),
+  ]);
 
   const [tHome, tCat, tType, tDemo, featured, latest, trending, continueReading] = await Promise.all([
     getTranslations("home"),
