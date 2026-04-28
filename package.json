@@ -19,6 +19,7 @@
     "@radix-ui/react-tabs": "^1.1.13",
     "@t3-oss/env-nextjs": "^0.13.11",
     "@uploadthing/react": "^7.3.3",
+    "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "axios": "^1.14.0",
     "class-variance-authority": "^0.7.1",
