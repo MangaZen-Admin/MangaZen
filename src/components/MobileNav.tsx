@@ -3,16 +3,17 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { BookOpen, Newspaper, Users, Search, Home } from "lucide-react";
+import { BookOpen, Newspaper, Users, Search, Home, Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import NavbarSearch from "@/components/NavbarSearch";
 
 type MobileNavProps = {
   isAuthenticated: boolean;
+  isPro: boolean;
 };
 
-export function MobileNav({ isAuthenticated: _isAuthenticated }: MobileNavProps) {
+export function MobileNav({ isAuthenticated, isPro }: MobileNavProps) {
   const locale = useLocale();
   const tCat = useTranslations("catalog");
   const pathname = usePathname();
@@ -64,6 +65,21 @@ export function MobileNav({ isAuthenticated: _isAuthenticated }: MobileNavProps)
             <Search className="h-5 w-5" />
             <span>{tCat("navSearch")}</span>
           </button>
+
+          {isAuthenticated && !isPro ? (
+            <Link
+              href={`/${locale}/billing`}
+              className={cn(
+                "flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] font-semibold transition-opacity",
+                isActive("/billing")
+                  ? "text-amber-600"
+                  : "bg-gradient-to-r from-yellow-500 to-amber-400 bg-clip-text text-transparent hover:opacity-90"
+              )}
+            >
+              <Crown className="h-5 w-5" />
+              <span>Pro</span>
+            </Link>
+          ) : null}
 
           <Link
             href={`/${locale}/news`}

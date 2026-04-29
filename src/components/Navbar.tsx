@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
-import { Coins, Gem } from "lucide-react";
+import { getLocale, getTranslations } from "next-intl/server";
+import { Coins, Crown, Gem } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/db";
 import UserMenu from "@/components/UserMenu";
@@ -14,12 +14,21 @@ import { MobileNav } from "@/components/MobileNav";
 import { AdultContentButton } from "@/components/AdultContentButton";
 
 export default async function Navbar() {
+  const locale = await getLocale();
   const tCat = await getTranslations("catalog");
   const userId = await getAuthenticatedUserIdServer();
   const user = userId
     ? await prisma.user.findUnique({
         where: { id: userId },
-        select: { name: true, image: true, email: true, role: true, zenCoins: true, zenShards: true },
+        select: {
+          name: true,
+          image: true,
+          email: true,
+          role: true,
+          isPro: true,
+          zenCoins: true,
+          zenShards: true,
+        },
       })
     : null;
 
@@ -77,6 +86,15 @@ export default async function Navbar() {
 
             {user ? (
               <div className="flex items-center gap-1.5">
+                {!user.isPro ? (
+                  <Link
+                    href={`/${locale}/billing`}
+                    className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-yellow-500 to-amber-400 px-3 py-1.5 text-xs font-semibold text-black transition-opacity hover:opacity-90"
+                  >
+                    <Crown className="h-3.5 w-3.5" />
+                    Pro
+                  </Link>
+                ) : null}
                 <div className="hidden items-center gap-1.5 text-xs md:flex">
                   <Link
                     href="/billing"
@@ -119,7 +137,7 @@ export default async function Navbar() {
       </nav>
 
       {/* Barra de navegación inferior — solo mobile */}
-      <MobileNav isAuthenticated={!!user} />
+      <MobileNav isAuthenticated={!!user} isPro={user?.isPro ?? false} />
     </>
   );
 }

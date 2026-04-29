@@ -12,6 +12,7 @@ type Props = {
   initialZenCoins: number;
   initialZenShards: number;
   locale: string;
+  isPro?: boolean;
 };
 
 function formatUsdPrice(pkg: ZenPackage): string {
@@ -28,6 +29,7 @@ export function BillingPageClient({
   initialZenCoins,
   initialZenShards,
   locale: _locale,
+  isPro: _isPro,
 }: Props) {
   const t = useTranslations("billing");
   const [loadingPkg, setLoadingPkg] = useState<string | null>(null);

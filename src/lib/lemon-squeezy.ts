@@ -89,3 +89,55 @@ export async function createZenCheckout({
   if (error) throw new Error(error.message);
   return data;
 }
+
+export type ProPlanId = "bronze" | "silver" | "gold" | "platinum";
+
+export type ProPlan = {
+  id: ProPlanId;
+  variantId: number;
+  price: number; // en USD (o pago unico para platinum)
+  isLifetime: boolean;
+};
+
+export const PRO_PLANS: ProPlan[] = [
+  { id: "bronze", variantId: 1014527, price: 0.99, isLifetime: false },
+  { id: "silver", variantId: 1014566, price: 3.99, isLifetime: false },
+  { id: "gold", variantId: 1014568, price: 8.99, isLifetime: false },
+  { id: "platinum", variantId: 1014574, price: 25.0, isLifetime: true },
+];
+
+export async function createProCheckout({
+  variantId,
+  userId,
+  userEmail,
+  planId,
+  successUrl,
+  cancelUrl,
+}: {
+  variantId: number;
+  userId: string;
+  userEmail: string;
+  planId: ProPlanId;
+  successUrl: string;
+  cancelUrl: string;
+}) {
+  const storeId = Number(process.env.LEMON_SQUEEZY_STORE_ID ?? "0");
+
+  const { data, error } = await createCheckout(storeId, variantId, {
+    checkoutOptions: { embed: false, media: true, logo: true },
+    checkoutData: {
+      email: userEmail,
+      custom: { user_id: userId, plan_id: planId, type: "pro_subscription" },
+    },
+    productOptions: {
+      redirectUrl: successUrl,
+      receiptButtonText: "Volver a MangaZen",
+      receiptThankYouNote: "¡Gracias por apoyar MangaZen!",
+    },
+  });
+
+  void cancelUrl;
+
+  if (error) throw new Error(error.message);
+  return data;
+}
