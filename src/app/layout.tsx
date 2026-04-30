@@ -94,9 +94,9 @@ export default async function RootLayout({
             <CreatorRoleNotificationListener />
             <RouteModeSync />
             <Navbar />
-            <GlobalBanner />
             {/* El padding-top (pt-20) evita que la Navbar tape el inicio de la página */}
             <main id="app-main" className="min-h-0 flex-1 pt-16 sm:pt-20">
+              <GlobalBanner />
               <GlobalAdblockBannerShell />
               <AutoTranslationNotice />
               {children}
