@@ -153,10 +153,6 @@ export default function AdminPanelShell({
   const [pendingZen, setPendingZen] = useState<{ user: AdminUser; delta: number } | null>(null);
   const [pendingZenType, setPendingZenType] = useState<"coins" | "shards">("coins");
   const [revokeDialog, setRevokeDialog] = useState<{ user: AdminUser; badge: Badge } | null>(null);
-  const [scanRoleDialog, setScanRoleDialog] = useState<{
-    user: AdminUser;
-    role: "SCAN" | "CREATOR";
-  } | null>(null);
   const [userSearch, setUserSearch] = useState("");
   const [userPage, setUserPage] = useState(1);
   const USER_PAGE_SIZE = 20;
@@ -263,10 +259,6 @@ export default function AdminPanelShell({
 
   function handleRoleChange(user: AdminUser, newRole: AdminUser["role"]) {
     if (user.role === newRole) return;
-    if (newRole === "SCAN" || newRole === "CREATOR") {
-      setScanRoleDialog({ user, role: newRole });
-      return;
-    }
     void applyRoleChange(user, newRole);
   }
 
@@ -912,42 +904,6 @@ export default function AdminPanelShell({
         onConfirm={(pwd) => confirmZenReauth(pwd)}
         busy={reauthBusy}
       />
-
-      {scanRoleDialog && (
-        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-lg rounded-xl border border-border bg-card p-5 shadow-lg">
-            <h3 className="text-lg font-semibold text-foreground">
-              {t("scanRoleDialogTitle", { role: scanRoleDialog.role })}
-            </h3>
-            <div className="mt-3 max-h-64 overflow-y-auto rounded-lg border border-border bg-muted/30 p-3 text-xs leading-relaxed text-muted-foreground">
-              <p className="mb-2 font-medium text-foreground">
-                {t("scanRoleDialogSubtitle")}
-              </p>
-              <p>{t("scanRoleDialogBody1")}</p>
-              <p className="mt-2">{t("scanRoleDialogBody2")}</p>
-              <p className="mt-2">{t("scanRoleDialogBody3")}</p>
-            </div>
-            <div className="mt-4 flex justify-end gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setScanRoleDialog(null)}
-              >
-                {t("cancel")}
-              </Button>
-              <Button
-                type="button"
-                onClick={() => {
-                  void applyRoleChange(scanRoleDialog.user, scanRoleDialog.role);
-                  setScanRoleDialog(null);
-                }}
-              >
-                {t("scanRoleDialogConfirm")}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

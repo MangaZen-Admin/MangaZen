@@ -70,8 +70,8 @@ export async function POST(request: Request) {
     where: { id: body.userId },
     data: {
       ...(nextRole ? { role: nextRole } : {}),
-      ...(nextRole === "SCAN" || nextRole === "CREATOR"
-        ? { acceptedScanTermsAt: new Date() }
+      ...(nextRole === "USER"
+        ? { acceptedScanTermsAt: null }
         : {}),
       ...(delta !== 0 ? { zenCoins: nextCoins } : {}),
       ...(shardDelta !== 0
