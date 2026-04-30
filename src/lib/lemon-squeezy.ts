@@ -100,10 +100,10 @@ export type ProPlan = {
 };
 
 export const PRO_PLANS: ProPlan[] = [
-  { id: "bronze", variantId: 1014527, price: 0.99, isLifetime: false },
-  { id: "silver", variantId: 1014566, price: 3.99, isLifetime: false },
-  { id: "gold", variantId: 1014568, price: 8.99, isLifetime: false },
-  { id: "platinum", variantId: 1014574, price: 25.0, isLifetime: true },
+  { id: "bronze", variantId: 1591870, price: 0.99, isLifetime: false },
+  { id: "silver", variantId: 1591935, price: 3.99, isLifetime: false },
+  { id: "gold", variantId: 1591939, price: 8.99, isLifetime: false },
+  { id: "platinum", variantId: 1591951, price: 25.0, isLifetime: true },
 ];
 
 export async function createProCheckout({
