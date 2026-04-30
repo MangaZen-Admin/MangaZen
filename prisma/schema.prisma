@@ -80,6 +80,7 @@ model User {
   notifications   Notification[]
   mangaRequests   MangaRequest[]
   donationLinks   DonationLink[]
+  inventory       UserInventory[]
 }
 
 model DonationLink {
@@ -633,3 +634,64 @@ model GlobalBannerTranslation {
   @@unique([bannerId, locale])
 }
 
+enum StoreItemCategory {
+  AVATAR_FRAME
+  NAME_COLOR
+  USER_TITLE
+  PROFILE_THEME
+  BADGE_COSMETIC
+}
+
+enum StoreItemRarity {
+  COMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+enum StoreItemPersistence {
+  PERMANENT
+  SUBSCRIPTION
+  CONSUMABLE
+}
+
+model StoreItem {
+  id          String               @id @default(cuid())
+  name        String
+  description String?
+  category    StoreItemCategory
+  rarity      StoreItemRarity      @default(COMMON)
+  persistence StoreItemPersistence @default(PERMANENT)
+  /// Precio en ZenShards (null = no se puede comprar con shards)
+  priceShards Int?
+  /// Precio en ZenCoins (null = no se puede comprar con coins)
+  priceCoins  Int?
+  /// URL del asset (imagen, SVG, etc.) — null hasta que haya diseños
+  assetUrl    String?
+  /// Datos extra (color hex, CSS, etc.) en formato JSON libre
+  metadata    Json?
+  /// Si es false no aparece en la tienda (útil para preparar items sin publicar)
+  isActive    Boolean              @default(false)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  inventory   UserInventory[]
+
+  @@index([category, isActive])
+  @@index([rarity, isActive])
+}
+
+model UserInventory {
+  id         String    @id @default(cuid())
+  userId     String
+  itemId     String
+  /// Si es true, el item está equipado actualmente
+  isEquipped Boolean   @default(false)
+  acquiredAt DateTime  @default(now())
+
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item       StoreItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, itemId])
+  @@index([userId, isEquipped])
+}
