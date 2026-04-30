@@ -7,6 +7,8 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
 import Navbar from "@/components/Navbar"; // Import arriba con los demás
+import { getAuthenticatedUserIdServer } from "@/lib/auth-session";
+import { ScanTermsModal } from "@/components/scan-terms/ScanTermsModal";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import RouteModeSync from "@/components/RouteModeSync";
 import { CreatorRoleNotificationListener } from "@/components/CreatorRoleNotificationListener";
@@ -38,6 +40,23 @@ export default async function RootLayout({
 }>) {
   const locale = await getLocale();
   const messages = await getMessages();
+  const userId = await getAuthenticatedUserIdServer();
+  let scanTermsUser: { role: "SCAN" | "CREATOR" } | null = null;
+
+  if (userId) {
+    const { prisma } = await import("@/lib/db");
+    const dbUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true, acceptedScanTermsAt: true },
+    });
+    if (
+      dbUser &&
+      (dbUser.role === "SCAN" || dbUser.role === "CREATOR") &&
+      !dbUser.acceptedScanTermsAt
+    ) {
+      scanTermsUser = { role: dbUser.role };
+    }
+  }
 
   return (
     <html
@@ -70,6 +89,7 @@ export default async function RootLayout({
         <ThemeProvider>
           <NextIntlClientProvider messages={messages}>
             <Toaster />
+            {scanTermsUser && <ScanTermsModal role={scanTermsUser.role} />}
             <CreatorRoleNotificationListener />
             <RouteModeSync />
             <Navbar />
