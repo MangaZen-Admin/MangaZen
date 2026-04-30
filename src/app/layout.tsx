@@ -51,6 +51,7 @@ export default async function RootLayout({
     });
     if (
       dbUser &&
+      dbUser.role !== "ADMIN" &&
       (dbUser.role === "SCAN" || dbUser.role === "CREATOR") &&
       !dbUser.acceptedScanTermsAt
     ) {
