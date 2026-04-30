@@ -12,6 +12,7 @@ import { BadgeIcon } from "@/components/profile/BadgeIcon";
 import { getPublicProfileUrlKey } from "@/lib/public-profile-url";
 import { dateFnsLocaleFromAppLocale } from "@/lib/date-fns-locale";
 import { ReauthDialog } from "@/components/security/ReauthDialog";
+import { AdminProGrantPanel } from "@/components/admin/AdminProGrantPanel";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -575,7 +576,8 @@ export default function AdminPanelShell({
           </section>
         </TabsContent>
 
-        <TabsContent value="usuarios" className="mt-5">
+        <TabsContent value="usuarios" className="mt-5 space-y-6">
+          <AdminProGrantPanel />
           <section className="overflow-hidden rounded-xl border border-border bg-card">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <div className="relative w-full max-w-xs">
