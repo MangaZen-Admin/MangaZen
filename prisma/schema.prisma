@@ -31,6 +31,8 @@ model User {
   proExpiresAt  DateTime?
   /// Premium: lectura Early Access sin gastar moneda.
   isPro         Boolean   @default(false)
+  /// Plan Pro activo: bronze | silver | gold | platinum | null
+  proPlan       String?
   role          UserRole  @default(USER)
   /// Aceptación del descargo al asignar rol SCAN o CREATOR (panel admin).
   acceptedScanTermsAt DateTime?
@@ -630,3 +632,4 @@ model GlobalBannerTranslation {
   banner         GlobalBanner @relation(fields: [bannerId], references: [id], onDelete: Cascade)
   @@unique([bannerId, locale])
 }
+

@@ -4,11 +4,13 @@ import type { CommunityRankingEntry, CommunityRankingsPayload } from "@/types/co
 
 function inferProPlan(
   isPro: boolean,
-  proExpiresAt: Date | null
+  proPlan: string | null
 ): "bronze" | "silver" | "gold" | "platinum" | null {
-  void proExpiresAt;
-  if (!isPro) return null;
-  return "gold";
+  if (!isPro || !proPlan) return null;
+  const valid = ["bronze", "silver", "gold", "platinum"];
+  return valid.includes(proPlan)
+    ? (proPlan as "bronze" | "silver" | "gold" | "platinum")
+    : "gold";
 }
 
 async function usersByIds(
@@ -19,7 +21,7 @@ async function usersByIds(
     image: true;
     username: true;
     isPro: true;
-    proExpiresAt: true;
+    proPlan: true;
   }
 ): Promise<
   Map<
@@ -30,7 +32,7 @@ async function usersByIds(
       image: string | null;
       username: string | null;
       isPro: boolean;
-      proExpiresAt: Date | null;
+      proPlan: string | null;
     }
   >
 > {
@@ -68,7 +70,7 @@ export async function GET() {
           username: true,
           zenPoints: true,
           isPro: true,
-          proExpiresAt: true,
+          proPlan: true,
         },
       }),
       prisma.chapterUpload.groupBy({
@@ -93,7 +95,7 @@ export async function GET() {
       image: true,
       username: true,
       isPro: true,
-      proExpiresAt: true,
+      proPlan: true,
     });
 
     const topReaders: CommunityRankingEntry[] = readerGroups.map((g) => {
@@ -105,7 +107,7 @@ export async function GET() {
         username: u?.username ?? null,
         count: g._count.id,
         isPro: u?.isPro ?? false,
-        proPlan: inferProPlan(u?.isPro ?? false, u?.proExpiresAt ?? null),
+        proPlan: inferProPlan(u?.isPro ?? false, u?.proPlan ?? null),
       };
     });
 
@@ -116,7 +118,7 @@ export async function GET() {
       username: u.username ?? null,
       count: u.zenPoints,
       isPro: u.isPro,
-      proPlan: inferProPlan(u.isPro, u.proExpiresAt),
+      proPlan: inferProPlan(u.isPro, u.proPlan),
     }));
 
     const topScans: CommunityRankingEntry[] = scanGroups.map((g) => {
@@ -128,7 +130,7 @@ export async function GET() {
         username: u?.username ?? null,
         count: g._count.id,
         isPro: u?.isPro ?? false,
-        proPlan: inferProPlan(u?.isPro ?? false, u?.proExpiresAt ?? null),
+        proPlan: inferProPlan(u?.isPro ?? false, u?.proPlan ?? null),
       };
     });
 
@@ -144,3 +146,5 @@ export async function GET() {
     return NextResponse.json({ error: "INTERNAL" }, { status: 500 });
   }
 }
+
+
