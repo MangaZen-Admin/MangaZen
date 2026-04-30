@@ -83,6 +83,9 @@ export async function POST(request: Request) {
   const cancelUrl = `${origin}/billing?cancelled=1`;
 
   try {
+    console.log("[checkout] variantId:", variantId);
+    console.log("[checkout] storeId env:", process.env.LEMON_SQUEEZY_STORE_ID);
+    console.log("[checkout] apiKey set:", !!process.env.LEMON_SQUEEZY_API_KEY);
     const checkout = await createZenCheckout({
       variantId,
       userId,

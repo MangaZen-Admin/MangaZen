@@ -33,6 +33,9 @@ export async function POST(request: Request) {
   const cancelUrl = `${origin}/billing?cancelled=1`;
 
   try {
+    console.log("[pro-checkout] variantId:", plan.variantId);
+    console.log("[pro-checkout] storeId env:", process.env.LEMON_SQUEEZY_STORE_ID);
+    console.log("[pro-checkout] apiKey set:", !!process.env.LEMON_SQUEEZY_API_KEY);
     const checkout = await createProCheckout({
       variantId: plan.variantId,
       userId,
