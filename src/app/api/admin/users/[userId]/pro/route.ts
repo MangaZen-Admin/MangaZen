@@ -66,5 +66,9 @@ export async function PATCH(
     select: { id: true, isPro: true, proExpiresAt: true },
   });
 
-  return NextResponse.json(updated);
+  return NextResponse.json(updated, {
+    headers: {
+      "Cache-Control": "no-store",
+    },
+  });
 }

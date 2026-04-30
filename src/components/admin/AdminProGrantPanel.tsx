@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ChangeEvent, type KeyboardEvent } from "react";
+import { useRouter } from "next/navigation";
 import { Crown, Search, Loader2, CheckCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -33,6 +34,7 @@ function addDays(days: number): string {
 }
 
 export function AdminProGrantPanel() {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [searching, setSearching] = useState(false);
   const [user, setUser] = useState<UserProInfo | null>(null);
@@ -99,6 +101,7 @@ export function AdminProGrantPanel() {
       const updated = (await res.json()) as Partial<UserProInfo>;
       setUser((prev) => (prev ? { ...prev, ...updated } : prev));
       toast.success(activate ? "Pro activado" : "Pro desactivado");
+      router.refresh();
     } catch {
       toast.error("Error al guardar");
     } finally {
