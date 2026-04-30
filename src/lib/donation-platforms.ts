@@ -4,6 +4,7 @@ export type DonationPlatform = {
   color: string;
   textColor: string;
   placeholder: string;
+  iconPath: string;
 };
 
 export const DONATION_PLATFORMS: DonationPlatform[] = [
@@ -13,6 +14,7 @@ export const DONATION_PLATFORMS: DonationPlatform[] = [
     color: "bg-[#FF424D]/15 border-[#FF424D]/40",
     textColor: "text-[#FF424D]",
     placeholder: "https://patreon.com/tu-usuario",
+    iconPath: "/icons/donations/patreon.svg",
   },
   {
     id: "kofi",
@@ -20,6 +22,7 @@ export const DONATION_PLATFORMS: DonationPlatform[] = [
     color: "bg-[#29ABE0]/15 border-[#29ABE0]/40",
     textColor: "text-[#29ABE0]",
     placeholder: "https://ko-fi.com/tu-usuario",
+    iconPath: "/icons/donations/kofi.svg",
   },
   {
     id: "buymeacoffee",
@@ -27,6 +30,7 @@ export const DONATION_PLATFORMS: DonationPlatform[] = [
     color: "bg-[#FFDD00]/15 border-[#FFDD00]/40",
     textColor: "text-[#FFDD00]",
     placeholder: "https://buymeacoffee.com/tu-usuario",
+    iconPath: "/icons/donations/buymeacoffee.svg",
   },
   {
     id: "paypal",
@@ -34,6 +38,7 @@ export const DONATION_PLATFORMS: DonationPlatform[] = [
     color: "bg-[#003087]/15 border-[#003087]/40",
     textColor: "text-[#0070E0]",
     placeholder: "https://paypal.me/tu-usuario",
+    iconPath: "/icons/donations/paypal.svg",
   },
   {
     id: "cafecito",
@@ -41,6 +46,7 @@ export const DONATION_PLATFORMS: DonationPlatform[] = [
     color: "bg-[#F5A623]/15 border-[#F5A623]/40",
     textColor: "text-[#F5A623]",
     placeholder: "https://cafecito.app/tu-usuario",
+    iconPath: "/icons/donations/cafecito.svg",
   },
   {
     id: "mercadopago",
@@ -48,6 +54,7 @@ export const DONATION_PLATFORMS: DonationPlatform[] = [
     color: "bg-[#00B1EA]/15 border-[#00B1EA]/40",
     textColor: "text-[#00B1EA]",
     placeholder: "https://link.mercadopago.com/tu-usuario",
+    iconPath: "/icons/donations/mercadopago.svg",
   },
   {
     id: "apoiase",
@@ -55,6 +62,7 @@ export const DONATION_PLATFORMS: DonationPlatform[] = [
     color: "bg-[#548CFF]/15 border-[#548CFF]/40",
     textColor: "text-[#548CFF]",
     placeholder: "https://apoia.se/tu-usuario",
+    iconPath: "/icons/donations/apoiase.svg",
   },
   {
     id: "fanbox",
@@ -62,6 +70,7 @@ export const DONATION_PLATFORMS: DonationPlatform[] = [
     color: "bg-[#1E9ACC]/15 border-[#1E9ACC]/40",
     textColor: "text-[#1E9ACC]",
     placeholder: "https://tu-usuario.fanbox.cc",
+    iconPath: "/icons/donations/fanbox.svg",
   },
   {
     id: "fantia",
@@ -69,6 +78,7 @@ export const DONATION_PLATFORMS: DonationPlatform[] = [
     color: "bg-[#FF5A79]/15 border-[#FF5A79]/40",
     textColor: "text-[#FF5A79]",
     placeholder: "https://fantia.jp/fanclubs/tu-id",
+    iconPath: "/icons/donations/fantia.png",
   },
   {
     id: "postype",
@@ -76,6 +86,7 @@ export const DONATION_PLATFORMS: DonationPlatform[] = [
     color: "bg-[#FF7A3D]/15 border-[#FF7A3D]/40",
     textColor: "text-[#FF7A3D]",
     placeholder: "https://postype.com/@tu-usuario",
+    iconPath: "/icons/donations/postype.svg",
   },
   {
     id: "afdian",
@@ -83,6 +94,7 @@ export const DONATION_PLATFORMS: DonationPlatform[] = [
     color: "bg-[#946CE6]/15 border-[#946CE6]/40",
     textColor: "text-[#946CE6]",
     placeholder: "https://afdian.com/@tu-usuario",
+    iconPath: "/icons/donations/afdian.svg",
   },
 ];
 

@@ -135,7 +135,18 @@ export async function PublicProfileFull({
                         : "border-border bg-muted text-foreground"
                     )}
                   >
-                    {platform?.name ?? link.platform}
+                    {platform?.iconPath ? (
+                      <Image
+                        src={platform.iconPath}
+                        alt={platform.name}
+                        width={20}
+                        height={20}
+                        className="h-5 w-5 object-contain"
+                        unoptimized
+                      />
+                    ) : (
+                      platform?.name ?? link.platform
+                    )}
                   </a>
                 );
               })}
