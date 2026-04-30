@@ -5,6 +5,8 @@ export type CommunityRankingEntry = {
   /** Perfil público: URL usa username si existe; si no, userId. */
   username: string | null;
   count: number;
+  isPro: boolean;
+  proPlan: "bronze" | "silver" | "gold" | "platinum" | null;
 };
 
 export type CommunityRankingsPayload = {

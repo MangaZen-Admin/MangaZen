@@ -2,10 +2,38 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import type { CommunityRankingEntry, CommunityRankingsPayload } from "@/types/community-rankings";
 
+function inferProPlan(
+  isPro: boolean,
+  proExpiresAt: Date | null
+): "bronze" | "silver" | "gold" | "platinum" | null {
+  void proExpiresAt;
+  if (!isPro) return null;
+  return "gold";
+}
+
 async function usersByIds(
   ids: string[],
-  select: { id: true; name: true; image: true; username: true },
-): Promise<Map<string, { id: string; name: string | null; image: string | null; username: string | null }>> {
+  select: {
+    id: true;
+    name: true;
+    image: true;
+    username: true;
+    isPro: true;
+    proExpiresAt: true;
+  }
+): Promise<
+  Map<
+    string,
+    {
+      id: string;
+      name: string | null;
+      image: string | null;
+      username: string | null;
+      isPro: boolean;
+      proExpiresAt: Date | null;
+    }
+  >
+> {
   if (ids.length === 0) {
     return new Map();
   }
@@ -33,7 +61,15 @@ export async function GET() {
         where: { hideFromRankings: false },
         orderBy: { zenPoints: "desc" },
         take: 10,
-        select: { id: true, name: true, image: true, username: true, zenPoints: true },
+        select: {
+          id: true,
+          name: true,
+          image: true,
+          username: true,
+          zenPoints: true,
+          isPro: true,
+          proExpiresAt: true,
+        },
       }),
       prisma.chapterUpload.groupBy({
         by: ["uploaderId"],
@@ -56,6 +92,8 @@ export async function GET() {
       name: true,
       image: true,
       username: true,
+      isPro: true,
+      proExpiresAt: true,
     });
 
     const topReaders: CommunityRankingEntry[] = readerGroups.map((g) => {
@@ -66,6 +104,8 @@ export async function GET() {
         image: u?.image ?? null,
         username: u?.username ?? null,
         count: g._count.id,
+        isPro: u?.isPro ?? false,
+        proPlan: inferProPlan(u?.isPro ?? false, u?.proExpiresAt ?? null),
       };
     });
 
@@ -75,6 +115,8 @@ export async function GET() {
       image: u.image,
       username: u.username ?? null,
       count: u.zenPoints,
+      isPro: u.isPro,
+      proPlan: inferProPlan(u.isPro, u.proExpiresAt),
     }));
 
     const topScans: CommunityRankingEntry[] = scanGroups.map((g) => {
@@ -85,6 +127,8 @@ export async function GET() {
         image: u?.image ?? null,
         username: u?.username ?? null,
         count: g._count.id,
+        isPro: u?.isPro ?? false,
+        proPlan: inferProPlan(u?.isPro ?? false, u?.proExpiresAt ?? null),
       };
     });
 

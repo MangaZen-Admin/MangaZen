@@ -10,6 +10,7 @@ import { ChevronDown, MessageCircle, Pencil, ThumbsDown, ThumbsUp } from "lucide
 
 import { notifyBadgesEarned } from "@/components/badges/notify-badges-earned";
 import { Button } from "@/components/ui/button";
+import { ProCrown } from "@/components/ui/ProCrown";
 import { cn } from "@/lib/utils";
 import { routing } from "@/i18n/routing";
 import {
@@ -22,11 +23,21 @@ import type { ChapterCommentJson } from "@/lib/chapter-comments-dto";
 import { getLocaleFlagIconUrl } from "@/lib/locale-flags";
 import { dateFnsLocaleFromAppLocale } from "@/lib/date-fns-locale";
 
+type ChapterCommentAuthorPro = ChapterCommentJson["author"] & {
+  isPro: boolean;
+  proPlan: "bronze" | "silver" | "gold" | "platinum" | null;
+};
+
+type ChapterCommentJsonPro = Omit<ChapterCommentJson, "author" | "replies"> & {
+  author: ChapterCommentAuthorPro;
+  replies: ChapterCommentJsonPro[];
+};
+
 function updateCommentVotes(
-  list: ChapterCommentJson[],
+  list: ChapterCommentJsonPro[],
   commentId: string,
   patch: Pick<ChapterCommentJson, "likeCount" | "dislikeCount" | "myVote">
-): ChapterCommentJson[] {
+): ChapterCommentJsonPro[] {
   return list.map((node) => {
     if (node.id === commentId) {
       return { ...node, ...patch };
@@ -39,10 +50,10 @@ function updateCommentVotes(
 }
 
 function patchCommentFields(
-  list: ChapterCommentJson[],
+  list: ChapterCommentJsonPro[],
   commentId: string,
   patch: Partial<Pick<ChapterCommentJson, "body" | "updatedAt" | "likeCount" | "dislikeCount" | "myVote">>
-): ChapterCommentJson[] {
+): ChapterCommentJsonPro[] {
   return list.map((node) => {
     if (node.id === commentId) {
       return { ...node, ...patch };
@@ -54,7 +65,7 @@ function patchCommentFields(
   });
 }
 
-function wasCommentEdited(comment: ChapterCommentJson): boolean {
+function wasCommentEdited(comment: ChapterCommentJsonPro): boolean {
   return new Date(comment.updatedAt).getTime() - new Date(comment.createdAt).getTime() > 500;
 }
 
@@ -95,7 +106,7 @@ export function ChapterComments({
   const appLocale = useLocale();
   const dateLocale = dateFnsLocaleFromAppLocale(appLocale);
 
-  const [rawComments, setRawComments] = useState<ChapterCommentJson[]>([]);
+  const [rawComments, setRawComments] = useState<ChapterCommentJsonPro[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -141,7 +152,7 @@ export function ChapterComments({
           return;
         }
         const data = (await res.json()) as {
-          comments: ChapterCommentJson[];
+          comments: ChapterCommentJsonPro[];
           hasMore?: boolean;
           nextCursor?: string | null;
         };
@@ -258,7 +269,7 @@ export function ChapterComments({
     voteTimers.current.set(commentId, timer);
   };
 
-  const applyPatchedComment = useCallback((updated: ChapterCommentJson) => {
+  const applyPatchedComment = useCallback((updated: ChapterCommentJsonPro) => {
     setRawComments((prev) =>
       patchCommentFields(prev, updated.id, {
         body: updated.body,
@@ -423,14 +434,14 @@ function CommentThread({
   submitting,
   t,
 }: {
-  comment: ChapterCommentJson;
+  comment: ChapterCommentJsonPro;
   depth: number;
   appLocale: string;
   dateLocale: DateFnsLocale;
   isAuthenticated: boolean;
   currentUserId: string | null;
   onVote: (id: string, action: "like" | "dislike") => void;
-  onPatched: (c: ChapterCommentJson) => void;
+  onPatched: (c: ChapterCommentJsonPro) => void;
   replyTo: { id: string; label: string } | null;
   setReplyTo: (v: { id: string; label: string } | null) => void;
   replyText: string;
@@ -468,7 +479,7 @@ function CommentThread({
         body: JSON.stringify({ content: trimmed }),
       });
       if (!res.ok) return;
-      const data = (await res.json()) as { comment: ChapterCommentJson };
+      const data = (await res.json()) as { comment: ChapterCommentJsonPro };
       onPatched(data.comment);
       setEditing(false);
     } finally {
@@ -493,9 +504,12 @@ function CommentThread({
           <div className="flex flex-wrap items-center gap-2">
             <Link
               href={`/${appLocale}/user/${encodeURIComponent(comment.author.profileKey ?? comment.authorUserId)}`}
-              className="text-sm font-medium text-foreground hover:text-primary hover:underline"
+              className="inline-flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary hover:underline"
             >
               {author}
+              {comment.author.isPro && comment.author.proPlan && (
+                <ProCrown plan={comment.author.proPlan} />
+              )}
             </Link>
             <Image
               src={getLocaleFlagIconUrl(comment.locale)}

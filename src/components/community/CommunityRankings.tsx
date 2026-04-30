@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Trophy } from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
+import { ProCrown } from "@/components/ui/ProCrown";
 import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { getPublicProfileUrlKey } from "@/lib/public-profile-url";
@@ -117,9 +118,10 @@ function RankingList({
             <div className="min-w-0 flex-1">
               <Link
                 href={profileHref}
-                className="block truncate text-sm font-medium text-foreground hover:text-primary hover:underline"
+                className="inline-flex items-center gap-1 truncate text-sm font-medium text-foreground hover:text-primary hover:underline"
               >
                 {display}
+                {entry.isPro && entry.proPlan && <ProCrown plan={entry.proPlan} />}
               </Link>
             </div>
             <p className="shrink-0 text-sm font-semibold tabular-nums text-primary">

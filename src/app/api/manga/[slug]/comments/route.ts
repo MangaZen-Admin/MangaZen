@@ -71,6 +71,8 @@ type CommentAuthor = {
   name: string | null;
   image: string | null;
   profileKey: string;
+  isPro: boolean;
+  proPlan: "bronze" | "silver" | "gold" | "platinum" | null;
 };
 
 async function voteStatsForComments(
@@ -150,7 +152,7 @@ function toJson(
     dislikeCount: s.dislikes,
     myVote: mv ?? null,
     replies,
-  };
+  } as ChapterCommentJson;
 }
 
 export async function GET(request: Request, context: RouteContext) {
@@ -203,7 +205,16 @@ export async function GET(request: Request, context: RouteContext) {
           createdAt: true,
           updatedAt: true,
           userId: true,
-          user: { select: { id: true, name: true, image: true, username: true } },
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              username: true,
+              isPro: true,
+              proExpiresAt: true,
+            },
+          },
         },
       });
 
@@ -232,7 +243,14 @@ export async function GET(request: Request, context: RouteContext) {
                       userId: true,
                       parentId: true,
                       user: {
-                        select: { id: true, name: true, image: true, username: true },
+                        select: {
+                          id: true,
+                          name: true,
+                          image: true,
+                          username: true,
+                          isPro: true,
+                          proExpiresAt: true,
+                        },
                       },
                     },
                   })
@@ -273,6 +291,8 @@ export async function GET(request: Request, context: RouteContext) {
                 id: r.userId,
                 username: r.user.username,
               }),
+              isPro: r.user.isPro,
+              proPlan: r.user.isPro ? "gold" : null,
             },
             stats,
             myVotesMap,
@@ -293,6 +313,8 @@ export async function GET(request: Request, context: RouteContext) {
               id: p.userId,
               username: p.user.username,
             }),
+            isPro: p.user.isPro,
+            proPlan: p.user.isPro ? "gold" : null,
           },
           stats,
           myVotesMap,
@@ -329,7 +351,16 @@ export async function GET(request: Request, context: RouteContext) {
         createdAt: true,
         updatedAt: true,
         userId: true,
-        user: { select: { id: true, name: true, image: true, username: true } },
+        user: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            username: true,
+            isPro: true,
+            proExpiresAt: true,
+          },
+        },
       },
     });
 
@@ -360,7 +391,16 @@ export async function GET(request: Request, context: RouteContext) {
                     updatedAt: true,
                     userId: true,
                     parentId: true,
-                    user: { select: { id: true, name: true, image: true, username: true } },
+                    user: {
+                      select: {
+                        id: true,
+                        name: true,
+                        image: true,
+                        username: true,
+                        isPro: true,
+                        proExpiresAt: true,
+                      },
+                    },
                   },
                 })
               )
@@ -395,6 +435,8 @@ export async function GET(request: Request, context: RouteContext) {
             name: r.user.name,
             image: r.user.image,
             profileKey: getPublicProfileUrlKey({ id: r.userId, username: r.user.username }),
+            isPro: r.user.isPro,
+            proPlan: r.user.isPro ? "gold" : null,
           },
           stats,
           myVotesMap,
@@ -412,6 +454,8 @@ export async function GET(request: Request, context: RouteContext) {
           name: p.user.name,
           image: p.user.image,
           profileKey: getPublicProfileUrlKey({ id: p.userId, username: p.user.username }),
+          isPro: p.user.isPro,
+          proPlan: p.user.isPro ? "gold" : null,
         },
         stats,
         myVotesMap,
@@ -543,7 +587,16 @@ export async function POST(request: Request, context: RouteContext) {
           createdAt: true,
           updatedAt: true,
           userId: true,
-          user: { select: { id: true, name: true, image: true, username: true } },
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              username: true,
+              isPro: true,
+              proExpiresAt: true,
+            },
+          },
         },
       });
 
@@ -581,6 +634,8 @@ export async function POST(request: Request, context: RouteContext) {
               id: created.user.id,
               username: created.user.username,
             }),
+            isPro: created.user.isPro,
+            proPlan: created.user.isPro ? "gold" : null,
           },
           new Map([[created.id, { likes: 0, dislikes: 0 }]]),
           new Map(),
@@ -635,7 +690,16 @@ export async function POST(request: Request, context: RouteContext) {
         createdAt: true,
         updatedAt: true,
         userId: true,
-        user: { select: { id: true, name: true, image: true, username: true } },
+        user: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            username: true,
+            isPro: true,
+            proExpiresAt: true,
+          },
+        },
       },
     });
 
@@ -665,6 +729,8 @@ export async function POST(request: Request, context: RouteContext) {
           name: created.user.name,
           image: created.user.image,
           profileKey: getPublicProfileUrlKey({ id: created.user.id, username: created.user.username }),
+          isPro: created.user.isPro,
+          proPlan: created.user.isPro ? "gold" : null,
         },
         new Map([[created.id, { likes: 0, dislikes: 0 }]]),
         new Map(),
