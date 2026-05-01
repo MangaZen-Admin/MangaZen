@@ -308,6 +308,10 @@ async function main() {
       data: {
         title: m.title,
         slug: slug(m.title),
+        author: "Autor Ejemplo",
+        releaseYear: 2020,
+        publisher: "Editorial Ejemplo",
+        country: "JP",
         description: m.description,
         coverImage: m.coverImage,
         bannerImage: m.bannerImage,

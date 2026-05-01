@@ -316,9 +316,12 @@ model Manga {
   slug        String   @unique
   title       String
   alternativeTitle String?
-  author      String?
+  author      String
   artist      String?
-  description String?
+  releaseYear Int
+  publisher   String
+  country     String
+  description String
   coverImage  String?
   bannerImage String?
 
@@ -367,6 +370,7 @@ model Manga {
   comments    Comment[]
   favorites   UserFavorite[]
   progress    MangaProgress[]
+  alternativeTitles MangaAlternativeTitle[]
 }
 
 model Badge {
@@ -696,4 +700,15 @@ model UserInventory {
 
   @@unique([userId, itemId])
   @@index([userId, isEquipped])
+}
+
+model MangaAlternativeTitle {
+  id      String @id @default(cuid())
+  mangaId String
+  locale  String
+  title   String
+  manga   Manga  @relation(fields: [mangaId], references: [id], onDelete: Cascade)
+
+  @@unique([mangaId, locale])
+  @@index([mangaId])
 }

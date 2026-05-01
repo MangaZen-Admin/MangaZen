@@ -43,6 +43,9 @@ export async function POST(request: Request) {
     : [];
 
   const demographicField = String(form.get("demographic") ?? "").trim();
+  const releaseYear = Number(form.get("releaseYear"));
+  const publisher = String(form.get("publisher") ?? "");
+  const country = String(form.get("country") ?? "");
 
   const parsed = scanMangaFormSchema.safeParse({
     title: String(form.get("title") ?? ""),
@@ -70,8 +73,8 @@ export async function POST(request: Request) {
   const alternativeTitle = d.alternativeTitle
     ? sanitizeScanPlainText(d.alternativeTitle, 500) || null
     : null;
-  const description = d.description ? sanitizeScanPlainText(d.description, 20000) || null : null;
-  const author = d.author ? sanitizeScanPlainText(d.author, 300) || null : null;
+  const description = d.description ? sanitizeScanPlainText(d.description, 20000) : "";
+  const author = d.author ? sanitizeScanPlainText(d.author, 300) : "";
   const artist = d.artist ? sanitizeScanPlainText(d.artist, 300) || null : null;
   const demographic = d.demographic && d.demographic.length > 0 ? d.demographic : null;
 
@@ -123,6 +126,9 @@ export async function POST(request: Request) {
           title,
           alternativeTitle,
           author,
+          releaseYear,
+          publisher,
+          country,
           artist,
           description,
           coverImage: coverUrl,
