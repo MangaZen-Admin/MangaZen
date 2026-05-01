@@ -176,9 +176,14 @@ function getDoubleVisiblePageNumbers(
   singlePageMap: SinglePageMap = {}
 ): number[] {
   if (total === 0) return [];
-  if ((startsWithSinglePage && anchor === 1) || singlePageMap[anchor]) return [anchor];
-  if (anchor + 1 <= total) return [anchor, anchor + 1];
-  return [anchor];
+  // El anchor va solo si está marcado como sola o es pág 1 con portada sola
+  const anchorIsSingle =
+    singlePageMap[anchor] === true || (anchor === 1 && startsWithSinglePage);
+  if (anchorIsSingle) return [anchor];
+  // La siguiente va sola → el anchor va solo también
+  const nextIsSingle = singlePageMap[anchor + 1] === true;
+  if (nextIsSingle || anchor + 1 > total) return [anchor];
+  return [anchor, anchor + 1];
 }
 
 function parseStoredFitMode(value: string | null): FitMode | null {
