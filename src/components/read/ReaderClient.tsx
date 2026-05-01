@@ -101,25 +101,32 @@ function buildSpreadAnchors(
   singlePageMap: SinglePageMap = {}
 ): number[] {
   if (total <= 0) return [];
-
   const anchors: number[] = [];
   let p = 1;
 
-  if (startsWithSinglePage || singlePageMap[1]) {
-    anchors.push(1);
-    p = 2;
-  }
-
   while (p <= total) {
     anchors.push(p);
-    if (singlePageMap[p]) {
-      p += 1;
-    } else if (p + 1 <= total && singlePageMap[p + 1]) {
+    // Esta página va sola si:
+    // - es la pág 1 y startsWithSinglePage
+    // - está marcada como sola en el mapa
+    const currentIsSingle =
+      (p === 1 && startsWithSinglePage) || singlePageMap[p] === true;
+
+    if (currentIsSingle) {
+      // Va sola, la siguiente empieza un nuevo spread
       p += 1;
     } else {
-      p += 2;
+      // Va en pareja con la siguiente
+      // Pero si la siguiente está marcada como sola, no la tomamos
+      const nextIsSingle = singlePageMap[p + 1] === true;
+      if (nextIsSingle || p + 1 > total) {
+        p += 1;
+      } else {
+        p += 2;
+      }
     }
   }
+
   return anchors;
 }
 
