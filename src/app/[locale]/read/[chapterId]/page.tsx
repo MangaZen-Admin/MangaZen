@@ -60,6 +60,7 @@ export default async function ReadChapterPage({ params, searchParams }: ReadPage
           id: true,
           pageNumber: true,
           imageUrl: true,
+          isSingleInDoublePage: true,
         },
       },
     },

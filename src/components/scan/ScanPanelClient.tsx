@@ -49,7 +49,12 @@ type TabId = "stats" | "upload" | "myUploads" | "boost" | "newManga";
 
 type MangaHit = { id: string; title: string; slug: string; coverImage: string | null };
 
-type PageFile = { id: string; file: File; previewUrl: string };
+type PageFile = {
+  id: string;
+  file: File;
+  previewUrl: string;
+  isSingleInDoublePage: boolean;
+};
 
 type UploadRow = {
   uploadId: string;
@@ -303,7 +308,12 @@ function UploadChapterSection({
     for (let i = 0; i < list.length; i += 1) {
       const file = list[i];
       if (file.type.startsWith("image/")) {
-        next.push({ id: `${Date.now()}-${i}-${file.name}`, file, previewUrl: URL.createObjectURL(file) });
+        next.push({
+          id: `${Date.now()}-${i}-${file.name}`,
+          file,
+          previewUrl: URL.createObjectURL(file),
+          isSingleInDoublePage: false,
+        });
       }
     }
     setPageFiles((prev) => [...prev, ...next]);
@@ -364,7 +374,10 @@ function UploadChapterSection({
     if (source === "zip" && zipFile) {
       form.set("zip", zipFile);
     } else {
-      pageFiles.forEach((p) => form.append("pages", p.file));
+      pageFiles.forEach((p, i) => {
+        form.append("pages", p.file);
+        form.append(`pages[${i}][isSingleInDoublePage]`, p.isSingleInDoublePage ? "1" : "0");
+      });
     }
 
     setBusy(true);
@@ -725,6 +738,22 @@ function UploadChapterSection({
                     </div>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={p.previewUrl} alt="" className="mt-1 h-24 w-full rounded object-cover" />
+                    <label className="mt-1 flex cursor-pointer select-none items-center gap-1.5 text-xs text-muted-foreground">
+                      <input
+                        type="checkbox"
+                        checked={p.isSingleInDoublePage}
+                        onChange={() => {
+                          setPageFiles((prev) =>
+                            prev.map((item) =>
+                              item.id === p.id
+                                ? { ...item, isSingleInDoublePage: !item.isSingleInDoublePage }
+                                : item
+                            )
+                          );
+                        }}
+                      />
+                      Página sola
+                    </label>
                     <button
                       type="button"
                       className="absolute right-1 top-6 rounded bg-background/90 p-0.5 text-destructive hover:bg-destructive/10"

@@ -151,6 +151,7 @@ export async function POST(request: Request) {
   }
 
   const buffers: { buffer: Buffer; filename: string }[] = [];
+  let pageSinglesInDouble: boolean[] = [];
 
   if (src === "zip") {
     const zipFile = form.get("zip");
@@ -174,6 +175,7 @@ export async function POST(request: Request) {
     if (names.length === 0 || names.length > maxPages) {
       return NextResponse.json({ error: "ZIP_IMAGES" }, { status: 400 });
     }
+    pageSinglesInDouble = names.map(() => false);
 
     let uncompressedTotal = 0;
     for (let i = 0; i < names.length; i += 1) {
@@ -202,6 +204,10 @@ export async function POST(request: Request) {
     if (list.length === 0 || list.length > maxPages) {
       return NextResponse.json({ error: "FILES_REQUIRED" }, { status: 400 });
     }
+    pageSinglesInDouble = list.map((_, i) => {
+      const isSingle = form.get(`pages[${i}][isSingleInDoublePage]`);
+      return isSingle === "1";
+    });
 
     for (let i = 0; i < list.length; i += 1) {
       const file = list[i];
@@ -258,6 +264,7 @@ export async function POST(request: Request) {
           chapterId,
           pageNumber: i + 1,
           imageUrl,
+          isSingleInDoublePage: pageSinglesInDouble[i] === true,
         })),
       });
 

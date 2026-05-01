@@ -42,7 +42,10 @@ type ReaderPage = {
   id: string;
   pageNumber: number;
   imageUrl: string;
+  isSingleInDoublePage?: boolean;
 };
+
+type SinglePageMap = Record<number, boolean>;
 
 type ReaderClientProps = {
   mangaId: string;
@@ -92,30 +95,41 @@ function parseStoredReadingMode(value: string | null): ReadingMode | null {
  * Anclas de spread: con portada sola en pág. 1 → [1], luego 2,4,6…;
  * sin portada sola → 1,3,5… (pares 1–2, 3–4…).
  */
-function buildSpreadAnchors(total: number, startsWithSinglePage: boolean): number[] {
+function buildSpreadAnchors(
+  total: number,
+  startsWithSinglePage: boolean,
+  singlePageMap: SinglePageMap = {}
+): number[] {
   if (total <= 0) return [];
-  if (startsWithSinglePage) {
-    const anchors: number[] = [1];
-    let p = 2;
-    while (p <= total) {
-      anchors.push(p);
-      if (p + 1 <= total) p += 2;
-      else break;
-    }
-    return anchors;
-  }
+
   const anchors: number[] = [];
   let p = 1;
+
+  if (startsWithSinglePage || singlePageMap[1]) {
+    anchors.push(1);
+    p = 2;
+  }
+
   while (p <= total) {
     anchors.push(p);
-    if (p + 1 <= total) p += 2;
-    else break;
+    if (singlePageMap[p]) {
+      p += 1;
+    } else if (p + 1 <= total && singlePageMap[p + 1]) {
+      p += 1;
+    } else {
+      p += 2;
+    }
   }
   return anchors;
 }
 
-function snapToSpreadAnchor(page: number, total: number, startsWithSinglePage: boolean): number {
-  const anchors = buildSpreadAnchors(total, startsWithSinglePage);
+function snapToSpreadAnchor(
+  page: number,
+  total: number,
+  startsWithSinglePage: boolean,
+  singlePageMap: SinglePageMap = {}
+): number {
+  const anchors = buildSpreadAnchors(total, startsWithSinglePage, singlePageMap);
   if (anchors.length === 0) return 1;
   let best = anchors[0]!;
   for (const a of anchors) {
@@ -124,15 +138,25 @@ function snapToSpreadAnchor(page: number, total: number, startsWithSinglePage: b
   return best;
 }
 
-function nextSpreadAnchor(anchor: number, total: number, startsWithSinglePage: boolean): number {
-  const a = buildSpreadAnchors(total, startsWithSinglePage);
+function nextSpreadAnchor(
+  anchor: number,
+  total: number,
+  startsWithSinglePage: boolean,
+  singlePageMap: SinglePageMap = {}
+): number {
+  const a = buildSpreadAnchors(total, startsWithSinglePage, singlePageMap);
   const i = a.indexOf(anchor);
   if (i < 0 || i >= a.length - 1) return anchor;
   return a[i + 1]!;
 }
 
-function prevSpreadAnchor(anchor: number, total: number, startsWithSinglePage: boolean): number {
-  const a = buildSpreadAnchors(total, startsWithSinglePage);
+function prevSpreadAnchor(
+  anchor: number,
+  total: number,
+  startsWithSinglePage: boolean,
+  singlePageMap: SinglePageMap = {}
+): number {
+  const a = buildSpreadAnchors(total, startsWithSinglePage, singlePageMap);
   const i = a.indexOf(anchor);
   if (i <= 0) return anchor;
   return a[i - 1]!;
@@ -141,10 +165,11 @@ function prevSpreadAnchor(anchor: number, total: number, startsWithSinglePage: b
 function getDoubleVisiblePageNumbers(
   anchor: number,
   total: number,
-  startsWithSinglePage: boolean
+  startsWithSinglePage: boolean,
+  singlePageMap: SinglePageMap = {}
 ): number[] {
   if (total === 0) return [];
-  if (startsWithSinglePage && anchor === 1) return [1];
+  if ((startsWithSinglePage && anchor === 1) || singlePageMap[anchor]) return [anchor];
   if (anchor + 1 <= total) return [anchor, anchor + 1];
   return [anchor];
 }
@@ -376,6 +401,10 @@ export default function ReaderClient({
   const router = useRouter();
   const { resolvedTheme, setTheme } = useTheme();
   const isDark = (resolvedTheme ?? "dark") === "dark";
+  const singlePageMap = useMemo(
+    () => Object.fromEntries(pages.map((p) => [p.pageNumber, p.isSingleInDoublePage ?? false])),
+    [pages]
+  );
 
   useEffect(() => {
     currentPageRef.current = currentPage;
@@ -410,7 +439,9 @@ export default function ReaderClient({
       } else if (storedMode === "double-page") {
         setReadingMode("double-page");
         setFitMode(storedFit ?? "width");
-        setCurrentPageImmediate((cp) => snapToSpreadAnchor(cp, pages.length, chapterStartsWithSinglePage));
+        setCurrentPageImmediate((cp) =>
+          snapToSpreadAnchor(cp, pages.length, chapterStartsWithSinglePage, singlePageMap)
+        );
       } else {
         setReadingMode("waterfall");
         setFitMode("width");
@@ -535,8 +566,13 @@ export default function ReaderClient({
 
   const doubleVisibleNums = useMemo(() => {
     if (readingMode !== "double-page" || totalPages === 0) return [];
-    return getDoubleVisiblePageNumbers(currentPage, totalPages, chapterStartsWithSinglePage);
-  }, [readingMode, currentPage, totalPages, chapterStartsWithSinglePage]);
+    return getDoubleVisiblePageNumbers(
+      currentPage,
+      totalPages,
+      chapterStartsWithSinglePage,
+      singlePageMap
+    );
+  }, [readingMode, currentPage, totalPages, chapterStartsWithSinglePage, singlePageMap]);
 
   const doubleVisiblePages = useMemo(() => {
     return doubleVisibleNums
@@ -547,7 +583,12 @@ export default function ReaderClient({
   const pagedProgressPercent = useMemo(() => {
     if (totalPages <= 0) return 0;
     if (readingMode === "double-page") {
-      const nums = getDoubleVisiblePageNumbers(currentPage, totalPages, chapterStartsWithSinglePage);
+      const nums = getDoubleVisiblePageNumbers(
+        currentPage,
+        totalPages,
+        chapterStartsWithSinglePage,
+        singlePageMap
+      );
       const hi = Math.max(...nums);
       return Math.min(100, Math.max(0, (hi / totalPages) * 100));
     }
@@ -555,17 +596,22 @@ export default function ReaderClient({
       return Math.min(100, Math.max(0, (currentPage / totalPages) * 100));
     }
     return 0;
-  }, [readingMode, totalPages, currentPage, chapterStartsWithSinglePage]);
+  }, [readingMode, totalPages, currentPage, chapterStartsWithSinglePage, singlePageMap]);
 
   const pagedEndCtaVisible = useMemo(() => {
     if (totalPages <= 0) return false;
     if (readingMode === "single-page") return currentPage >= totalPages;
     if (readingMode === "double-page") {
-      const nums = getDoubleVisiblePageNumbers(currentPage, totalPages, chapterStartsWithSinglePage);
+      const nums = getDoubleVisiblePageNumbers(
+        currentPage,
+        totalPages,
+        chapterStartsWithSinglePage,
+        singlePageMap
+      );
       return Math.max(...nums) >= totalPages;
     }
     return false;
-  }, [readingMode, totalPages, currentPage, chapterStartsWithSinglePage]);
+  }, [readingMode, totalPages, currentPage, chapterStartsWithSinglePage, singlePageMap]);
 
   const chapterEndCtaVisible =
     pagedEndCtaVisible || (readingMode === "waterfall" && waterfallEndCtaVisible);
@@ -669,15 +715,25 @@ export default function ReaderClient({
 
   const advanceDoublePage = useCallback(() => {
     if (totalPages === 0) return;
-    const next = nextSpreadAnchor(currentPage, totalPages, chapterStartsWithSinglePage);
+    const next = nextSpreadAnchor(
+      currentPage,
+      totalPages,
+      chapterStartsWithSinglePage,
+      singlePageMap
+    );
     if (next !== currentPage) goToPage(next);
-  }, [chapterStartsWithSinglePage, currentPage, totalPages, goToPage]);
+  }, [chapterStartsWithSinglePage, currentPage, totalPages, goToPage, singlePageMap]);
 
   const retreatDoublePage = useCallback(() => {
     if (totalPages === 0) return;
-    const prev = prevSpreadAnchor(currentPage, totalPages, chapterStartsWithSinglePage);
+    const prev = prevSpreadAnchor(
+      currentPage,
+      totalPages,
+      chapterStartsWithSinglePage,
+      singlePageMap
+    );
     if (prev !== currentPage) goToPage(prev);
-  }, [chapterStartsWithSinglePage, currentPage, totalPages, goToPage]);
+  }, [chapterStartsWithSinglePage, currentPage, totalPages, goToPage, singlePageMap]);
 
   const doublePageLeftAction = useCallback(() => {
     if (rtl) advanceDoublePage();
@@ -695,7 +751,9 @@ export default function ReaderClient({
       setFitMode("width");
     }
     if (nextMode === "double-page") {
-      setCurrentPageImmediate((cp) => snapToSpreadAnchor(cp, totalPages, chapterStartsWithSinglePage));
+      setCurrentPageImmediate((cp) =>
+        snapToSpreadAnchor(cp, totalPages, chapterStartsWithSinglePage, singlePageMap)
+      );
     }
     setReadingMode(nextMode);
     if (nextMode === "waterfall") {
@@ -719,7 +777,12 @@ export default function ReaderClient({
           pageNumber:
             readingMode === "double-page"
               ? Math.max(
-                  ...getDoubleVisiblePageNumbers(currentPage, totalPages, chapterStartsWithSinglePage)
+                  ...getDoubleVisiblePageNumbers(
+                    currentPage,
+                    totalPages,
+                    chapterStartsWithSinglePage,
+                    singlePageMap
+                  )
                 )
               : currentPage,
         }),
@@ -741,6 +804,7 @@ export default function ReaderClient({
     mangaId,
     pages.length,
     readingMode,
+    singlePageMap,
     syncProgress,
     tBadges,
     totalPages,

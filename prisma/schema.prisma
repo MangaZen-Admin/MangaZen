@@ -461,6 +461,8 @@ model Page {
   thumbUrl    String?
   width       Int?
   height      Int?
+  /// Si es true, esta página va sola en modo doble página (para spreads).
+  isSingleInDoublePage Boolean @default(false)
 
   chapterId   String
   chapter     Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
