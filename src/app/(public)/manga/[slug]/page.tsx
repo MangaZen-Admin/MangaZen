@@ -70,6 +70,14 @@ async function getMangaBySlug(slug: string) {
       },
       reviewStatus: true,
       title: true,
+      author: true,
+      artist: true,
+      releaseYear: true,
+      publisher: true,
+      country: true,
+      alternativeTitles: {
+        select: { locale: true, title: true },
+      },
       description: true,
       coverImage: true,
       type: true,
@@ -397,6 +405,11 @@ export default async function MangaDetailPage({ params }: PageProps) {
 
           <div className="min-w-0 flex-1">
             <h1 className="text-2xl font-semibold tracking-tight">{manga.title}</h1>
+            {manga.alternativeTitles.length > 0 && (
+              <p className="mt-1 text-sm text-muted-foreground italic">
+                {manga.alternativeTitles.map((at) => at.title).join(" · ")}
+              </p>
+            )}
             {manga.uploader && (
               <div className="mt-2 flex items-center gap-2">
                 <Link
@@ -475,10 +488,38 @@ export default async function MangaDetailPage({ params }: PageProps) {
                 <p className="text-xs text-muted-foreground">{tCat("mangaDetailVotes")}</p>
               </div>
               <div className="rounded-lg border border-border bg-background/50 p-2.5">
-                <p className="text-lg font-semibold">MangaZen</p>
-                <p className="text-xs text-muted-foreground">{tCat("mangaDetailSource")}</p>
+                <p className="text-lg font-semibold">{manga.releaseYear}</p>
+                <p className="text-xs text-muted-foreground">Año</p>
               </div>
             </div>
+
+            {/* Info adicional */}
+            <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-sm sm:grid-cols-3">
+              {manga.author && (
+                <div>
+                  <dt className="text-xs text-muted-foreground">Autor</dt>
+                  <dd className="font-medium text-foreground">{manga.author}</dd>
+                </div>
+              )}
+              {manga.artist && manga.artist !== manga.author && (
+                <div>
+                  <dt className="text-xs text-muted-foreground">Arte</dt>
+                  <dd className="font-medium text-foreground">{manga.artist}</dd>
+                </div>
+              )}
+              {manga.publisher && (
+                <div>
+                  <dt className="text-xs text-muted-foreground">Editorial</dt>
+                  <dd className="font-medium text-foreground">{manga.publisher}</dd>
+                </div>
+              )}
+              {manga.country && (
+                <div>
+                  <dt className="text-xs text-muted-foreground">País</dt>
+                  <dd className="font-medium text-foreground">{manga.country}</dd>
+                </div>
+              )}
+            </dl>
 
             <div className="mt-2">
               <MangaReaderCounter mangaSlug={manga.slug} />
