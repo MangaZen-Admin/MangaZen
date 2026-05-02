@@ -1307,6 +1307,10 @@ function NewMangaSection() {
   const [description, setDescription] = useState("");
   const [author, setAuthor] = useState("");
   const [artist, setArtist] = useState("");
+  const [releaseYear, setReleaseYear] = useState("");
+  const [publisher, setPublisher] = useState("");
+  const [country, setCountry] = useState("");
+  const [altTitles, setAltTitles] = useState<{ locale: string; title: string }[]>([]);
   const [status, setStatus] = useState<string>(SCAN_MANGA_STATUS[0]);
   const [type, setType] = useState<string>(SCAN_MANGA_TYPES[0]);
   const [demographic, setDemographic] = useState("");
@@ -1342,23 +1346,31 @@ function NewMangaSection() {
       toast.error(t("newManga.coverRequired"));
       return;
     }
-    const form = new FormData();
-    form.set("title", title.trim());
-    if (alternativeTitle.trim()) form.set("alternativeTitle", alternativeTitle.trim());
-    if (description.trim()) form.set("description", description.trim());
-    if (author.trim()) form.set("author", author.trim());
-    if (artist.trim()) form.set("artist", artist.trim());
-    form.set("status", status);
-    form.set("type", type);
-    if (demographic) form.set("demographic", demographic);
-    form.set("contentRating", contentRating);
-    form.set("tagIds", JSON.stringify(Array.from(tagIds)));
-    form.set("cover", cover);
+    const formData = new FormData();
+    formData.set("title", title.trim());
+    if (alternativeTitle.trim()) formData.set("alternativeTitle", alternativeTitle.trim());
+    if (description.trim()) formData.set("description", description.trim());
+    if (author.trim()) formData.set("author", author.trim());
+    if (artist.trim()) formData.set("artist", artist.trim());
+    formData.set("status", status);
+    formData.set("type", type);
+    if (demographic) formData.set("demographic", demographic);
+    formData.set("contentRating", contentRating);
+    formData.set("tagIds", JSON.stringify(Array.from(tagIds)));
+    formData.set("cover", cover);
+
+    formData.append("releaseYear", releaseYear);
+    formData.append("publisher", publisher);
+    formData.append("country", country);
+    altTitles.forEach((at, i) => {
+      formData.append(`altTitles[${i}][locale]`, at.locale);
+      formData.append(`altTitles[${i}][title]`, at.title);
+    });
 
     setBusy(true);
     setProgress(0);
     try {
-      const { ok, body } = await postFormDataWithProgress("/api/scan/manga", form, setProgress);
+      const { ok, body } = await postFormDataWithProgress("/api/scan/manga", formData, setProgress);
       if (ok) {
         setProgress(100);
         toast.success(t("newManga.success"));
@@ -1369,6 +1381,10 @@ function NewMangaSection() {
         setArtist("");
         setTagIds(new Set());
         setCover(null);
+        setReleaseYear("");
+        setPublisher("");
+        setCountry("");
+        setAltTitles([]);
       } else {
         setProgress(0);
         const code = typeof body?.error === "string" ? body.error : "GENERIC";
@@ -1417,6 +1433,7 @@ function NewMangaSection() {
           <div className="sm:col-span-2">
             <label className="text-sm font-medium text-foreground">{t("newManga.description")}</label>
             <textarea
+              required
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
@@ -1427,6 +1444,7 @@ function NewMangaSection() {
           <div>
             <label className="text-sm font-medium text-foreground">{t("newManga.author")}</label>
             <input
+              required
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
               className="mt-1.5 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
@@ -1442,6 +1460,122 @@ function NewMangaSection() {
               disabled={busy}
             />
           </div>
+        </div>
+
+        {/* Campos nuevos obligatorios */}
+        <div className="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label className="text-sm font-medium text-foreground">
+              Año de lanzamiento <span className="text-destructive">*</span>
+            </label>
+            <input
+              required
+              type="number"
+              min={1900}
+              max={new Date().getFullYear()}
+              value={releaseYear}
+              onChange={(e) => setReleaseYear(e.target.value)}
+              className="mt-1.5 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+              disabled={busy}
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-foreground">
+              Editorial <span className="text-destructive">*</span>
+            </label>
+            <input
+              required
+              value={publisher}
+              onChange={(e) => setPublisher(e.target.value)}
+              placeholder="Ej: Shueisha, Webtoon..."
+              className="mt-1.5 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+              disabled={busy}
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-foreground">
+              País de origen <span className="text-destructive">*</span>
+            </label>
+            <select
+              required
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              className="mt-1.5 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+              disabled={busy}
+            >
+              <option value="">Seleccionar...</option>
+              <option value="JP">Japón 🇯🇵</option>
+              <option value="KR">Corea del Sur 🇰🇷</option>
+              <option value="CN">China 🇨🇳</option>
+              <option value="US">Estados Unidos 🇺🇸</option>
+              <option value="FR">Francia 🇫🇷</option>
+              <option value="OTHER">Otro</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Títulos alternativos opcionales */}
+        <div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-foreground">
+              Títulos alternativos <span className="text-xs text-muted-foreground">(opcional)</span>
+            </span>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => setAltTitles((prev) => [...prev, { locale: "en-us", title: "" }])}
+              className="text-xs text-primary hover:underline"
+            >
+              + Agregar título
+            </button>
+          </div>
+          {altTitles.length > 0 && (
+            <div className="mt-2 space-y-2">
+              {altTitles.map((at, i) => (
+                <div key={i} className="flex gap-2">
+                  <select
+                    value={at.locale}
+                    onChange={(e) =>
+                      setAltTitles((prev) =>
+                        prev.map((a, j) => (j === i ? { ...a, locale: e.target.value } : a)),
+                      )
+                    }
+                    className="rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+                    disabled={busy}
+                  >
+                    <option value="en-us">Inglés (US)</option>
+                    <option value="en-gb">Inglés (GB)</option>
+                    <option value="es-ar">Español (AR)</option>
+                    <option value="es-es">Español (ES)</option>
+                    <option value="pt-br">Portugués (BR)</option>
+                    <option value="ja-jp">Japonés</option>
+                    <option value="ko-kr">Coreano</option>
+                    <option value="zh-cn">Chino (CN)</option>
+                    <option value="fr-fr">Francés</option>
+                  </select>
+                  <input
+                    value={at.title}
+                    onChange={(e) =>
+                      setAltTitles((prev) =>
+                        prev.map((a, j) => (j === i ? { ...a, title: e.target.value } : a)),
+                      )
+                    }
+                    placeholder="Título alternativo..."
+                    className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+                    disabled={busy}
+                  />
+                  <button
+                    type="button"
+                    disabled={busy}
+                    onClick={() => setAltTitles((prev) => prev.filter((_, j) => j !== i))}
+                    className="rounded-lg border border-border px-2 py-2 text-xs text-destructive hover:bg-destructive/10"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">

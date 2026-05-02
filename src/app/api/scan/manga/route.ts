@@ -119,7 +119,7 @@ export async function POST(request: Request) {
 
   try {
     await prisma.$transaction(async (tx) => {
-      await tx.manga.create({
+      const manga = await tx.manga.create({
         data: {
           id: mangaId,
           slug,
@@ -140,6 +140,29 @@ export async function POST(request: Request) {
           reviewStatus: "PENDING_REVIEW",
         },
       });
+
+      // Guardar títulos alternativos
+      const altTitlesEntries: { locale: string; title: string }[] = [];
+      let i = 0;
+      while (form.get(`altTitles[${i}][locale]`)) {
+        const locale = String(form.get(`altTitles[${i}][locale]`) ?? "");
+        const title = String(form.get(`altTitles[${i}][title]`) ?? "").trim();
+        if (locale && title) {
+          altTitlesEntries.push({ locale, title });
+        }
+        i++;
+      }
+
+      if (altTitlesEntries.length > 0) {
+        await tx.mangaAlternativeTitle.createMany({
+          data: altTitlesEntries.map((at) => ({
+            mangaId: manga.id,
+            locale: at.locale,
+            title: at.title,
+          })),
+          skipDuplicates: true,
+        });
+      }
 
       if (tagIds.length > 0) {
         await tx.mangaTag.createMany({
