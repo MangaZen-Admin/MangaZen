@@ -1310,6 +1310,7 @@ function NewMangaSection() {
   const [releaseYear, setReleaseYear] = useState("");
   const [publisher, setPublisher] = useState("");
   const [country, setCountry] = useState("");
+  const [customCountry, setCustomCountry] = useState("");
   const [altTitles, setAltTitles] = useState<{ locale: string; title: string }[]>([]);
   const [status, setStatus] = useState<string>(SCAN_MANGA_STATUS[0]);
   const [type, setType] = useState<string>(SCAN_MANGA_TYPES[0]);
@@ -1361,7 +1362,7 @@ function NewMangaSection() {
 
     formData.append("releaseYear", releaseYear);
     formData.append("publisher", publisher);
-    formData.append("country", country);
+    formData.append("country", country === "OTHER" ? customCountry : country);
     altTitles.forEach((at, i) => {
       formData.append(`altTitles[${i}][locale]`, at.locale);
       formData.append(`altTitles[${i}][title]`, at.title);
@@ -1384,6 +1385,7 @@ function NewMangaSection() {
         setReleaseYear("");
         setPublisher("");
         setCountry("");
+        setCustomCountry("");
         setAltTitles([]);
       } else {
         setProgress(0);
@@ -1499,7 +1501,10 @@ function NewMangaSection() {
             <select
               required
               value={country}
-              onChange={(e) => setCountry(e.target.value)}
+              onChange={(e) => {
+                setCountry(e.target.value);
+                if (e.target.value !== "OTHER") setCustomCountry("");
+              }}
               className="mt-1.5 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
               disabled={busy}
             >
@@ -1509,8 +1514,19 @@ function NewMangaSection() {
               <option value="CN">China 🇨🇳</option>
               <option value="US">Estados Unidos 🇺🇸</option>
               <option value="FR">Francia 🇫🇷</option>
-              <option value="OTHER">Otro</option>
+              <option value="OTHER">Otro...</option>
             </select>
+
+            {country === "OTHER" && (
+              <input
+                required
+                value={customCountry}
+                onChange={(e) => setCustomCountry(e.target.value)}
+                placeholder="Escribí el país..."
+                className="mt-2 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+                disabled={busy}
+              />
+            )}
           </div>
         </div>
 
