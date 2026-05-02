@@ -382,46 +382,67 @@ export default async function MangaDetailPage({ params }: PageProps) {
       : null;
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-      <section className="rounded-xl border border-border bg-card p-4 sm:p-6">
-        <div className="flex flex-col gap-5 sm:flex-row">
-          <div className="w-full sm:w-[170px]">
-            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg border border-border bg-muted">
-              {manga.coverImage ? (
-                <Image
-                  src={manga.coverImage}
-                  alt={tCat("coverAlt", { title: manga.title })}
-                  fill
-                  sizes="(max-width: 640px) 50vw, 170px"
-                  className="object-cover"
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
-                  {tCat("coverFallbackShort")}
-                </div>
-              )}
-            </div>
+    <main className="w-full">
+      {/* ── HERO ── */}
+      <div className="relative h-64 w-full overflow-hidden sm:h-72">
+        {/* Banner con blur */}
+        {manga.coverImage ? (
+          <Image
+            src={manga.coverImage}
+            alt=""
+            fill
+            className="scale-110 object-cover blur-sm brightness-40"
+            sizes="100vw"
+            priority
+          />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-950 via-slate-900 to-black" />
+        )}
+        {/* Degradado abajo para transición suave */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+      </div>
+
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        {/* ── PORTADA + TÍTULO ── */}
+        <div className="-mt-24 flex flex-col gap-5 sm:flex-row sm:items-end">
+          {/* Portada flotante */}
+          <div className="relative h-44 w-32 shrink-0 overflow-hidden rounded-xl border-2 border-border bg-muted shadow-2xl sm:h-52 sm:w-36">
+            {manga.coverImage ? (
+              <Image
+                src={manga.coverImage}
+                alt={manga.title}
+                fill
+                className="object-cover"
+                sizes="144px"
+                priority
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
+                Sin portada
+              </div>
+            )}
           </div>
 
-          <div className="min-w-0 flex-1">
-            <h1 className="text-2xl font-semibold tracking-tight">{manga.title}</h1>
+          {/* Título y badges */}
+          <div className="flex-1 pb-2">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{manga.title}</h1>
             {manga.alternativeTitles.length > 0 && (
               <p className="mt-1 text-sm text-muted-foreground italic">
                 {manga.alternativeTitles.map((at) => at.title).join(" · ")}
               </p>
             )}
             {manga.uploader && (
-              <div className="mt-2 flex items-center gap-2">
+              <div className="mt-2">
                 <Link
                   href={`/${locale}/user/${manga.uploader.username ?? manga.uploader.id}`}
-                  className="inline-flex items-center gap-2 rounded-lg border border-border bg-background/50 px-2.5 py-1.5 text-xs font-medium text-foreground transition hover:border-primary/40 hover:bg-primary/5"
+                  className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-1.5 text-xs font-medium text-foreground transition hover:border-primary/40 hover:bg-primary/5"
                 >
                   {manga.uploader.image ? (
                     <Image
                       src={manga.uploader.image}
                       alt=""
-                      width={18}
-                      height={18}
+                      width={16}
+                      height={16}
                       className="h-4 w-4 rounded-full object-cover"
                       unoptimized
                     />
@@ -433,7 +454,7 @@ export default async function MangaDetailPage({ params }: PageProps) {
                   <span className="max-w-[160px] truncate">
                     {manga.uploader.name ?? manga.uploader.username ?? tCat("unknownUploader")}
                   </span>
-                  <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-medium text-primary">
+                  <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold text-primary">
                     {manga.uploader.role === "SCAN"
                       ? "Scan"
                       : manga.uploader.role === "CREATOR"
@@ -445,187 +466,276 @@ export default async function MangaDetailPage({ params }: PageProps) {
                 </Link>
               </div>
             )}
-            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+            {/* Badges */}
+            <div className="mt-3 flex flex-wrap items-center gap-1.5">
               {manga.demographic && (
-                <span className="rounded bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">
+                <span className="rounded-full border border-border bg-muted/60 px-2.5 py-0.5 text-[11px] text-muted-foreground">
                   {tDemo.has(manga.demographic) ? tDemo(manga.demographic) : manga.demographic}
                 </span>
               )}
-              <span className="rounded bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">
+              <span className="rounded-full border border-border bg-muted/60 px-2.5 py-0.5 text-[11px] text-muted-foreground">
                 {tType.has(manga.type) ? tType(manga.type) : manga.type}
               </span>
-              {manga.tags.slice(0, 4).map((relation) => (
+              {manga.tags.slice(0, 5).map((relation) => (
                 <span
                   key={relation.tag.name}
-                  className="rounded bg-muted px-2 py-0.5 text-[11px] text-muted-foreground"
+                  className="rounded-full border border-border bg-muted/60 px-2.5 py-0.5 text-[11px] text-muted-foreground"
                 >
                   {translateTag(relation.tag.name)}
                 </span>
               ))}
               <span
                 className={cn(
-                  "rounded px-2 py-0.5 text-[11px] font-medium",
-                  MANGA_PUBLICATION_LIGHT[manga.status] != null && MANGA_PUBLICATION_DARK[manga.status] != null
+                  "rounded-full px-2.5 py-0.5 text-[11px] font-semibold",
+                  MANGA_PUBLICATION_LIGHT[manga.status] != null
                     ? cn(MANGA_PUBLICATION_LIGHT[manga.status], MANGA_PUBLICATION_DARK[manga.status])
-                    : "border border-border bg-muted text-foreground dark:bg-muted dark:text-muted-foreground"
+                    : "border border-border bg-muted text-foreground",
                 )}
               >
                 {tStatus.has(manga.status) ? tStatus(manga.status) : manga.status}
               </span>
             </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
-              <div className="rounded-lg border border-border bg-background/50 p-2.5">
-                <p className="text-lg font-semibold">★ {manga.scoreAvg.toFixed(1)}</p>
-                <p className="text-xs text-muted-foreground">{tCat("mangaDetailScore")}</p>
-              </div>
-              <div className="rounded-lg border border-border bg-background/50 p-2.5">
-                <p className="text-lg font-semibold">{chapterCount}</p>
-                <p className="text-xs text-muted-foreground">{tCat("mangaDetailChapterCount")}</p>
-              </div>
-              <div className="rounded-lg border border-border bg-background/50 p-2.5">
-                <p className="text-lg font-semibold">{manga.scoreCount.toLocaleString(intlLocale)}</p>
-                <p className="text-xs text-muted-foreground">{tCat("mangaDetailVotes")}</p>
-              </div>
-              <div className="rounded-lg border border-border bg-background/50 p-2.5">
-                <p className="text-lg font-semibold">{manga.releaseYear}</p>
-                <p className="text-xs text-muted-foreground">Año</p>
-              </div>
-            </div>
-
-            {/* Info adicional */}
-            <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-sm sm:grid-cols-3">
-              {manga.author && (
-                <div>
-                  <dt className="text-xs text-muted-foreground">Autor</dt>
-                  <dd className="font-medium text-foreground">{manga.author}</dd>
-                </div>
-              )}
-              {manga.artist && manga.artist !== manga.author && (
-                <div>
-                  <dt className="text-xs text-muted-foreground">Arte</dt>
-                  <dd className="font-medium text-foreground">{manga.artist}</dd>
-                </div>
-              )}
-              {manga.publisher && (
-                <div>
-                  <dt className="text-xs text-muted-foreground">Editorial</dt>
-                  <dd className="font-medium text-foreground">{manga.publisher}</dd>
-                </div>
-              )}
-              {manga.country && (
-                <div>
-                  <dt className="text-xs text-muted-foreground">País</dt>
-                  <dd className="font-medium text-foreground">{manga.country}</dd>
-                </div>
-              )}
-            </dl>
-
-            <div className="mt-2">
-              <MangaReaderCounter mangaSlug={manga.slug} />
-            </div>
-
-            <div className="mt-3">
-              <MangaPrimaryReadCta
-                href={primaryHref}
-                label={primaryLabel}
-                emptyLabel={primaryEmpty ?? tCat("mangaNoChaptersCta")}
-              />
-            </div>
-
-            <div className="mt-3 flex flex-col gap-3">
-              <div className="flex flex-wrap gap-2">
-                <MangaReactions
-                  mangaSlug={manga.slug}
-                  initialFavoriteCount={favoriteCount}
-                  initialLikeCount={likeCount}
-                  initialDislikeCount={dislikeCount}
-                  initialFavorited={!!userFavorite}
-                  initialVoteChoice={
-                    userVote?.value === 1 ? "like" : userVote?.value === -1 ? "dislike" : null
-                  }
-                  isAuthenticated={isAuthenticated}
-                />
-                {donationLinks.length > 0 ? (
-                  <div className="flex flex-wrap gap-2">
-                    {donationLinks.map((link) => {
-                      const platform = getPlatform(link.platform);
-                      return (
-                        <a
-                          key={link.id}
-                          href={link.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-xs font-medium text-foreground transition hover:bg-primary/15"
-                        >
-                          <Heart className="h-4 w-4 text-rose-500" aria-hidden />
-                          {platform?.name ?? link.platform}
-                        </a>
-                      );
-                    })}
-                  </div>
-                ) : legacyLink ? (
-                  <a
-                    href={legacyLink}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-xs font-medium text-foreground transition hover:bg-primary/15"
-                  >
-                    <Heart className="h-4 w-4 text-rose-500" aria-hidden />
-                    {tDon("supportTeamButton")}
-                  </a>
-                ) : null}
-              </div>
-              <MangaReadingStatus
-                mangaSlug={manga.slug}
-                initialStatus={userProgress?.status ?? null}
-                isAuthenticated={isAuthenticated}
-              />
-            </div>
           </div>
         </div>
 
-        <section className="mt-5">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            {tCat("mangaDetailSynopsis")}
-          </h2>
-          <p className="mt-2 text-sm leading-6 text-foreground/90">
-            {manga.description ?? tCat("mangaDetailSynopsisEmpty")}
-          </p>
-        </section>
+        {/* ── STATS BAR ── */}
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="rounded-xl border border-border bg-card p-3 text-center">
+            <p className="text-xl font-bold text-yellow-400">★ {manga.scoreAvg.toFixed(1)}</p>
+            <p className="text-xs text-muted-foreground">{tCat("mangaDetailScore")}</p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-3 text-center">
+            <p className="text-xl font-bold">{chapterCount}</p>
+            <p className="text-xs text-muted-foreground">{tCat("mangaDetailChapterCount")}</p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-3 text-center">
+            <p className="text-xl font-bold">{manga.scoreCount.toLocaleString(intlLocale)}</p>
+            <p className="text-xs text-muted-foreground">{tCat("mangaDetailVotes")}</p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-3 text-center">
+            <p className="text-xl font-bold">{manga.releaseYear}</p>
+            <p className="text-xs text-muted-foreground">Año</p>
+          </div>
+        </div>
 
-        <AdSlotShell slotId="manga-detail-before-chapters" height="h-20" />
+        {/* ── CTA + ACCIONES ── */}
+        <div className="mt-4">
+          <MangaReaderCounter mangaSlug={manga.slug} />
+          <div className="mt-3">
+            <MangaPrimaryReadCta
+              href={primaryHref}
+              label={primaryLabel}
+              emptyLabel={primaryEmpty ?? tCat("mangaNoChaptersCta")}
+            />
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <MangaReactions
+              mangaSlug={manga.slug}
+              initialFavoriteCount={favoriteCount}
+              initialLikeCount={likeCount}
+              initialDislikeCount={dislikeCount}
+              initialFavorited={!!userFavorite}
+              initialVoteChoice={
+                userVote?.value === 1 ? "like" : userVote?.value === -1 ? "dislike" : null
+              }
+              isAuthenticated={isAuthenticated}
+            />
+            {donationLinks.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {donationLinks.map((link) => {
+                  const platform = getPlatform(link.platform);
+                  return (
+                    <a
+                      key={link.id}
+                      href={link.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-xs font-medium text-foreground transition hover:bg-primary/15"
+                    >
+                      <Heart className="h-4 w-4 text-rose-500" aria-hidden />
+                      {platform?.name ?? link.platform}
+                    </a>
+                  );
+                })}
+              </div>
+            )}
+            {donationLinks.length === 0 && legacyLink && (
+              <a
+                href={legacyLink}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-xs font-medium text-foreground transition hover:bg-primary/15"
+              >
+                <Heart className="h-4 w-4 text-rose-500" aria-hidden />
+                {tDon("supportTeamButton")}
+              </a>
+            )}
+          </div>
+          <div className="mt-3">
+            <MangaReadingStatus
+              mangaSlug={manga.slug}
+              initialStatus={userProgress?.status ?? null}
+              isAuthenticated={isAuthenticated}
+            />
+          </div>
+        </div>
 
-        <MangaChaptersWithComments
-          userLocale={locale}
-          mangaSlug={manga.slug}
-          isAuthenticated={isAuthenticated}
-          currentUserId={currentUser?.id ?? null}
-          chapters={manga.chapters.map((chapter) => {
-            const until = chapter.earlyAccessUntil;
-            const eaActive =
-              chapter.isEarlyAccess && until != null && until.getTime() > nowMs;
-            const userHasAccess =
-              !eaActive ||
-              !!currentUser?.isPro ||
-              unlockIdSet.has(chapter.id);
-            return {
-              id: chapter.id,
-              number: chapter.number,
-              title: chapter.title,
-              createdAt: chapter.createdAt.toISOString(),
-              locale: chapter.locale,
-              pagesCount: chapter._count.pages,
-              pageUrls: chapter.pages.map((p) => p.imageUrl),
-              eaActive: !!eaActive,
-              earlyAccessUntil: until?.toISOString() ?? null,
-              userHasAccess,
-            };
-          })}
-        />
+        {/* ── CONTENIDO PRINCIPAL (2 columnas en desktop) ── */}
+        <div className="mt-6 grid gap-6 lg:grid-cols-3">
+          {/* Columna principal */}
+          <div className="space-y-6 lg:col-span-2">
+            {/* Sinopsis */}
+            <div className="rounded-xl border border-border bg-card p-5">
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+                {tCat("mangaDetailSynopsis")}
+              </h2>
+              <p className="mt-3 text-sm leading-7 text-foreground/90">
+                {manga.description ?? tCat("mangaDetailSynopsisEmpty")}
+              </p>
+            </div>
 
-        <RelatedMangas mangas={relatedMangas} />
-      </section>
+            <AdSlotShell slotId="manga-detail-before-chapters" height="h-20" />
+
+            <MangaChaptersWithComments
+              userLocale={locale}
+              mangaSlug={manga.slug}
+              isAuthenticated={isAuthenticated}
+              currentUserId={currentUser?.id ?? null}
+              chapters={manga.chapters.map((chapter) => {
+                const until = chapter.earlyAccessUntil;
+                const eaActive =
+                  chapter.isEarlyAccess && until != null && until.getTime() > nowMs;
+                const userHasAccess =
+                  !eaActive || !!currentUser?.isPro || unlockIdSet.has(chapter.id);
+                return {
+                  id: chapter.id,
+                  number: chapter.number,
+                  title: chapter.title,
+                  createdAt: chapter.createdAt.toISOString(),
+                  locale: chapter.locale,
+                  pagesCount: chapter._count.pages,
+                  pageUrls: chapter.pages.map((p) => p.imageUrl),
+                  eaActive: !!eaActive,
+                  earlyAccessUntil: until?.toISOString() ?? null,
+                  userHasAccess,
+                };
+              })}
+            />
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-4">
+            {/* Metadata */}
+            <div className="rounded-xl border border-border bg-card p-5">
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+                Información
+              </h3>
+              <dl className="space-y-3 text-sm">
+                {manga.author && (
+                  <div className="flex justify-between gap-2">
+                    <dt className="text-muted-foreground">Autor</dt>
+                    <dd className="text-right font-medium text-foreground">{manga.author}</dd>
+                  </div>
+                )}
+                {manga.artist && manga.artist !== manga.author && (
+                  <div className="flex justify-between gap-2">
+                    <dt className="text-muted-foreground">Arte</dt>
+                    <dd className="text-right font-medium text-foreground">{manga.artist}</dd>
+                  </div>
+                )}
+                {manga.publisher && (
+                  <div className="flex justify-between gap-2">
+                    <dt className="text-muted-foreground">Editorial</dt>
+                    <dd className="text-right font-medium text-foreground">{manga.publisher}</dd>
+                  </div>
+                )}
+                {manga.country && (
+                  <div className="flex justify-between gap-2">
+                    <dt className="text-muted-foreground">País</dt>
+                    <dd className="text-right font-medium text-foreground">{manga.country}</dd>
+                  </div>
+                )}
+                {manga.releaseYear && (
+                  <div className="flex justify-between gap-2">
+                    <dt className="text-muted-foreground">Año</dt>
+                    <dd className="text-right font-medium text-foreground">{manga.releaseYear}</dd>
+                  </div>
+                )}
+                <div className="flex justify-between gap-2">
+                  <dt className="text-muted-foreground">Tipo</dt>
+                  <dd className="text-right font-medium text-foreground">
+                    {tType.has(manga.type) ? tType(manga.type) : manga.type}
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-2">
+                  <dt className="text-muted-foreground">Estado</dt>
+                  <dd className="text-right font-medium">
+                    <span
+                      className={cn(
+                        "rounded-full px-2 py-0.5 text-[11px] font-semibold",
+                        MANGA_PUBLICATION_LIGHT[manga.status] != null
+                          ? cn(MANGA_PUBLICATION_LIGHT[manga.status], MANGA_PUBLICATION_DARK[manga.status])
+                          : "bg-muted text-foreground",
+                      )}
+                    >
+                      {tStatus.has(manga.status) ? tStatus(manga.status) : manga.status}
+                    </span>
+                  </dd>
+                </div>
+                {manga.demographic && (
+                  <div className="flex justify-between gap-2">
+                    <dt className="text-muted-foreground">Demografía</dt>
+                    <dd className="text-right font-medium text-foreground">
+                      {tDemo.has(manga.demographic) ? tDemo(manga.demographic) : manga.demographic}
+                    </dd>
+                  </div>
+                )}
+              </dl>
+            </div>
+
+            {/* Tags completos */}
+            {manga.tags.length > 0 && (
+              <div className="rounded-xl border border-border bg-card p-5">
+                <h3 className="mb-3 text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+                  Géneros y temáticas
+                </h3>
+                <div className="flex flex-wrap gap-1.5">
+                  {manga.tags.map((relation) => (
+                    <span
+                      key={relation.tag.name}
+                      className="rounded-full border border-primary/20 bg-primary/8 px-2.5 py-1 text-xs text-foreground/80"
+                    >
+                      {translateTag(relation.tag.name)}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Títulos alternativos */}
+            {manga.alternativeTitles.length > 0 && (
+              <div className="rounded-xl border border-border bg-card p-5">
+                <h3 className="mb-3 text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+                  Títulos alternativos
+                </h3>
+                <ul className="space-y-2">
+                  {manga.alternativeTitles.map((at) => (
+                    <li key={at.locale} className="flex justify-between gap-2 text-sm">
+                      <span className="text-xs uppercase tracking-wide text-muted-foreground">{at.locale}</span>
+                      <span className="text-right font-medium text-foreground">{at.title}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ── MANGAS RELACIONADOS ── */}
+        <div className="mt-8 pb-10">
+          <RelatedMangas mangas={relatedMangas} />
+        </div>
+      </div>
     </main>
   );
 }
