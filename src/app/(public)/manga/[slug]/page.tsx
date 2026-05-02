@@ -384,7 +384,7 @@ export default async function MangaDetailPage({ params }: PageProps) {
   return (
     <main className="w-full">
       {/* ── HERO ── */}
-      <div className="relative h-24 w-full overflow-hidden sm:h-28">
+      <div className="relative h-36 w-full overflow-hidden sm:h-44">
         {/* Banner con blur */}
         {manga.coverImage ? (
           <Image
@@ -402,7 +402,7 @@ export default async function MangaDetailPage({ params }: PageProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
       </div>
 
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 pb-16 sm:px-6 lg:px-8">
         {/* ── PORTADA + TÍTULO ── */}
         <div className="-mt-16 flex flex-col gap-5 sm:flex-row sm:items-end">
           {/* Portada flotante */}

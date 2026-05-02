@@ -66,7 +66,7 @@ export function GlobalBanner() {
     <div
       role="alert"
       aria-live="assertive"
-      className={cn("w-full border-b px-4 py-2.5", styles.wrapper)}
+      className={cn("w-full border-b px-4 py-2.5 sm:mt-16", styles.wrapper)}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
