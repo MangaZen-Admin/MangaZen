@@ -384,7 +384,7 @@ export default async function MangaDetailPage({ params }: PageProps) {
   return (
     <main className="w-full">
       {/* ── HERO ── */}
-      <div className="relative h-48 w-full overflow-hidden sm:h-56">
+      <div className="relative h-24 w-full overflow-hidden sm:h-28">
         {/* Banner con blur */}
         {manga.coverImage ? (
           <Image
