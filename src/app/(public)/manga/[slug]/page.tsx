@@ -521,14 +521,7 @@ export default async function MangaDetailPage({ params }: PageProps) {
         {/* ── CTA + ACCIONES ── */}
         <div className="mt-4">
           <MangaReaderCounter mangaSlug={manga.slug} />
-          <div className="mt-3">
-            <MangaPrimaryReadCta
-              href={primaryHref}
-              label={primaryLabel}
-              emptyLabel={primaryEmpty ?? tCat("mangaNoChaptersCta")}
-            />
-          </div>
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div className="mt-3 flex flex-wrap items-center gap-2">
             <MangaReactions
               mangaSlug={manga.slug}
               initialFavoriteCount={favoriteCount}
@@ -540,25 +533,22 @@ export default async function MangaDetailPage({ params }: PageProps) {
               }
               isAuthenticated={isAuthenticated}
             />
-            {donationLinks.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {donationLinks.map((link) => {
-                  const platform = getPlatform(link.platform);
-                  return (
-                    <a
-                      key={link.id}
-                      href={link.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-xs font-medium text-foreground transition hover:bg-primary/15"
-                    >
-                      <Heart className="h-4 w-4 text-rose-500" aria-hidden />
-                      {platform?.name ?? link.platform}
-                    </a>
-                  );
-                })}
-              </div>
-            )}
+            {donationLinks.length > 0 &&
+              donationLinks.map((link) => {
+                const platform = getPlatform(link.platform);
+                return (
+                  <a
+                    key={link.id}
+                    href={link.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-xs font-medium text-foreground transition hover:bg-primary/15"
+                  >
+                    <Heart className="h-4 w-4 text-rose-500" aria-hidden />
+                    {platform?.name ?? link.platform}
+                  </a>
+                );
+              })}
             {donationLinks.length === 0 && legacyLink && (
               <a
                 href={legacyLink}
@@ -570,6 +560,13 @@ export default async function MangaDetailPage({ params }: PageProps) {
                 {tDon("supportTeamButton")}
               </a>
             )}
+          </div>
+          <div className="mt-3">
+            <MangaPrimaryReadCta
+              href={primaryHref}
+              label={primaryLabel}
+              emptyLabel={primaryEmpty ?? tCat("mangaNoChaptersCta")}
+            />
           </div>
           <div className="mt-3">
             <MangaReadingStatus
@@ -624,7 +621,7 @@ export default async function MangaDetailPage({ params }: PageProps) {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-4">
+          <div className="space-y-4 lg:sticky lg:top-24 lg:self-start">
             {/* Metadata */}
             <div className="rounded-xl border border-border bg-card p-5">
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-widest text-muted-foreground">
@@ -728,12 +725,11 @@ export default async function MangaDetailPage({ params }: PageProps) {
                 </ul>
               </div>
             )}
-          </div>
-        </div>
 
-        {/* ── MANGAS RELACIONADOS ── */}
-        <div className="mt-8 pb-10">
-          <RelatedMangas mangas={relatedMangas} />
+            <AdSlotShell slotId="manga-sidebar" height="h-40" />
+
+            <RelatedMangas mangas={relatedMangas} />
+          </div>
         </div>
       </div>
     </main>
