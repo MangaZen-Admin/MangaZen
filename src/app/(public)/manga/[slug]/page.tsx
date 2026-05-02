@@ -404,7 +404,7 @@ export default async function MangaDetailPage({ params }: PageProps) {
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* ── PORTADA + TÍTULO ── */}
-        <div className="-mt-24 flex flex-col gap-5 sm:flex-row sm:items-end">
+        <div className="-mt-16 flex flex-col gap-5 sm:flex-row sm:items-end">
           {/* Portada flotante */}
           <div className="relative h-44 w-32 shrink-0 overflow-hidden rounded-xl border-2 border-border bg-muted shadow-2xl sm:h-52 sm:w-36">
             {manga.coverImage ? (
