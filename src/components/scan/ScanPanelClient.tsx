@@ -839,6 +839,8 @@ function MyUploadsSection() {
   const [confirmId, setConfirmId] = useState<string | null>(null);
   const [editDraft, setEditDraft] = useState<EditChapterDraft | null>(null);
   const [editBusy, setEditBusy] = useState(false);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 20;
 
@@ -1057,7 +1059,11 @@ function MyUploadsSection() {
               <h3 className="text-lg font-semibold">Editar subida</h3>
               <button
                 type="button"
-                onClick={() => setEditDraft(null)}
+                onClick={() => {
+                  setEditDraft(null);
+                  setCoverPreview(null);
+                  setCoverFile(null);
+                }}
                 className="text-muted-foreground hover:text-foreground"
               >
                 ✕
@@ -1182,12 +1188,65 @@ function MyUploadsSection() {
                       className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
                     />
                   </div>
+                  <div className="sm:col-span-2">
+                    <label className="text-xs text-muted-foreground">Portada</label>
+                    <div className="mt-1 flex items-center gap-3">
+                      {coverPreview ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={coverPreview}
+                          alt="Preview"
+                          className="h-20 w-14 rounded-lg border border-border object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-20 w-14 items-center justify-center rounded-lg border border-border bg-muted/40 text-xs text-muted-foreground">
+                          Sin cambios
+                        </div>
+                      )}
+                      <label className="cursor-pointer rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium text-foreground hover:border-primary/40 hover:bg-primary/5">
+                        Cambiar portada
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            setCoverFile(file);
+                            setCoverPreview(URL.createObjectURL(file));
+                            e.target.value = "";
+                          }}
+                        />
+                      </label>
+                      {coverPreview && (
+                        <button
+                          type="button"
+                          className="text-xs text-destructive hover:underline"
+                          onClick={() => {
+                            setCoverFile(null);
+                            setCoverPreview(null);
+                          }}
+                        >
+                          Quitar
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
             <div className="flex justify-end gap-2">
-              <Button type="button" variant="outline" onClick={() => setEditDraft(null)} disabled={editBusy}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setEditDraft(null);
+                  setCoverPreview(null);
+                  setCoverFile(null);
+                }}
+                disabled={editBusy}
+              >
                 Cancelar
               </Button>
               <Button
@@ -1215,6 +1274,9 @@ function MyUploadsSection() {
                     mgForm.set("publisher", editDraft.mangaPublisher);
                     mgForm.set("country", editDraft.mangaCountry);
                     mgForm.set("releaseYear", String(editDraft.mangaReleaseYear));
+                    if (coverFile) {
+                      mgForm.set("cover", coverFile);
+                    }
                     const mgRes = await fetch(`/api/scan/manga/${editDraft.mangaSlug}`, {
                       method: "PATCH",
                       body: mgForm,
@@ -1223,6 +1285,8 @@ function MyUploadsSection() {
 
                     toast.success("Cambios guardados");
                     setEditDraft(null);
+                    setCoverPreview(null);
+                    setCoverFile(null);
                     void load();
                   } catch {
                     toast.error("Error al guardar los cambios");

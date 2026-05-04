@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/db";
 import { ZEN_PACKAGES } from "@/lib/lemon-squeezy";
@@ -45,6 +45,8 @@ export async function POST(request: Request) {
       custom_data?: {
         user_id?: string;
         package_id?: string;
+        plan_id?: string;
+        type?: string;
       };
     };
     data?: {
@@ -52,12 +54,85 @@ export async function POST(request: Request) {
       attributes?: {
         status?: string;
         identifier?: string;
+        variant_id?: number;
       };
     };
   };
 
   const eventName = event.meta?.event_name;
+  const VARIANT_TO_PLAN: Record<number, string> = {
+    1591870: "bronze",
+    1591935: "silver",
+    1591939: "gold",
+    1591951: "platinum",
+  };
 
+  // Manejar suscripción Pro
+  if (eventName === "subscription_created") {
+    const userId = event.meta?.custom_data?.user_id;
+    const variantId = event.data?.attributes?.variant_id;
+
+    if (!userId) {
+      console.error("[webhook] subscription_created: missing user_id");
+      return NextResponse.json({ error: "MISSING_USER_ID" }, { status: 400 });
+    }
+
+    const planId = variantId ? VARIANT_TO_PLAN[variantId] : null;
+    if (!planId) {
+      console.error("[webhook] subscription_created: unknown variant", variantId);
+      return NextResponse.json({ error: "UNKNOWN_VARIANT" }, { status: 400 });
+    }
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        isPro: true,
+        proPlan: planId,
+        proExpiresAt: null,
+      },
+    });
+
+    console.log(`[webhook] Pro activado plan=${planId} userId=${userId}`);
+    return NextResponse.json({ ok: true });
+  }
+
+  // Manejar cancelación/expiración de suscripción Pro
+  if (eventName === "subscription_cancelled" || eventName === "subscription_expired") {
+    const userId = event.meta?.custom_data?.user_id;
+    if (!userId) return NextResponse.json({ ok: true, skipped: true });
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { isPro: false, proPlan: null, proExpiresAt: null },
+    });
+
+    console.log(`[webhook] Pro revocado userId=${userId}`);
+    return NextResponse.json({ ok: true });
+  }
+
+  // Pago único Platino (order_created con plan_id)
+  if (eventName === "order_created") {
+    const planId = event.meta?.custom_data?.plan_id;
+    const userId = event.meta?.custom_data?.user_id;
+
+    if (planId === "platinum" && userId) {
+      const status = event.data?.attributes?.status;
+      if (status === "paid") {
+        await prisma.user.update({
+          where: { id: userId },
+          data: {
+            isPro: true,
+            proPlan: "platinum",
+            proExpiresAt: null,
+          },
+        });
+        console.log(`[webhook] Platino lifetime activado userId=${userId}`);
+        return NextResponse.json({ ok: true });
+      }
+    }
+  }
+
+  // Seguir con lógica de ZenCoins
   if (eventName !== "order_created") {
     return NextResponse.json({ ok: true, skipped: true });
   }
