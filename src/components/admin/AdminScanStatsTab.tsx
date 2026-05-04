@@ -571,7 +571,7 @@ export function AdminScanStatsTab() {
                     <div className="flex items-center gap-2">
                       <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border border-border bg-muted">
                         {row.image ? (
-                          <Image src={row.image} alt="" fill className="object-cover" sizes="36px" />
+                          <Image src={row.image} alt="" fill className="object-cover" sizes="36px" unoptimized />
                         ) : (
                           <div className="flex h-full items-center justify-center text-xs font-semibold">
                             {(row.name ?? "?").slice(0, 1).toUpperCase()}

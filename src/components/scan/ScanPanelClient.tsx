@@ -70,6 +70,20 @@ type UploadRow = {
   mangaSlug: string;
 };
 
+type EditChapterDraft = {
+  chapterId: string;
+  mangaSlug: string;
+  chapterNumber: number;
+  chapterTitle: string;
+  mangaTitle: string;
+  mangaDescription: string;
+  mangaAuthor: string;
+  mangaArtist: string;
+  mangaPublisher: string;
+  mangaCountry: string;
+  mangaReleaseYear: number;
+};
+
 type TagRow = { id: string; name: string; category: string };
 
 type BoostMangaRow = {
@@ -823,6 +837,8 @@ function MyUploadsSection() {
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [editDraft, setEditDraft] = useState<EditChapterDraft | null>(null);
+  const [editBusy, setEditBusy] = useState(false);
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 20;
 
@@ -942,6 +958,49 @@ function MyUploadsSection() {
                         >
                           {t("myUploads.read")}
                         </Link>
+                        <button
+                          type="button"
+                          className="text-xs font-medium text-primary hover:underline"
+                          onClick={() => {
+                            void (async () => {
+                              try {
+                                const res = await fetch(
+                                  `/api/scan/manga-detail?slug=${encodeURIComponent(r.mangaSlug)}`,
+                                );
+                                if (!res.ok) {
+                                  toast.error(await getApiErrorMessage(res, t, "errors.GENERIC"));
+                                  return;
+                                }
+                                const data = (await res.json()) as {
+                                  title?: string;
+                                  description?: string;
+                                  author?: string;
+                                  artist?: string | null;
+                                  publisher?: string;
+                                  country?: string;
+                                  releaseYear?: number;
+                                };
+                                setEditDraft({
+                                  chapterId: r.chapterId,
+                                  mangaSlug: r.mangaSlug,
+                                  chapterNumber: r.chapterNumber,
+                                  chapterTitle: r.chapterTitle ?? "",
+                                  mangaTitle: data.title ?? r.mangaTitle,
+                                  mangaDescription: data.description ?? "",
+                                  mangaAuthor: data.author ?? "",
+                                  mangaArtist: data.artist ?? "",
+                                  mangaPublisher: data.publisher ?? "",
+                                  mangaCountry: data.country ?? "",
+                                  mangaReleaseYear: data.releaseYear ?? new Date().getFullYear(),
+                                });
+                              } catch {
+                                toast.error(t("errors.GENERIC"));
+                              }
+                            })();
+                          }}
+                        >
+                          Editar
+                        </button>
                         {confirmId === r.uploadId ? (
                           <>
                             <button
@@ -989,6 +1048,194 @@ function MyUploadsSection() {
             </div>
           )}
         </>
+      )}
+
+      {editDraft && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border border-border bg-card p-5 shadow-lg">
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Editar subida</h3>
+              <button
+                type="button"
+                onClick={() => setEditDraft(null)}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="mb-5">
+              <h4 className="mb-3 text-sm font-medium uppercase tracking-wide text-muted-foreground">
+                Capítulo
+              </h4>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <label className="text-xs text-muted-foreground">Número</label>
+                  <input
+                    type="number"
+                    value={editDraft.chapterNumber}
+                    onChange={(e) =>
+                      setEditDraft((prev) =>
+                        prev ? { ...prev, chapterNumber: Number(e.target.value) } : prev,
+                      )
+                    }
+                    className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground">Título del capítulo</label>
+                  <input
+                    type="text"
+                    value={editDraft.chapterTitle}
+                    onChange={(e) =>
+                      setEditDraft((prev) =>
+                        prev ? { ...prev, chapterTitle: e.target.value } : prev,
+                      )
+                    }
+                    className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="mb-5">
+              <h4 className="mb-3 text-sm font-medium uppercase tracking-wide text-muted-foreground">
+                Manga
+              </h4>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-xs text-muted-foreground">Título</label>
+                  <input
+                    type="text"
+                    value={editDraft.mangaTitle}
+                    onChange={(e) =>
+                      setEditDraft((prev) =>
+                        prev ? { ...prev, mangaTitle: e.target.value } : prev,
+                      )
+                    }
+                    className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground">Descripción</label>
+                  <textarea
+                    rows={3}
+                    value={editDraft.mangaDescription}
+                    onChange={(e) =>
+                      setEditDraft((prev) =>
+                        prev ? { ...prev, mangaDescription: e.target.value } : prev,
+                      )
+                    }
+                    className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+                  />
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <label className="text-xs text-muted-foreground">Autor</label>
+                    <input
+                      type="text"
+                      value={editDraft.mangaAuthor}
+                      onChange={(e) =>
+                        setEditDraft((prev) =>
+                          prev ? { ...prev, mangaAuthor: e.target.value } : prev,
+                        )
+                      }
+                      className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-muted-foreground">Arte</label>
+                    <input
+                      type="text"
+                      value={editDraft.mangaArtist}
+                      onChange={(e) =>
+                        setEditDraft((prev) =>
+                          prev ? { ...prev, mangaArtist: e.target.value } : prev,
+                        )
+                      }
+                      className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-muted-foreground">Editorial</label>
+                    <input
+                      type="text"
+                      value={editDraft.mangaPublisher}
+                      onChange={(e) =>
+                        setEditDraft((prev) =>
+                          prev ? { ...prev, mangaPublisher: e.target.value } : prev,
+                        )
+                      }
+                      className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-muted-foreground">Año</label>
+                    <input
+                      type="number"
+                      value={editDraft.mangaReleaseYear}
+                      onChange={(e) =>
+                        setEditDraft((prev) =>
+                          prev ? { ...prev, mangaReleaseYear: Number(e.target.value) } : prev,
+                        )
+                      }
+                      className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <Button type="button" variant="outline" onClick={() => setEditDraft(null)} disabled={editBusy}>
+                Cancelar
+              </Button>
+              <Button
+                type="button"
+                disabled={editBusy}
+                onClick={async () => {
+                  if (!editDraft) return;
+                  setEditBusy(true);
+                  try {
+                    const chRes = await fetch(`/api/scan/chapter/${editDraft.chapterId}`, {
+                      method: "PATCH",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        title: editDraft.chapterTitle,
+                        number: editDraft.chapterNumber,
+                      }),
+                    });
+                    if (!chRes.ok) throw new Error("chapter");
+
+                    const mgForm = new FormData();
+                    mgForm.set("title", editDraft.mangaTitle);
+                    mgForm.set("description", editDraft.mangaDescription);
+                    mgForm.set("author", editDraft.mangaAuthor);
+                    mgForm.set("artist", editDraft.mangaArtist);
+                    mgForm.set("publisher", editDraft.mangaPublisher);
+                    mgForm.set("country", editDraft.mangaCountry);
+                    mgForm.set("releaseYear", String(editDraft.mangaReleaseYear));
+                    const mgRes = await fetch(`/api/scan/manga/${editDraft.mangaSlug}`, {
+                      method: "PATCH",
+                      body: mgForm,
+                    });
+                    if (!mgRes.ok) throw new Error("manga");
+
+                    toast.success("Cambios guardados");
+                    setEditDraft(null);
+                    void load();
+                  } catch {
+                    toast.error("Error al guardar los cambios");
+                  } finally {
+                    setEditBusy(false);
+                  }
+                }}
+              >
+                {editBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : "Guardar cambios"}
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
