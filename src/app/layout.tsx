@@ -30,7 +30,18 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "MangaZen - Tu plataforma de Manga",
-  description: "Lee y comparte tus mangas favoritos",
+  description: "Lee y comparte tus mangas favoritos en MangaZen.",
+  openGraph: {
+    siteName: "MangaZen",
+    title: "MangaZen - Tu plataforma de Manga",
+    description: "Lee y comparte tus mangas favoritos en MangaZen.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "MangaZen - Tu plataforma de Manga",
+    description: "Lee y comparte tus mangas favoritos en MangaZen.",
+  },
 };
 
 export default async function RootLayout({

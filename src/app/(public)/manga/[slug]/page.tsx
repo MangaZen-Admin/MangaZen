@@ -214,17 +214,35 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
+  const title = `${manga.title} | MangaZen`;
+  const description = manga.description
+    ? manga.description.slice(0, 200)
+    : `Leé ${manga.title} en MangaZen. Puntuación ${manga.scoreAvg.toFixed(1)}.`;
+
   return {
-    title: `${manga.title} | MangaZen`,
-    description:
-      manga.description ??
-      `Leé ${manga.title} en MangaZen. Puntuación ${manga.scoreAvg.toFixed(1)}.`,
+    title,
+    description,
     openGraph: {
-      title: `${manga.title} | MangaZen`,
-      description:
-        manga.description ??
-        `Leé ${manga.title} en MangaZen. Puntuación ${manga.scoreAvg.toFixed(1)}.`,
-      images: manga.coverImage ? [{ url: manga.coverImage }] : [],
+      title,
+      description,
+      type: "article",
+      siteName: "MangaZen",
+      images: manga.coverImage
+        ? [
+            {
+              url: manga.coverImage,
+              width: 600,
+              height: 900,
+              alt: manga.title,
+            },
+          ]
+        : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: manga.coverImage ? [manga.coverImage] : [],
     },
   };
 }
