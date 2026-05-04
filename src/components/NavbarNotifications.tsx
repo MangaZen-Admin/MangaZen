@@ -96,6 +96,15 @@ export function NavbarNotifications({ initialUnread }: NavbarNotificationsProps)
       case "MANGA_REQUEST_APPROVED":
       case "MANGA_REQUEST_REJECTED":
         return `/${locale}/community`;
+      case "CHANGE_REQUEST_APPROVED":
+      case "CHANGE_REQUEST_REJECTED": {
+        const crType = typeof n.payload?.type === "string" ? n.payload.type : "";
+        if (crType === "CHAPTER_EDIT") {
+          return `/${locale}/read/${n.entityId}`;
+        }
+        const slug = typeof n.payload?.mangaSlug === "string" ? n.payload.mangaSlug : null;
+        return slug ? `/${locale}/manga/${slug}` : `/${locale}`;
+      }
       default:
         return `/${locale}`;
     }
@@ -128,6 +137,28 @@ export function NavbarNotifications({ initialUnread }: NavbarNotificationsProps)
       case "MANGA_REQUEST_REJECTED": {
         const rt = typeof payload.mangaRequestTitle === "string" ? payload.mangaRequestTitle : "";
         return t("mangaRequestRejected", { title: rt || "—" });
+      }
+      case "CHANGE_REQUEST_APPROVED": {
+        const crType = typeof n.payload?.type === "string" ? n.payload.type : "";
+        const mt = typeof n.payload?.mangaTitle === "string" ? n.payload.mangaTitle : "";
+        const cn = typeof n.payload?.chapterNumber === "number" ? n.payload.chapterNumber : null;
+        if (crType === "CHAPTER_EDIT") {
+          return cn != null
+            ? `✅ Tu edición del Cap. ${cn}${mt ? ` de ${mt}` : ""} fue aprobada`
+            : `✅ Tu edición del capítulo fue aprobada`;
+        }
+        return mt ? `✅ Tu edición de "${mt}" fue aprobada` : "✅ Tu edición fue aprobada";
+      }
+      case "CHANGE_REQUEST_REJECTED": {
+        const crType = typeof n.payload?.type === "string" ? n.payload.type : "";
+        const mt = typeof n.payload?.mangaTitle === "string" ? n.payload.mangaTitle : "";
+        const cn = typeof n.payload?.chapterNumber === "number" ? n.payload.chapterNumber : null;
+        if (crType === "CHAPTER_EDIT") {
+          return cn != null
+            ? `❌ Tu edición del Cap. ${cn}${mt ? ` de ${mt}` : ""} fue rechazada`
+            : `❌ Tu edición del capítulo fue rechazada`;
+        }
+        return mt ? `❌ Tu edición de "${mt}" fue rechazada` : "❌ Tu edición fue rechazada";
       }
       default:
         return t("generic");

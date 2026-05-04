@@ -1264,6 +1264,7 @@ function MyUploadsSection() {
                         number: editDraft.chapterNumber,
                       }),
                     });
+                    const chData = (await chRes.json()) as { pendingReview?: boolean };
                     if (!chRes.ok) throw new Error("chapter");
 
                     const mgForm = new FormData();
@@ -1281,9 +1282,13 @@ function MyUploadsSection() {
                       method: "PATCH",
                       body: mgForm,
                     });
+                    const mgData = (await mgRes.json()) as { pendingReview?: boolean };
                     if (!mgRes.ok) throw new Error("manga");
 
                     toast.success("Cambios guardados");
+                    if (mgData.pendingReview || chData.pendingReview) {
+                      toast.info("Tus cambios fueron enviados al admin para revisión.");
+                    }
                     setEditDraft(null);
                     setCoverPreview(null);
                     setCoverFile(null);

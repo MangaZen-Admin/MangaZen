@@ -8,6 +8,7 @@ import { appLocaleToBcp47 } from "@/lib/app-locale-bcp47";
 import { prisma } from "@/lib/db";
 import { MangaReactions } from "@/components/manga/MangaReactions";
 import { MangaReadingStatus } from "@/components/manga/MangaReadingStatus";
+import { MangaReportButton } from "@/components/manga/MangaReportButton";
 import { MangaPrimaryReadCta } from "@/components/manga/MangaPrimaryReadCta";
 import { MangaChaptersWithComments } from "@/components/manga/MangaChaptersWithComments";
 import { MangaReaderCounter } from "@/components/manga/MangaReaderCounter";
@@ -264,7 +265,7 @@ export default async function MangaDetailPage({ params }: PageProps) {
   const relatedMangas = await getRelatedMangas(manga.id, tagNames);
   const sessionUserId = await getAuthenticatedUserIdServer();
 
-  const [favoriteCount, likeCount, dislikeCount, currentUser] = await Promise.all([
+  const [favoriteCount, likeCount, dislikeCount, reportCount, currentUser] = await Promise.all([
     prisma.userFavorite.count({
       where: { mangaId: manga.id },
     }),
@@ -281,6 +282,9 @@ export default async function MangaDetailPage({ params }: PageProps) {
         targetType: "MANGA",
         value: -1,
       },
+    }),
+    prisma.mangaReport.count({
+      where: { mangaId: manga.id, status: "PENDING" },
     }),
     sessionUserId
       ? prisma.user.findUnique({
@@ -591,6 +595,13 @@ export default async function MangaDetailPage({ params }: PageProps) {
               mangaSlug={manga.slug}
               initialStatus={userProgress?.status ?? null}
               isAuthenticated={isAuthenticated}
+            />
+          </div>
+          <div className="mt-2">
+            <MangaReportButton
+              mangaSlug={manga.slug}
+              isAuthenticated={isAuthenticated}
+              initialReportCount={reportCount}
             />
           </div>
         </div>

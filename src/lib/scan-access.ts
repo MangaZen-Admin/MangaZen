@@ -9,6 +9,7 @@ export type ScanAccessUser = {
   id: string;
   role: UserRole;
   isPro: boolean;
+  isTrusted: boolean;
 };
 
 /**
@@ -25,7 +26,14 @@ export async function requireScanAccess(requestHeaders: Headers): Promise<
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { id: true, role: true, isPro: true, isBanned: true, suspendedUntil: true },
+    select: {
+      id: true,
+      role: true,
+      isPro: true,
+      isTrusted: true,
+      isBanned: true,
+      suspendedUntil: true,
+    },
   });
 
   if (!user || !canUseScanPanel(user.role)) {
@@ -40,5 +48,8 @@ export async function requireScanAccess(requestHeaders: Headers): Promise<
     return { ok: false, response: NextResponse.json({ error: "SUSPENDED" }, { status: 403 }) };
   }
 
-  return { ok: true, user: { id: user.id, role: user.role, isPro: user.isPro } };
+  return {
+    ok: true,
+    user: { id: user.id, role: user.role, isPro: user.isPro, isTrusted: user.isTrusted },
+  };
 }

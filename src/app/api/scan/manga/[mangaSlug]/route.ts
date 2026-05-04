@@ -22,11 +22,28 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ma
 
   const manga = await prisma.manga.findUnique({
     where: { slug: mangaSlug },
-    select: { id: true, uploaderId: true, coverImage: true },
+    select: {
+      id: true,
+      uploaderId: true,
+      title: true,
+      description: true,
+      author: true,
+      artist: true,
+      publisher: true,
+      country: true,
+      releaseYear: true,
+      coverImage: true,
+    },
   });
-  if (!manga || manga.uploaderId !== gate.user.id) {
+  if (!manga || (gate.user.role !== "ADMIN" && manga.uploaderId !== gate.user.id)) {
     return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
   }
+
+  const requester = await prisma.user.findUnique({
+    where: { id: gate.user.id },
+    select: { isTrusted: true },
+  });
+  const needsReview = gate.user.role !== "ADMIN" && !requester?.isTrusted;
 
   let form: FormData;
   try {
@@ -44,6 +61,17 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ma
   const releaseYearRaw = form.get("releaseYear");
   const releaseYear = releaseYearRaw ? Number(releaseYearRaw) : undefined;
   const coverFile = form.get("cover");
+
+  const previousData = {
+    title: manga.title ?? null,
+    description: manga.description ?? null,
+    author: manga.author ?? null,
+    artist: manga.artist ?? null,
+    publisher: manga.publisher ?? null,
+    country: manga.country ?? null,
+    releaseYear: manga.releaseYear ?? null,
+    coverImage: manga.coverImage ?? null,
+  };
 
   let coverImage: string | undefined;
   if (coverFile instanceof File && coverFile.size > 0) {
@@ -90,5 +118,33 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ma
     select: { id: true, title: true, slug: true, coverImage: true },
   });
 
-  return NextResponse.json({ ok: true, manga: updated });
+  if (needsReview) {
+    await prisma.changeRequest.create({
+      data: {
+        type: "MANGA_EDIT",
+        status: "PENDING",
+        entityId: manga.id,
+        previousData,
+        newData: {
+          title: title ? sanitizeScanPlainText(String(title), 200) : manga.title,
+          description: description
+            ? sanitizeScanPlainText(String(description), 5000)
+            : manga.description,
+          author: author ? sanitizeScanPlainText(String(author), 200) : manga.author,
+          artist:
+            artist !== null
+              ? sanitizeScanPlainText(String(artist ?? ""), 200) || null
+              : manga.artist,
+          publisher: publisher ? sanitizeScanPlainText(String(publisher), 200) : manga.publisher,
+          country: country ? String(country).slice(0, 10) : manga.country,
+          releaseYear:
+            releaseYear && Number.isFinite(releaseYear) ? releaseYear : manga.releaseYear,
+          coverImage: coverImage ?? manga.coverImage,
+        },
+        requesterId: gate.user.id,
+      },
+    });
+  }
+
+  return NextResponse.json({ ok: true, manga: updated, pendingReview: needsReview });
 }

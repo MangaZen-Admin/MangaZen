@@ -4,7 +4,17 @@ import { Fragment, useMemo, useState, useEffect, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
-import { Bell, Megaphone, Newspaper, Search, Shield, Sparkles, UserCheck, Users } from "lucide-react";
+import {
+  Bell,
+  FileEdit,
+  Megaphone,
+  Newspaper,
+  Search,
+  Shield,
+  Sparkles,
+  UserCheck,
+  Users,
+} from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { resolveApiErrorMessage } from "@/lib/api-error";
@@ -30,6 +40,7 @@ const TAB_VALUES = [
   "usuarios",
   "scans",
   "contenido",
+  "ediciones",
   "comunidad",
   "insignias",
   "novedades",
@@ -90,6 +101,7 @@ export type AdminPanelShellProps = {
   pendingCreatorCount: number;
   tabScans: ReactNode;
   tabContenido: ReactNode;
+  tabEdiciones: ReactNode;
   tabComunidad: ReactNode;
   tabInsignias: ReactNode;
   tabNovedades: ReactNode;
@@ -109,6 +121,7 @@ export default function AdminPanelShell({
   pendingCreatorCount,
   tabScans,
   tabContenido,
+  tabEdiciones,
   tabComunidad,
   tabInsignias,
   tabNovedades,
@@ -496,6 +509,10 @@ export default function AdminPanelShell({
             {t("tabContenido")}
             <TabBadge count={pendingContentReviewCount} />
           </TabsTrigger>
+          <TabsTrigger value="ediciones" className="gap-1.5">
+            <FileEdit className="h-3.5 w-3.5" aria-hidden />
+            Ediciones
+          </TabsTrigger>
           <TabsTrigger value="comunidad" className="gap-1.5">
             {t("tabComunidad")}
             <TabBadge count={pendingCreatorCount} />
@@ -835,6 +852,10 @@ export default function AdminPanelShell({
 
         <TabsContent value="contenido" className="mt-5 space-y-5">
           {tabContenido}
+        </TabsContent>
+
+        <TabsContent value="ediciones" className="mt-5 space-y-5">
+          {tabEdiciones}
         </TabsContent>
 
         <TabsContent value="comunidad" className="mt-5 space-y-5">

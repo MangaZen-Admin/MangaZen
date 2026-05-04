@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireScanAccess } from "@/lib/scan-access";
 
@@ -26,9 +26,10 @@ export async function GET(request: Request) {
     },
   });
 
-  if (!manga || manga.uploaderId !== gate.user.id) {
+  if (!manga || (gate.user.role !== "ADMIN" && manga.uploaderId !== gate.user.id)) {
     return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
   }
 
   return NextResponse.json(manga);
 }
+

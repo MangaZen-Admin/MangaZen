@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { AdminEditionsPanel } from "@/components/admin/AdminEditionsPanel";
 import { AdminAnnouncementsPanel } from "@/components/admin/AdminAnnouncementsPanel";
 import { AdminBadgeCatalogPanel } from "@/components/admin/AdminBadgeCatalogPanel";
 import { AdminGlobalBannerPanel } from "@/components/admin/AdminGlobalBannerPanel";
@@ -332,6 +333,7 @@ export default async function AdminPage({ params, searchParams }: AdminPageProps
               />
             </>
           }
+          tabEdiciones={<AdminEditionsPanel />}
           tabComunidad={
             <>
               <AdminCreatorRequestsPanel

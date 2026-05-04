@@ -36,6 +36,8 @@ model User {
   role          UserRole  @default(USER)
   /// Aceptación del descargo al asignar rol SCAN o CREATOR (panel admin).
   acceptedScanTermsAt DateTime?
+  /// Si es true, sus ediciones y publicaciones no requieren moderación.
+  isTrusted Boolean @default(false)
   requirePasswordForPoints  Boolean @default(true)
   requireEmailCodeForPoints Boolean @default(true)
   emailVerified DateTime?
@@ -81,6 +83,8 @@ model User {
   mangaRequests   MangaRequest[]
   donationLinks   DonationLink[]
   inventory       UserInventory[]
+  changeRequests  ChangeRequest[] @relation("ChangeRequestRequester")
+  mangaReports    MangaReport[]
 }
 
 model DonationLink {
@@ -150,6 +154,8 @@ enum NotificationType {
   MANGA_REJECTED
   MANGA_REQUEST_APPROVED
   MANGA_REQUEST_REJECTED
+  CHANGE_REQUEST_APPROVED
+  CHANGE_REQUEST_REJECTED
 }
 
 enum MangaRequestStatus {
@@ -371,6 +377,7 @@ model Manga {
   favorites   UserFavorite[]
   progress    MangaProgress[]
   alternativeTitles MangaAlternativeTitle[]
+  reports             MangaReport[]
 }
 
 model Badge {
@@ -711,4 +718,72 @@ model MangaAlternativeTitle {
 
   @@unique([mangaId, locale])
   @@index([mangaId])
+}
+
+enum ChangeRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ChangeRequestType {
+  MANGA_EDIT
+  CHAPTER_EDIT
+}
+
+model ChangeRequest {
+  id     String              @id @default(cuid())
+  type   ChangeRequestType
+  status ChangeRequestStatus @default(PENDING)
+
+  /// Id del manga o capítulo modificado
+  entityId String
+  /// Snapshot de los valores ANTES del cambio (para revertir si se rechaza)
+  previousData Json
+  /// Snapshot de los valores DESPUÉS del cambio (lo que propuso el scan)
+  newData Json
+
+  requesterId String
+  requester   User @relation("ChangeRequestRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+
+  /// Nota opcional del admin al aprobar/rechazar
+  adminNote  String?
+  reviewedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([requesterId])
+  @@index([entityId])
+}
+
+enum MangaReportReason {
+  WRONG_INFO
+  WRONG_COVER
+  DUPLICATE
+  INAPPROPRIATE
+  OTHER
+}
+
+enum MangaReportStatus {
+  PENDING
+  REVIEWED
+}
+
+model MangaReport {
+  id        String            @id @default(cuid())
+  mangaId   String
+  userId    String
+  reason    MangaReportReason
+  details   String?
+  status    MangaReportStatus @default(PENDING)
+  createdAt DateTime          @default(now())
+
+  manga Manga @relation(fields: [mangaId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([mangaId, userId])
+  @@index([mangaId, status])
+  @@index([status, createdAt])
 }
