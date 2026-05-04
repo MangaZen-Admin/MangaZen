@@ -1303,7 +1303,6 @@ function NewMangaSection() {
   const [tags, setTags] = useState<TagRow[]>([]);
   const [tagIds, setTagIds] = useState<Set<string>>(new Set());
   const [title, setTitle] = useState("");
-  const [alternativeTitle, setAlternativeTitle] = useState("");
   const [description, setDescription] = useState("");
   const [author, setAuthor] = useState("");
   const [artist, setArtist] = useState("");
@@ -1347,9 +1346,12 @@ function NewMangaSection() {
       toast.error(t("newManga.coverRequired"));
       return;
     }
+    if (!country) {
+      toast.error("El país de origen es obligatorio");
+      return;
+    }
     const formData = new FormData();
     formData.set("title", title.trim());
-    if (alternativeTitle.trim()) formData.set("alternativeTitle", alternativeTitle.trim());
     if (description.trim()) formData.set("description", description.trim());
     if (author.trim()) formData.set("author", author.trim());
     if (artist.trim()) formData.set("artist", artist.trim());
@@ -1376,7 +1378,6 @@ function NewMangaSection() {
         setProgress(100);
         toast.success(t("newManga.success"));
         setTitle("");
-        setAlternativeTitle("");
         setDescription("");
         setAuthor("");
         setArtist("");
@@ -1424,13 +1425,66 @@ function NewMangaSection() {
             />
           </div>
           <div className="sm:col-span-2">
-            <label className="text-sm font-medium text-foreground">{t("newManga.alternativeTitle")}</label>
-            <input
-              value={alternativeTitle}
-              onChange={(e) => setAlternativeTitle(e.target.value)}
-              className="mt-1.5 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
-              disabled={busy}
-            />
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-foreground">
+                Títulos alternativos <span className="text-xs text-muted-foreground">(opcional)</span>
+              </span>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => setAltTitles((prev) => [...prev, { locale: "en-us", title: "" }])}
+                className="text-xs text-primary hover:underline"
+              >
+                + Agregar título
+              </button>
+            </div>
+            {altTitles.length > 0 && (
+              <div className="mt-2 space-y-2">
+                {altTitles.map((at, i) => (
+                  <div key={i} className="flex gap-2">
+                    <select
+                      value={at.locale}
+                      onChange={(e) =>
+                        setAltTitles((prev) =>
+                          prev.map((a, j) => (j === i ? { ...a, locale: e.target.value } : a)),
+                        )
+                      }
+                      className="rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+                      disabled={busy}
+                    >
+                      <option value="en-us">Inglés (US)</option>
+                      <option value="en-gb">Inglés (GB)</option>
+                      <option value="es-ar">Español (LA)</option>
+                      <option value="es-es">Español (ES)</option>
+                      <option value="pt-br">Portugués (BR)</option>
+                      <option value="ja-jp">Japonés</option>
+                      <option value="ko-kr">Coreano</option>
+                      <option value="zh-cn">Chino (CN)</option>
+                      <option value="fr-fr">Francés</option>
+                    </select>
+                    <input
+                      value={at.title}
+                      onChange={(e) =>
+                        setAltTitles((prev) =>
+                          prev.map((a, j) => (j === i ? { ...a, title: e.target.value } : a)),
+                        )
+                      }
+                      placeholder="Título alternativo..."
+                      className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+                      disabled={busy}
+                    />
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => setAltTitles((prev) => prev.filter((_, j) => j !== i))}
+                      className="rounded-lg border border-border px-2 py-2 text-xs text-destructive hover:bg-destructive/10"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <div className="sm:col-span-2">
             <label className="text-sm font-medium text-foreground">{t("newManga.description")}</label>
@@ -1498,24 +1552,26 @@ function NewMangaSection() {
             <label className="text-sm font-medium text-foreground">
               País de origen <span className="text-destructive">*</span>
             </label>
-            <select
-              required
-              value={country}
-              onChange={(e) => {
-                setCountry(e.target.value);
-                if (e.target.value !== "OTHER") setCustomCountry("");
+            <Select
+              value={country || undefined}
+              onValueChange={(v) => {
+                setCountry(v);
+                if (v !== "OTHER") setCustomCountry("");
               }}
-              className="mt-1.5 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
               disabled={busy}
             >
-              <option value="">Seleccionar...</option>
-              <option value="JP">Japón 🇯🇵</option>
-              <option value="KR">Corea del Sur 🇰🇷</option>
-              <option value="CN">China 🇨🇳</option>
-              <option value="US">Estados Unidos 🇺🇸</option>
-              <option value="FR">Francia 🇫🇷</option>
-              <option value="OTHER">Otro...</option>
-            </select>
+              <SelectTrigger className="mt-1.5 w-full">
+                <SelectValue placeholder="Seleccionar..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="JP">Japón 🇯🇵</SelectItem>
+                <SelectItem value="KR">Corea del Sur 🇰🇷</SelectItem>
+                <SelectItem value="CN">China 🇨🇳</SelectItem>
+                <SelectItem value="US">Estados Unidos 🇺🇸</SelectItem>
+                <SelectItem value="FR">Francia 🇫🇷</SelectItem>
+                <SelectItem value="OTHER">Otro...</SelectItem>
+              </SelectContent>
+            </Select>
 
             {country === "OTHER" && (
               <input
@@ -1528,70 +1584,6 @@ function NewMangaSection() {
               />
             )}
           </div>
-        </div>
-
-        {/* Títulos alternativos opcionales */}
-        <div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-foreground">
-              Títulos alternativos <span className="text-xs text-muted-foreground">(opcional)</span>
-            </span>
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() => setAltTitles((prev) => [...prev, { locale: "en-us", title: "" }])}
-              className="text-xs text-primary hover:underline"
-            >
-              + Agregar título
-            </button>
-          </div>
-          {altTitles.length > 0 && (
-            <div className="mt-2 space-y-2">
-              {altTitles.map((at, i) => (
-                <div key={i} className="flex gap-2">
-                  <select
-                    value={at.locale}
-                    onChange={(e) =>
-                      setAltTitles((prev) =>
-                        prev.map((a, j) => (j === i ? { ...a, locale: e.target.value } : a)),
-                      )
-                    }
-                    className="rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
-                    disabled={busy}
-                  >
-                    <option value="en-us">Inglés (US)</option>
-                    <option value="en-gb">Inglés (GB)</option>
-                    <option value="es-ar">Español (AR)</option>
-                    <option value="es-es">Español (ES)</option>
-                    <option value="pt-br">Portugués (BR)</option>
-                    <option value="ja-jp">Japonés</option>
-                    <option value="ko-kr">Coreano</option>
-                    <option value="zh-cn">Chino (CN)</option>
-                    <option value="fr-fr">Francés</option>
-                  </select>
-                  <input
-                    value={at.title}
-                    onChange={(e) =>
-                      setAltTitles((prev) =>
-                        prev.map((a, j) => (j === i ? { ...a, title: e.target.value } : a)),
-                      )
-                    }
-                    placeholder="Título alternativo..."
-                    className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
-                    disabled={busy}
-                  />
-                  <button
-                    type="button"
-                    disabled={busy}
-                    onClick={() => setAltTitles((prev) => prev.filter((_, j) => j !== i))}
-                    className="rounded-lg border border-border px-2 py-2 text-xs text-destructive hover:bg-destructive/10"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">

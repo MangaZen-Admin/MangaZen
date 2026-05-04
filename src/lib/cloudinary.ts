@@ -9,7 +9,8 @@ cloudinary.config({
 export async function uploadImageToCloudinary(
   buffer: Buffer,
   folder: string,
-  publicId: string
+  publicId: string,
+  transformation?: Record<string, unknown>[]
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     cloudinary.uploader
@@ -19,6 +20,7 @@ export async function uploadImageToCloudinary(
           public_id: publicId,
           overwrite: true,
           resource_type: "image",
+          ...(transformation && transformation.length > 0 ? { transformation } : {}),
         },
         (error, result) => {
           if (error || !result) {

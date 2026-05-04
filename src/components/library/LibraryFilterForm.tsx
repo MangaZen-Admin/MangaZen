@@ -76,7 +76,7 @@ export function LibraryFilterForm({
 
         <div>
           <label className="mb-1.5 block text-xs text-muted-foreground">{tCat("libraryGenre")}</label>
-          <div className="max-h-48 space-y-1 overflow-y-auto rounded-lg border border-border/60 bg-card p-2">
+          <div className="max-h-48 space-y-1 overflow-y-auto rounded-lg border border-border/60 bg-card p-2 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
             {genres.map((g) => {
               const translatedName = translateCatalogTagName(g.name, (k) => tCat(k));
               const isSelected = selectedGenres.includes(g.name);

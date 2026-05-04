@@ -142,3 +142,11 @@ body[data-reader-route="true"] #app-main {
   /* Evita que flex-1 estire el main a toda la altura: el lector debe medir solo su contenido. */
   flex-grow: 0;
 }
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-thumb-border {
+  scrollbar-color: var(--border) transparent;
+}

@@ -94,7 +94,9 @@ export default async function RootLayout({
             <CreatorRoleNotificationListener />
             <RouteModeSync />
             <Navbar />
-            <GlobalBanner />
+            <div className="sm:pt-16">
+              <GlobalBanner />
+            </div>
             <main id="app-main" className="min-h-0 flex-1">
               <GlobalAdblockBannerShell />
               <AutoTranslationNotice />

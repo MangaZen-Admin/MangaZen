@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Coins, Crown, ExternalLink, Gem, Mail, Pencil, X } from "lucide-react";
 import { toast } from "sonner";
+import { ImageCropModal } from "@/components/profile/ImageCropModal";
 import { ProfileAdblockBanner } from "@/components/profile/ProfileAdblockBanner";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -62,6 +63,9 @@ export function ProfileAccountCard({
   const [busy, setBusy] = useState(false);
   const [bannerImage, setBannerImage] = useState(initialBannerImage ?? null);
   const [bannerBusy, setBannerBusy] = useState(false);
+  const [avatarCropSrc, setAvatarCropSrc] = useState<string | null>(null);
+  const [bannerCropSrc, setBannerCropSrc] = useState<string | null>(null);
+  const [avatarBusy, setAvatarBusy] = useState(false);
   const [previewHost, setPreviewHost] = useState("mangazen.com");
 
   useEffect(() => {
@@ -141,10 +145,41 @@ export function ProfileAccountCard({
   async function onBannerChange(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    setBannerBusy(true);
+    const url = URL.createObjectURL(file);
+    setBannerCropSrc(url);
+    e.target.value = "";
+  }
+
+  async function onAvatarCropConfirm(blob: Blob) {
+    setAvatarBusy(true);
+    setAvatarCropSrc(null);
     try {
       const form = new FormData();
-      form.set("banner", file);
+      form.set("avatar", new File([blob], "avatar.jpg", { type: "image/jpeg" }));
+      const res = await fetch("/api/user/profile-avatar", {
+        method: "POST",
+        body: form,
+      });
+      const data = (await res.json()) as { url?: string; error?: string };
+      if (res.ok && data.url) {
+        toast.success("Foto de perfil actualizada");
+        router.refresh();
+      } else {
+        toast.error("No se pudo actualizar la foto de perfil");
+      }
+    } catch {
+      toast.error("No se pudo actualizar la foto de perfil");
+    } finally {
+      setAvatarBusy(false);
+    }
+  }
+
+  async function onBannerCropConfirm(blob: Blob) {
+    setBannerBusy(true);
+    setBannerCropSrc(null);
+    try {
+      const form = new FormData();
+      form.set("banner", new File([blob], "banner.jpg", { type: "image/jpeg" }));
       const res = await fetch("/api/user/profile-banner", {
         method: "POST",
         body: form,
@@ -219,15 +254,33 @@ export function ProfileAccountCard({
       </div>
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-border bg-background">
-          {imageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={imageUrl} alt="" className="h-full w-full object-cover" />
-          ) : (
-            <div className="flex h-full items-center justify-center text-lg font-semibold text-muted-foreground">
-              {displayName.slice(0, 1).toUpperCase()}
-            </div>
-          )}
+        <div className="relative h-16 w-16 shrink-0">
+          <div className="h-16 w-16 overflow-hidden rounded-full border border-border bg-background">
+            {imageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={imageUrl} alt="" className="h-full w-full object-cover" />
+            ) : (
+              <div className="flex h-full items-center justify-center text-lg font-semibold text-muted-foreground">
+                {displayName.slice(0, 1).toUpperCase()}
+              </div>
+            )}
+          </div>
+          <label className="absolute bottom-0 right-0 cursor-pointer rounded-full border border-border bg-card p-1 shadow-sm hover:bg-muted">
+            <Pencil className="h-3 w-3 text-muted-foreground" />
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              disabled={avatarBusy}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const url = URL.createObjectURL(file);
+                setAvatarCropSrc(url);
+                e.target.value = "";
+              }}
+            />
+          </label>
         </div>
         <div className="flex-1">
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">{labels.title}</h1>
@@ -384,6 +437,28 @@ export function ProfileAccountCard({
           </p>
         </div>
       </div>
+
+      {avatarCropSrc && (
+        <ImageCropModal
+          imageSrc={avatarCropSrc}
+          aspect={1}
+          shape="round"
+          title="Recortar foto de perfil"
+          onCancel={() => setAvatarCropSrc(null)}
+          onConfirm={(blob) => void onAvatarCropConfirm(blob)}
+        />
+      )}
+
+      {bannerCropSrc && (
+        <ImageCropModal
+          imageSrc={bannerCropSrc}
+          aspect={3 / 1}
+          shape="rect"
+          title="Recortar banner de perfil"
+          onCancel={() => setBannerCropSrc(null)}
+          onConfirm={(blob) => void onBannerCropConfirm(blob)}
+        />
+      )}
     </div>
   );
 }
