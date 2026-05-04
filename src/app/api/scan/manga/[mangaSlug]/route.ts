@@ -118,6 +118,32 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ma
     select: { id: true, title: true, slug: true, coverImage: true },
   });
 
+  // Guardar títulos alternativos si se enviaron
+  const altTitlesEntries: { locale: string; title: string }[] = [];
+  let i = 0;
+  while (form.get(`altTitles[${i}][locale]`)) {
+    const locale = String(form.get(`altTitles[${i}][locale]`) ?? "");
+    const title = String(form.get(`altTitles[${i}][title]`) ?? "").trim();
+    if (locale && title) altTitlesEntries.push({ locale, title });
+    i++;
+  }
+
+  if (altTitlesEntries.length > 0 || form.get("altTitles[0][locale]") !== null) {
+    await prisma.mangaAlternativeTitle.deleteMany({
+      where: { mangaId: manga.id },
+    });
+    if (altTitlesEntries.length > 0) {
+      await prisma.mangaAlternativeTitle.createMany({
+        data: altTitlesEntries.map((at) => ({
+          mangaId: manga.id,
+          locale: at.locale,
+          title: at.title,
+        })),
+        skipDuplicates: true,
+      });
+    }
+  }
+
   if (needsReview) {
     await prisma.changeRequest.create({
       data: {

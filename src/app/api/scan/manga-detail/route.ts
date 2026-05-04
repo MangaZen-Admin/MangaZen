@@ -23,6 +23,9 @@ export async function GET(request: Request) {
       country: true,
       releaseYear: true,
       uploaderId: true,
+      alternativeTitles: {
+        select: { locale: true, title: true },
+      },
     },
   });
 

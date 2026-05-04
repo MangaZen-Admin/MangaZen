@@ -82,6 +82,7 @@ type EditChapterDraft = {
   mangaPublisher: string;
   mangaCountry: string;
   mangaReleaseYear: number;
+  mangaAltTitles: { locale: string; title: string }[];
 };
 
 type TagRow = { id: string; name: string; category: string };
@@ -981,6 +982,7 @@ function MyUploadsSection() {
                                   publisher?: string;
                                   country?: string;
                                   releaseYear?: number;
+                                  alternativeTitles?: { locale: string; title: string }[];
                                 };
                                 setEditDraft({
                                   chapterId: r.chapterId,
@@ -994,6 +996,7 @@ function MyUploadsSection() {
                                   mangaPublisher: data.publisher ?? "",
                                   mangaCountry: data.country ?? "",
                                   mangaReleaseYear: data.releaseYear ?? new Date().getFullYear(),
+                                  mangaAltTitles: data.alternativeTitles ?? [],
                                 });
                               } catch {
                                 toast.error(t("errors.GENERIC"));
@@ -1232,6 +1235,99 @@ function MyUploadsSection() {
                       )}
                     </div>
                   </div>
+                  <div className="sm:col-span-2">
+                    <div className="mb-2 flex items-center justify-between">
+                      <label className="text-xs text-muted-foreground">Títulos alternativos</label>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setEditDraft((prev) =>
+                            prev
+                              ? {
+                                  ...prev,
+                                  mangaAltTitles: [
+                                    ...prev.mangaAltTitles,
+                                    { locale: "en-us", title: "" },
+                                  ],
+                                }
+                              : prev,
+                          )
+                        }
+                        className="text-xs text-primary hover:underline"
+                      >
+                        + Agregar
+                      </button>
+                    </div>
+                    {editDraft.mangaAltTitles.length === 0 ? (
+                      <p className="text-xs text-muted-foreground">Sin títulos alternativos.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {editDraft.mangaAltTitles.map((at, i) => (
+                          <div key={i} className="flex gap-2">
+                            <select
+                              value={at.locale}
+                              onChange={(e) =>
+                                setEditDraft((prev) =>
+                                  prev
+                                    ? {
+                                        ...prev,
+                                        mangaAltTitles: prev.mangaAltTitles.map((a, j) =>
+                                          j === i ? { ...a, locale: e.target.value } : a,
+                                        ),
+                                      }
+                                    : prev,
+                                )
+                              }
+                              className="rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+                            >
+                              <option value="en-us">Inglés (US)</option>
+                              <option value="en-gb">Inglés (GB)</option>
+                              <option value="es-ar">Español (LA)</option>
+                              <option value="es-es">Español (ES)</option>
+                              <option value="pt-br">Portugués (BR)</option>
+                              <option value="ja-jp">Japonés</option>
+                              <option value="ko-kr">Coreano</option>
+                              <option value="zh-cn">Chino (CN)</option>
+                              <option value="fr-fr">Francés</option>
+                            </select>
+                            <input
+                              value={at.title}
+                              onChange={(e) =>
+                                setEditDraft((prev) =>
+                                  prev
+                                    ? {
+                                        ...prev,
+                                        mangaAltTitles: prev.mangaAltTitles.map((a, j) =>
+                                          j === i ? { ...a, title: e.target.value } : a,
+                                        ),
+                                      }
+                                    : prev,
+                                )
+                              }
+                              placeholder="Título alternativo..."
+                              className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
+                            />
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setEditDraft((prev) =>
+                                  prev
+                                    ? {
+                                        ...prev,
+                                        mangaAltTitles: prev.mangaAltTitles.filter((_, j) => j !== i),
+                                      }
+                                    : prev,
+                                )
+                              }
+                              className="rounded-lg border border-border px-2 py-2 text-xs text-destructive hover:bg-destructive/10"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -1278,6 +1374,10 @@ function MyUploadsSection() {
                     if (coverFile) {
                       mgForm.set("cover", coverFile);
                     }
+                    editDraft.mangaAltTitles.forEach((at, i) => {
+                      mgForm.append(`altTitles[${i}][locale]`, at.locale);
+                      mgForm.append(`altTitles[${i}][title]`, at.title);
+                    });
                     const mgRes = await fetch(`/api/scan/manga/${editDraft.mangaSlug}`, {
                       method: "PATCH",
                       body: mgForm,
