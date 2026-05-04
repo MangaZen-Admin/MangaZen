@@ -1,10 +1,12 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { cookies, headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { verifyPassword } from "@/lib/auth-password";
 import { issueLoginSession } from "@/lib/auth-session";
+import { getClientIp } from "@/lib/client-ip";
+import { checkRateLimit, clearRateLimit } from "@/lib/rate-limit";
 import { PasswordInput } from "@/components/auth/PasswordInput";
 
 type LoginPageProps = {
@@ -13,6 +15,7 @@ type LoginPageProps = {
     error?: string;
     success?: string;
     reason?: string;
+    minutes?: string;
   }>;
 };
 
@@ -34,6 +37,15 @@ async function loginAction(formData: FormData) {
     redirect(`/login?error=missing_credentials&next=${encodeURIComponent(next)}`);
   }
 
+  const headerList = await headers();
+  const ip = getClientIp(headerList) ?? "unknown";
+  const rateLimitKey = `login:${ip}`;
+  const { allowed, remainingMs } = checkRateLimit(rateLimitKey);
+  if (!allowed) {
+    const minutes = Math.ceil(remainingMs / 60000);
+    redirect(`/login?error=rate_limited&minutes=${minutes}&next=${encodeURIComponent(next)}`);
+  }
+
   const user = await prisma.user.findUnique({
     where: { email },
     select: { id: true },
@@ -50,8 +62,9 @@ async function loginAction(formData: FormData) {
     redirect(`/login?error=user_not_found&next=${encodeURIComponent(next)}`);
   }
 
+  clearRateLimit(rateLimitKey);
+
   const cookieStore = await cookies();
-  const headerList = await headers();
   await issueLoginSession(user.id, cookieStore, headerList);
 
   redirect(next);
@@ -89,6 +102,11 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             {error === "missing_credentials" && tAuth("errorMissingCredentials")}
             {error === "user_not_found" && tAuth("errorUserNotFound")}
             {error === "user_exists" && tAuth("errorUserExists")}
+          </div>
+        )}
+        {error === "rate_limited" && (
+          <div className="mt-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-foreground">
+            Demasiados intentos fallidos. Intentá de nuevo en {params.minutes ?? "15"} minutos.
           </div>
         )}
         {success === "registered" && (

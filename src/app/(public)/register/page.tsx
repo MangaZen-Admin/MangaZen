@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { cookies, headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
@@ -6,12 +6,15 @@ import { prisma } from "@/lib/db";
 import { isDisposableEmail } from "@/lib/disposable-email-domains";
 import { hashPassword } from "@/lib/auth-password";
 import { issueLoginSession } from "@/lib/auth-session";
+import { getClientIp } from "@/lib/client-ip";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { PasswordInput } from "@/components/auth/PasswordInput";
 
 type RegisterPageProps = {
   searchParams: Promise<{
     next?: string;
     error?: string;
+    minutes?: string;
   }>;
 };
 
@@ -30,6 +33,14 @@ async function registerAction(formData: FormData) {
   const password = String(formData.get("password") ?? "");
   const image = String(formData.get("image") ?? "").trim();
   const next = normalizeNext(String(formData.get("next") ?? "/"));
+
+  const headerList = await headers();
+  const ip = getClientIp(headerList) ?? "unknown";
+  const { allowed, remainingMs } = checkRateLimit(`register:${ip}`);
+  if (!allowed) {
+    const minutes = Math.ceil(remainingMs / 60000);
+    redirect(`/register?error=rate_limited&minutes=${minutes}&next=${encodeURIComponent(next)}`);
+  }
 
   if (!name || !email || password.length < 6) {
     redirect(`/register?error=invalid_data&next=${encodeURIComponent(next)}`);
@@ -65,7 +76,6 @@ async function registerAction(formData: FormData) {
   `;
 
   const cookieStore = await cookies();
-  const headerList = await headers();
   await issueLoginSession(user.id, cookieStore, headerList);
 
   redirect(next);
@@ -93,6 +103,12 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
         {error === "disposable_email" && (
           <div className="mt-3 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-foreground">
             No se permiten correos temporales o desechables. Por favor usá una dirección de email real.
+          </div>
+        )}
+
+        {error === "rate_limited" && (
+          <div className="mt-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-foreground">
+            Demasiados intentos. Intentá de nuevo en {params.minutes ?? "15"} minutos.
           </div>
         )}
 
