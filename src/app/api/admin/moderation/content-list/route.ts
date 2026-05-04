@@ -12,6 +12,7 @@ type ContentItem = {
   sublabel?: string;
   authorLabel?: string;
   createdAt: string;
+  url?: string;
 };
 
 export async function GET(request: Request) {
@@ -35,11 +36,15 @@ export async function GET(request: Request) {
         id: true,
         body: true,
         createdAt: true,
+        mangaId: true,
+        chapterId: true,
         user: { select: { name: true, email: true } },
+        manga: { select: { slug: true, title: true } },
         chapter: {
           select: {
+            id: true,
             number: true,
-            manga: { select: { title: true } },
+            manga: { select: { title: true, slug: true } },
           },
         },
       },
@@ -52,7 +57,7 @@ export async function GET(request: Request) {
         number: true,
         title: true,
         createdAt: true,
-        manga: { select: { title: true } },
+        manga: { select: { title: true, slug: true } },
         uploads: {
           take: 1,
           select: {
@@ -67,6 +72,7 @@ export async function GET(request: Request) {
       select: {
         id: true,
         title: true,
+        slug: true,
         createdAt: true,
         uploader: { select: { name: true, email: true } },
       },
@@ -91,9 +97,16 @@ export async function GET(request: Request) {
       label: c.body.slice(0, 80) + (c.body.length > 80 ? "…" : ""),
       sublabel: c.chapter
         ? `${c.chapter.manga.title} — Cap. ${c.chapter.number}`
-        : undefined,
+        : c.manga
+          ? c.manga.title
+          : undefined,
       authorLabel: c.user.name ?? c.user.email ?? undefined,
       createdAt: c.createdAt.toISOString(),
+      url: c.chapterId
+        ? `/read/${c.chapterId}`
+        : c.mangaId && c.manga?.slug
+          ? `/manga/${c.manga.slug}`
+          : undefined,
     })),
     ...chapters.map((c) => ({
       id: c.id,
@@ -102,6 +115,7 @@ export async function GET(request: Request) {
       authorLabel:
         c.uploads[0]?.uploader.name ?? c.uploads[0]?.uploader.email ?? undefined,
       createdAt: c.createdAt.toISOString(),
+      url: `/read/${c.id}`,
     })),
     ...mangas.map((m) => ({
       id: m.id,
@@ -109,6 +123,7 @@ export async function GET(request: Request) {
       label: m.title,
       authorLabel: m.uploader.name ?? m.uploader.email ?? undefined,
       createdAt: m.createdAt.toISOString(),
+      url: `/manga/${m.slug}`,
     })),
     ...feedbacks.map((f) => ({
       id: f.id,

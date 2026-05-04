@@ -43,6 +43,7 @@ type ContentItem = {
   sublabel?: string;
   authorLabel?: string;
   createdAt: string;
+  url?: string;
 };
 
 export function AdminModerationPanel() {
@@ -106,15 +107,17 @@ export function AdminModerationPanel() {
     void loadContent();
   }, [loadUsers, loadContent]);
 
-  const filteredUsers = users.filter((u) => {
-    const q = search.trim().toLowerCase();
-    if (!q) return true;
-    return (
-      u.name?.toLowerCase().includes(q) ||
-      u.email?.toLowerCase().includes(q) ||
-      u.username?.toLowerCase().includes(q)
-    );
-  });
+  const filteredUsers =
+    search.trim().length === 0
+      ? []
+      : users.filter((u) => {
+          const q = search.trim().toLowerCase();
+          return (
+            u.name?.toLowerCase().includes(q) ||
+            u.email?.toLowerCase().includes(q) ||
+            u.username?.toLowerCase().includes(q)
+          );
+        });
 
   const filteredContent = content.filter((item) => {
     if (contentTypeFilter !== "all" && item.type !== contentTypeFilter) return false;
@@ -281,6 +284,12 @@ export function AdminModerationPanel() {
             className="w-full rounded-lg border border-border bg-background py-2 pl-8 pr-3 text-sm outline-none focus:ring-2 focus:ring-primary/30"
           />
         </div>
+
+        {search.trim().length === 0 && !loading && (
+          <p className="mt-4 text-sm text-muted-foreground">
+            Usá el buscador para encontrar un usuario.
+          </p>
+        )}
 
         {loading ? (
           <p className="mt-4 text-sm text-muted-foreground">{t("loading")}</p>
@@ -494,6 +503,15 @@ export function AdminModerationPanel() {
                     <p className="text-xs text-muted-foreground">
                       {t("by")}: {item.authorLabel}
                     </p>
+                  )}
+                  {item.url && (
+                    <Link
+                      href={`/${locale}${item.url}`}
+                      target="_blank"
+                      className="text-xs text-primary hover:underline"
+                    >
+                      Ver en la página →
+                    </Link>
                   )}
                 </div>
                 <button

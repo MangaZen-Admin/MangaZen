@@ -3,6 +3,7 @@ import { cookies, headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
+import { isDisposableEmail } from "@/lib/disposable-email-domains";
 import { hashPassword } from "@/lib/auth-password";
 import { issueLoginSession } from "@/lib/auth-session";
 import { PasswordInput } from "@/components/auth/PasswordInput";
@@ -32,6 +33,10 @@ async function registerAction(formData: FormData) {
 
   if (!name || !email || password.length < 6) {
     redirect(`/register?error=invalid_data&next=${encodeURIComponent(next)}`);
+  }
+
+  if (await isDisposableEmail(email)) {
+    redirect(`/register?error=disposable_email&next=${encodeURIComponent(next)}`);
   }
 
   const existing = await prisma.user.findUnique({
@@ -82,6 +87,12 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
         {error === "invalid_data" && (
           <div className="mt-3 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-foreground">
             {tAuth("errorInvalidRegisterData")}
+          </div>
+        )}
+
+        {error === "disposable_email" && (
+          <div className="mt-3 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-foreground">
+            No se permiten correos temporales o desechables. Por favor usá una dirección de email real.
           </div>
         )}
 
