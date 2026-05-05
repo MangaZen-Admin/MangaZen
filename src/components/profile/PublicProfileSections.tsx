@@ -358,6 +358,47 @@ export async function PublicProfileFull({
         </section>
       )}
 
+      {supplemental.uploadedMangas && supplemental.uploadedMangas.length > 0 && (
+        <section className="rounded-2xl border border-primary/20 bg-card p-6 shadow-sm dark:border-border dark:shadow-none">
+          <h2 className="text-lg font-semibold text-foreground">Mangas subidos</h2>
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {supplemental.uploadedMangas.map((manga) => (
+              <Link
+                key={manga.slug}
+                href={`/${locale}/manga/${manga.slug}`}
+                className="group flex flex-col overflow-hidden rounded-xl border border-border bg-background/60 transition hover:border-primary/40 hover:bg-primary/5"
+              >
+                <div className="relative aspect-[2/3] w-full overflow-hidden bg-muted">
+                  {manga.coverImage ? (
+                    <Image
+                      src={manga.coverImage}
+                      alt={manga.title}
+                      fill
+                      className="object-cover transition group-hover:scale-105"
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
+                      Sin portada
+                    </div>
+                  )}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
+                    <p className="text-[10px] font-semibold text-white">
+                      ★ {manga.scoreAvg.toFixed(1)} · {manga.chaptersCount} caps.
+                    </p>
+                  </div>
+                </div>
+                <div className="p-2">
+                  <p className="line-clamp-2 text-xs font-medium text-foreground">{manga.title}</p>
+                  <p className="mt-0.5 text-[10px] text-muted-foreground">{manga.type}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       {showAdSlot ? (
         <div className="pt-2">
           <AdSlotShell slotId="profile-public-bottom" height="h-20" />

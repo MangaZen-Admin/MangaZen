@@ -6,6 +6,7 @@ export type AdminScanStatsListRow = {
   username: string | null;
   image: string | null;
   role: "SCAN" | "CREATOR";
+  isTrusted: boolean;
   totalUploads: number;
   approvedUploads: number;
   rejectedUploads: number;
@@ -41,6 +42,7 @@ export type AdminScanDetailResponse = {
     username: string | null;
     image: string | null;
     role: "SCAN" | "CREATOR";
+    isTrusted: boolean;
     zenPoints: number;
     createdAt: string;
   };

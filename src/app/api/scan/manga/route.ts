@@ -21,6 +21,7 @@ export async function POST(request: Request) {
   const gate = await requireScanAccess(request.headers);
   if (!gate.ok) return gate.response;
 
+  const isTrusted = gate.user.isTrusted ?? false;
   const plan = getUserPlan(gate.user);
   const maxImage = maxScanImageBytes(plan);
   const planUser = { id: gate.user.id, isPro: gate.user.isPro };
@@ -137,7 +138,7 @@ export async function POST(request: Request) {
           demographic,
           contentRating: d.contentRating,
           uploaderId: gate.user.id,
-          reviewStatus: "PENDING_REVIEW",
+          reviewStatus: isTrusted ? "APPROVED" : "PENDING_REVIEW",
         },
       });
 

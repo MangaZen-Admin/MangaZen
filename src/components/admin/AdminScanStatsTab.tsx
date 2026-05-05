@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
-import { ArrowLeft, BarChart3, Search } from "lucide-react";
+import { ArrowLeft, BarChart3, Eye, Loader2, Search, Shield } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import {
   Bar,
@@ -131,6 +131,7 @@ export function AdminScanStatsTab() {
   const [detail, setDetail] = useState<AdminScanDetailResponse | null>(null);
   const [viewsPeriod, setViewsPeriod] = useState<"today" | "week" | "month">("week");
   const [busyChapterId, setBusyChapterId] = useState<string | null>(null);
+  const [busyTrustedUserId, setBusyTrustedUserId] = useState<string | null>(null);
   const [rejectChapterId, setRejectChapterId] = useState<string | null>(null);
   const [rejectNotes, setRejectNotes] = useState("");
 
@@ -179,6 +180,40 @@ export function AdminScanStatsTab() {
     }
   }
 
+  async function handleToggleTrusted(userId: string, nextTrusted: boolean) {
+    setBusyTrustedUserId(userId);
+    try {
+      const res = await fetch(`/api/admin/users/${userId}/trusted`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isTrusted: nextTrusted }),
+      });
+      if (!res.ok) {
+        toast.error("Error al actualizar");
+        return;
+      }
+      const data = (await res.json()) as { user: { isTrusted: boolean } };
+      setDetail((d) =>
+        d && d.user.id === userId ? { ...d, user: { ...d.user, isTrusted: data.user.isTrusted } } : d,
+      );
+      setList((prev) =>
+        prev
+          ? {
+              ...prev,
+              rows: prev.rows.map((r) =>
+                r.id === userId ? { ...r, isTrusted: data.user.isTrusted } : r,
+              ),
+            }
+          : prev,
+      );
+      toast.success(
+        data.user.isTrusted ? "Usuario marcado como confiable" : "Moderación activada",
+      );
+    } finally {
+      setBusyTrustedUserId(null);
+    }
+  }
+
   const chartData = useMemo(() => {
     if (!detail) return [];
     return detail.uploadsByDay.map((d) => ({
@@ -213,7 +248,14 @@ export function AdminScanStatsTab() {
             <div className="flex min-w-0 flex-1 items-center gap-3">
               <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full border border-border bg-muted">
                 {detail.user.image ? (
-                  <Image src={detail.user.image} alt="" fill className="object-cover" sizes="44px" />
+                  <Image
+                    src={detail.user.image}
+                    alt=""
+                    fill
+                    className="object-cover"
+                    sizes="44px"
+                    unoptimized
+                  />
                 ) : (
                   <div className="flex h-full items-center justify-center text-sm font-semibold text-foreground">
                     {(detail.user.name ?? "?").slice(0, 1).toUpperCase()}
@@ -239,6 +281,43 @@ export function AdminScanStatsTab() {
             </div>
           )}
         </div>
+
+        {detail && !detailLoading && (
+          <div className="mt-4 flex items-center justify-between gap-3 rounded-lg border border-border bg-background/60 px-4 py-3">
+            <div className="flex items-center gap-2">
+              {detail.user.isTrusted ? (
+                <Shield className="h-4 w-4 text-primary" />
+              ) : (
+                <Eye className="h-4 w-4 text-muted-foreground" />
+              )}
+              <div>
+                <p className="text-sm font-medium text-foreground">
+                  {detail.user.isTrusted ? "Confiable" : "Bajo Moderación"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {detail.user.isTrusted
+                    ? "Publica y edita sin revisión del admin"
+                    : "Sus subidas y ediciones requieren aprobación"}
+                </p>
+              </div>
+            </div>
+            <Button
+              type="button"
+              size="sm"
+              variant={detail.user.isTrusted ? "destructive" : "outline"}
+              disabled={busyTrustedUserId === detail.user.id}
+              onClick={() => void handleToggleTrusted(detail.user.id, !detail.user.isTrusted)}
+            >
+              {busyTrustedUserId === detail.user.id ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : detail.user.isTrusted ? (
+                "Quitar confianza"
+              ) : (
+                "Marcar como confiable"
+              )}
+            </Button>
+          </div>
+        )}
 
         {detailLoading || !detail ? (
           <div className="mt-6">
@@ -549,6 +628,7 @@ export function AdminScanStatsTab() {
                 <th className="px-3 py-3 text-right">{t("colRejected")}</th>
                 <th className="px-3 py-3 text-right">{t("colViews")}</th>
                 <th className="px-3 py-3 text-right">{t("colZen")}</th>
+                <th className="px-3 py-3 text-left">Moderación</th>
                 <th className="px-3 py-3 text-left">{t("colLastUpload")}</th>
               </tr>
             </thead>
@@ -596,6 +676,23 @@ export function AdminScanStatsTab() {
                   </td>
                   <td className="px-3 py-3 text-right tabular-nums text-foreground">
                     {row.zenPoints.toLocaleString()}
+                  </td>
+                  <td
+                    className="px-3 py-3"
+                    onClick={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => e.stopPropagation()}
+                  >
+                    {row.isTrusted ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary">
+                        <Shield className="h-3 w-3" />
+                        Confiable
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                        <Eye className="h-3 w-3" />
+                        Bajo Moderación
+                      </span>
+                    )}
                   </td>
                   <td className="px-3 py-3 text-xs text-muted-foreground">
                     {row.lastUploadAt

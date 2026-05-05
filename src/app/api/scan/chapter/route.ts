@@ -40,6 +40,7 @@ export async function POST(request: Request) {
   const gate = await requireScanAccess(request.headers);
   if (!gate.ok) return gate.response;
 
+  const isTrusted = gate.user.isTrusted ?? false;
   const userRole = gate.user.role;
   const canUseCoins = userRole === "CREATOR" || userRole === "ADMIN";
 
@@ -251,7 +252,7 @@ export async function POST(request: Request) {
           title,
           locale: loc,
           language,
-          status: "PENDING",
+          status: isTrusted ? "APPROVED" : "PENDING",
           isEarlyAccess,
           earlyAccessUntil,
           earlyAccessPrice,
@@ -272,7 +273,8 @@ export async function POST(request: Request) {
         data: {
           chapterId,
           uploaderId: gate.user.id,
-          status: "PENDING",
+          status: isTrusted ? "APPROVED" : "PENDING",
+          reviewedAt: isTrusted ? new Date() : null,
         },
       });
     });

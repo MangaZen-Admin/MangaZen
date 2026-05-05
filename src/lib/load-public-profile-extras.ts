@@ -8,7 +8,8 @@ const mangaCatalogWhere = (profileUserId: string) => ({
 export async function loadPublicProfileSupplemental(profileUserId: string, role: UserRole) {
   const mWhere = mangaCatalogWhere(profileUserId);
 
-  const [favorites, progressGroups, progressRows, commentsRaw, uploadStats] = await Promise.all([
+  const [favorites, progressGroups, progressRows, commentsRaw, uploadStats, uploadedMangas] =
+    await Promise.all([
     prisma.userFavorite.findMany({
       where: { userId: profileUserId, manga: mWhere },
       orderBy: { addedAt: "desc" },
@@ -57,6 +58,25 @@ export async function loadPublicProfileSupplemental(profileUserId: string, role:
           }),
         ])
       : Promise.resolve(null),
+    role === "SCAN" || role === "CREATOR"
+      ? prisma.manga.findMany({
+          where: {
+            uploaderId: profileUserId,
+            reviewStatus: "APPROVED",
+          },
+          orderBy: { createdAt: "desc" },
+          take: 12,
+          select: {
+            title: true,
+            slug: true,
+            coverImage: true,
+            type: true,
+            status: true,
+            scoreAvg: true,
+            _count: { select: { chapters: true } },
+          },
+        })
+      : Promise.resolve([]),
   ]);
 
   const countsByStatus: Record<string, number> = {};
@@ -127,5 +147,14 @@ export async function loadPublicProfileSupplemental(profileUserId: string, role:
       chapterId: c.chapter.id,
     })),
     uploadsSummary,
+    uploadedMangas: uploadedMangas.map((m) => ({
+      title: m.title,
+      slug: m.slug,
+      coverImage: m.coverImage,
+      type: m.type,
+      status: m.status,
+      scoreAvg: m.scoreAvg,
+      chaptersCount: m._count.chapters,
+    })),
   };
 }

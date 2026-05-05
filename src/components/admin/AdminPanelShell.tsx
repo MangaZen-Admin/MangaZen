@@ -695,54 +695,6 @@ export default function AdminPanelShell({
                                 )}
                               <div className="rounded-lg border border-border bg-background/60 p-3">
                                 <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                                  Edición sin moderación
-                                </p>
-                                <div className="flex items-center gap-3">
-                                  <span className="text-sm text-muted-foreground">
-                                    {user.isTrusted
-                                      ? "✅ Usuario de confianza"
-                                      : "⏳ Requiere moderación"}
-                                  </span>
-                                  <Button
-                                    type="button"
-                                    size="sm"
-                                    variant={user.isTrusted ? "destructive" : "outline"}
-                                    disabled={busyUserId === user.id}
-                                    onClick={async () => {
-                                      setBusyUserId(user.id);
-                                      try {
-                                        const res = await fetch(
-                                          `/api/admin/users/${user.id}/trusted`,
-                                          {
-                                            method: "PATCH",
-                                            headers: { "Content-Type": "application/json" },
-                                            body: JSON.stringify({ isTrusted: !user.isTrusted }),
-                                          },
-                                        );
-                                        if (!res.ok) {
-                                          toast.error("Error al actualizar");
-                                          return;
-                                        }
-                                        const data = (await res.json()) as {
-                                          user: { isTrusted: boolean };
-                                        };
-                                        updateLocalUser({ ...user, isTrusted: data.user.isTrusted });
-                                        toast.success(
-                                          data.user.isTrusted
-                                            ? "Usuario marcado como confiable"
-                                            : "Moderación activada",
-                                        );
-                                      } finally {
-                                        setBusyUserId(null);
-                                      }
-                                    }}
-                                  >
-                                    {user.isTrusted ? "Quitar confianza" : "Marcar como confiable"}
-                                  </Button>
-                                </div>
-                              </div>
-                              <div className="rounded-lg border border-border bg-background/60 p-3">
-                                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                                   {t("zenAdjustButton")} — ZC
                                 </p>
                                 <div className="flex items-center gap-2">
