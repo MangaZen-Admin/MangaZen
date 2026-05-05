@@ -26,6 +26,11 @@ export async function GET(request: Request) {
       alternativeTitles: {
         select: { locale: true, title: true },
       },
+      tags: {
+        select: {
+          tag: { select: { id: true, name: true } },
+        },
+      },
     },
   });
 
@@ -33,6 +38,10 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
   }
 
-  return NextResponse.json(manga);
+  const { tags: mangaTags, ...mangaRest } = manga;
+  return NextResponse.json({
+    ...mangaRest,
+    tags: mangaTags.map((t) => ({ id: t.tag.id, name: t.tag.name })),
+  });
 }
 

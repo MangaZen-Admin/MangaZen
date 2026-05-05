@@ -144,6 +144,23 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ma
     }
   }
 
+  // Actualizar tags si se enviaron
+  const tagIdsRaw = form.get("tagIds");
+  if (tagIdsRaw) {
+    try {
+      const tagIds = JSON.parse(String(tagIdsRaw)) as string[];
+      await prisma.mangaTag.deleteMany({ where: { mangaId: manga.id } });
+      if (tagIds.length > 0) {
+        await prisma.mangaTag.createMany({
+          data: tagIds.map((tagId) => ({ mangaId: manga.id, tagId })),
+          skipDuplicates: true,
+        });
+      }
+    } catch {
+      // Si falla el parse, ignorar
+    }
+  }
+
   if (needsReview) {
     await prisma.changeRequest.create({
       data: {

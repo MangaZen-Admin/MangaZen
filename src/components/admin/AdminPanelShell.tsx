@@ -142,13 +142,10 @@ export default function AdminPanelShell({
 
   useEffect(() => {
     const tabFromUrl = normalizeTab(searchParams.get("tab"));
-    if (tabFromUrl !== tab) {
-      setTab(tabFromUrl);
-    }
+    setTab(tabFromUrl);
   }, [searchParams]);
 
   function navigateToTab(next: AdminTabValue) {
-    setTab(next);
     const p = new URLSearchParams(searchParams.toString());
     p.set("tab", next);
     router.replace(`${pathname}?${p.toString()}`, { scroll: false });

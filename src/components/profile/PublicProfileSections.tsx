@@ -109,7 +109,20 @@ export async function PublicProfileFull({
               </span>
             )}
             {user.isPro && (
-              <span className="rounded-md border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-900 dark:text-amber-100">
+              <span
+                className={cn(
+                  "rounded-md border px-2 py-0.5 text-xs font-medium",
+                  user.proPlan === "bronze" &&
+                    "border-amber-700/40 bg-amber-700/10 text-amber-700 dark:text-amber-400",
+                  user.proPlan === "silver" &&
+                    "border-slate-400/40 bg-slate-400/10 text-slate-500 dark:text-slate-300",
+                  user.proPlan === "gold" &&
+                    "border-yellow-500/40 bg-yellow-500/10 text-yellow-700 dark:text-yellow-400",
+                  user.proPlan === "platinum" &&
+                    "border-violet-500/40 bg-violet-500/10 text-violet-700 dark:text-violet-300",
+                  !user.proPlan && "border-amber-500/40 bg-amber-500/10 text-amber-900 dark:text-amber-100",
+                )}
+              >
                 {t("proBadge")}
               </span>
             )}

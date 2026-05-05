@@ -83,6 +83,7 @@ type EditChapterDraft = {
   mangaCountry: string;
   mangaReleaseYear: number;
   mangaAltTitles: { locale: string; title: string }[];
+  mangaTagIds: string[];
 };
 
 type TagRow = { id: string; name: string; category: string };
@@ -842,8 +843,18 @@ function MyUploadsSection() {
   const [editBusy, setEditBusy] = useState(false);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [availableTags, setAvailableTags] = useState<{ id: string; name: string }[]>([]);
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 20;
+
+  useEffect(() => {
+    void fetch("/api/scan/tags")
+      .then((r) => r.json())
+      .then((d: { tags?: { id: string; name: string }[] }) => {
+        setAvailableTags(d.tags ?? []);
+      })
+      .catch(() => setAvailableTags([]));
+  }, []);
 
   const load = useCallback(async () => {
     setPage(1);
@@ -983,6 +994,7 @@ function MyUploadsSection() {
                                   country?: string;
                                   releaseYear?: number;
                                   alternativeTitles?: { locale: string; title: string }[];
+                                  tags?: { id: string; name: string }[];
                                 };
                                 setEditDraft({
                                   chapterId: r.chapterId,
@@ -997,6 +1009,7 @@ function MyUploadsSection() {
                                   mangaCountry: data.country ?? "",
                                   mangaReleaseYear: data.releaseYear ?? new Date().getFullYear(),
                                   mangaAltTitles: data.alternativeTitles ?? [],
+                                  mangaTagIds: (data.tags ?? []).map((t: { id: string }) => t.id),
                                 });
                               } catch {
                                 toast.error(t("errors.GENERIC"));
@@ -1328,6 +1341,38 @@ function MyUploadsSection() {
                       </div>
                     )}
                   </div>
+                  <div className="sm:col-span-2">
+                    <span className="text-xs text-muted-foreground">Géneros y temáticas</span>
+                    <div className="scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent mt-2 max-h-32 overflow-y-auto rounded-lg border border-border bg-background p-2">
+                      <div className="flex flex-wrap gap-1.5">
+                        {availableTags.map((tag) => (
+                          <button
+                            key={tag.id}
+                            type="button"
+                            onClick={() =>
+                              setEditDraft((prev) =>
+                                prev
+                                  ? {
+                                      ...prev,
+                                      mangaTagIds: prev.mangaTagIds.includes(tag.id)
+                                        ? prev.mangaTagIds.filter((id) => id !== tag.id)
+                                        : [...prev.mangaTagIds, tag.id],
+                                    }
+                                  : prev,
+                              )
+                            }
+                            className={`rounded-full border px-2.5 py-1 text-xs font-medium transition ${
+                              editDraft?.mangaTagIds.includes(tag.id)
+                                ? "border-primary bg-primary/20 text-foreground"
+                                : "border-border text-muted-foreground hover:border-primary/40"
+                            }`}
+                          >
+                            {tag.name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1378,6 +1423,7 @@ function MyUploadsSection() {
                       mgForm.append(`altTitles[${i}][locale]`, at.locale);
                       mgForm.append(`altTitles[${i}][title]`, at.title);
                     });
+                    mgForm.set("tagIds", JSON.stringify(editDraft.mangaTagIds));
                     const mgRes = await fetch(`/api/scan/manga/${editDraft.mangaSlug}`, {
                       method: "PATCH",
                       body: mgForm,

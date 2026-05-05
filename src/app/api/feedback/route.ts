@@ -29,26 +29,26 @@ export async function GET(request: Request) {
   const idRows =
     rawCat && CATEGORY_FILTER.has(rawCat)
       ? await prisma.$queryRaw<{ id: string }[]>`
-          SELECT f.id FROM Feedback f
+          SELECT f.id FROM "Feedback" f
           LEFT JOIN (
-            SELECT feedbackId,
+            SELECT "feedbackId",
               SUM(CASE WHEN value = 1 THEN 1 WHEN value = -1 THEN -1 ELSE 0 END) AS net
-            FROM FeedbackVote
-            GROUP BY feedbackId
-          ) v ON v.feedbackId = f.id
-          WHERE f.category = ${rawCat}
-          ORDER BY COALESCE(v.net, 0) DESC, f.createdAt DESC, f.id DESC
+            FROM "FeedbackVote"
+            GROUP BY "feedbackId"
+          ) v ON v."feedbackId" = f.id
+          WHERE f.category = ${rawCat}::"FeedbackCategory"
+          ORDER BY COALESCE(v.net, 0) DESC, f."createdAt" DESC, f.id DESC
           LIMIT ${take} OFFSET ${skip}
         `
       : await prisma.$queryRaw<{ id: string }[]>`
-          SELECT f.id FROM Feedback f
+          SELECT f.id FROM "Feedback" f
           LEFT JOIN (
-            SELECT feedbackId,
+            SELECT "feedbackId",
               SUM(CASE WHEN value = 1 THEN 1 WHEN value = -1 THEN -1 ELSE 0 END) AS net
-            FROM FeedbackVote
-            GROUP BY feedbackId
-          ) v ON v.feedbackId = f.id
-          ORDER BY COALESCE(v.net, 0) DESC, f.createdAt DESC, f.id DESC
+            FROM "FeedbackVote"
+            GROUP BY "feedbackId"
+          ) v ON v."feedbackId" = f.id
+          ORDER BY COALESCE(v.net, 0) DESC, f."createdAt" DESC, f.id DESC
           LIMIT ${take} OFFSET ${skip}
         `;
 

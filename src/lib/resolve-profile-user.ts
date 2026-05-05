@@ -11,6 +11,7 @@ const publicProfileUserSelect = {
   zenCoins: true,
   zenShards: true,
   isPro: true,
+  proPlan: true,
   isProfilePublic: true,
   externalDonationLink: true,
   hideZenFromPublic: true,
