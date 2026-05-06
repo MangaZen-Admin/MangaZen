@@ -64,6 +64,7 @@ export function AdminModerationPanel() {
   const [content, setContent] = useState<ContentItem[]>([]);
   const [contentLoading, setContentLoading] = useState(true);
   const [deletingContentId, setDeletingContentId] = useState<string | null>(null);
+  const [contentSearch, setContentSearch] = useState("");
   const [contentTypeFilter, setContentTypeFilter] = useState<
     "all" | "comment" | "chapter" | "manga" | "feedback"
   >("all");
@@ -109,7 +110,7 @@ export function AdminModerationPanel() {
 
   const filteredUsers =
     search.trim().length === 0
-      ? []
+      ? users.slice(0, 5)
       : users.filter((u) => {
           const q = search.trim().toLowerCase();
           return (
@@ -119,23 +120,35 @@ export function AdminModerationPanel() {
           );
         });
 
-  const filteredContent = content.filter((item) => {
-    if (contentTypeFilter !== "all" && item.type !== contentTypeFilter) return false;
-    if (contentDateFilter !== "all") {
-      const date = new Date(item.createdAt);
-      const now = new Date();
-      if (contentDateFilter === "today") {
-        return date.toDateString() === now.toDateString();
+  const baseContent = contentSearch.trim() ? content : content.slice(0, 10);
+
+  const filteredContent = baseContent
+    .filter((item) => {
+      if (contentSearch.trim()) {
+        const q = contentSearch.trim().toLowerCase();
+        const matches =
+          item.label.toLowerCase().includes(q) ||
+          item.sublabel?.toLowerCase().includes(q) ||
+          item.authorLabel?.toLowerCase().includes(q);
+        if (!matches) return false;
       }
-      if (contentDateFilter === "week") {
-        return date >= new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      if (contentTypeFilter !== "all" && item.type !== contentTypeFilter) return false;
+      if (contentDateFilter !== "all") {
+        const date = new Date(item.createdAt);
+        const now = new Date();
+        if (contentDateFilter === "today") {
+          return date.toDateString() === now.toDateString();
+        }
+        if (contentDateFilter === "week") {
+          return date >= new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        }
+        if (contentDateFilter === "month") {
+          return date >= new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        }
       }
-      if (contentDateFilter === "month") {
-        return date >= new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-      }
-    }
-    return true;
-  });
+      return true;
+    })
+    .slice(0, contentSearch.trim() ? 5 : 10);
 
   function openAction(user: ModerationUser, type: "ban" | "suspend" | "delete") {
     setActionUser(user);
@@ -286,8 +299,8 @@ export function AdminModerationPanel() {
         </div>
 
         {search.trim().length === 0 && !loading && (
-          <p className="mt-4 text-sm text-muted-foreground">
-            {t("searchHint")}
+          <p className="mt-2 text-xs text-muted-foreground">
+            {t("recentUsersHint")}
           </p>
         )}
 
@@ -443,6 +456,17 @@ export function AdminModerationPanel() {
       <section className="rounded-xl border border-border bg-card p-5 shadow-sm">
         <h2 className="text-lg font-semibold text-foreground">{t("contentTitle")}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{t("contentSubtitle")}</p>
+
+        <div className="relative mt-4 w-full max-w-xs">
+          <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="search"
+            value={contentSearch}
+            onChange={(e) => setContentSearch(e.target.value)}
+            placeholder={t("contentSearchPlaceholder")}
+            className="w-full rounded-lg border border-border bg-background py-2 pl-8 pr-3 text-sm outline-none focus:ring-2 focus:ring-primary/30"
+          />
+        </div>
 
         <div className="mt-4 flex flex-wrap gap-2">
           {(["all", "comment", "chapter", "manga", "feedback"] as const).map((f) => (

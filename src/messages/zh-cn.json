@@ -1097,6 +1097,8 @@
       },
       "contentShowing": "显示 {shown} / {total} 项",
       "searchHint": "使用搜索找到用户。",
+      "recentUsersHint": "显示最近5名用户。使用搜索查找特定用户。",
+      "contentSearchPlaceholder": "搜索内容...",
       "viewOnPage": "在页面查看 →"
     },
     "editions": {

@@ -1097,6 +1097,8 @@
       },
       "contentShowing": "{total}件中{shown}件表示",
       "searchHint": "検索バーでユーザーを探してください。",
+      "recentUsersHint": "最近の5人のユーザーを表示しています。特定のユーザーを検索してください。",
+      "contentSearchPlaceholder": "コンテンツを検索...",
       "viewOnPage": "ページで見る →"
     },
     "editions": {

@@ -1097,6 +1097,8 @@
       },
       "contentShowing": "Mostrando {shown} de {total} itens",
       "searchHint": "Use a busca para encontrar um usuário.",
+      "recentUsersHint": "Mostrando os últimos 5 usuários. Use a busca para encontrar um específico.",
+      "contentSearchPlaceholder": "Pesquisar conteúdo...",
       "viewOnPage": "Ver na página →"
     },
     "editions": {
