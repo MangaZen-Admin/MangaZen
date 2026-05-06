@@ -814,6 +814,14 @@
       "scanRoleDialogBody3": "违反这些条件可能导致账户及已发布内容被暂停或删除。",
       "scanRoleDialogConfirm": "我理解并确认角色更改",
       "scanTermsAcceptedAt": "条款接受日期",
+      "proFrameTitle": "Pro边框",
+      "proFrameError": "更新Pro边框时出错",
+      "proFrameSuccess": "Pro边框已更新",
+      "proFrameNone": "无边框",
+      "proFrameBronze": "青铜",
+      "proFrameSilver": "白银",
+      "proFrameGold": "黄金",
+      "proFramePlatinum": "白金",
       "tabEdiciones": "编辑"
     },
     "ads": {

@@ -814,6 +814,14 @@
       "scanRoleDialogBody3": "これらの条件に違反した場合、アカウントと公開コンテンツの停止または削除につながる可能性があります。",
       "scanRoleDialogConfirm": "理解した上でロール変更を確認します",
       "scanTermsAcceptedAt": "利用規約の同意日",
+      "proFrameTitle": "Proフレーム",
+      "proFrameError": "Proフレームの更新エラー",
+      "proFrameSuccess": "Proフレームを更新しました",
+      "proFrameNone": "フレームなし",
+      "proFrameBronze": "ブロンズ",
+      "proFrameSilver": "シルバー",
+      "proFrameGold": "ゴールド",
+      "proFramePlatinum": "プラチナ",
       "tabEdiciones": "編集"
     },
     "ads": {

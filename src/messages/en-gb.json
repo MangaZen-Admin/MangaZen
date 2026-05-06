@@ -814,6 +814,14 @@
       "scanRoleDialogBody3": "Failure to comply with these conditions may result in suspension or deletion of the account and published content.",
       "scanRoleDialogConfirm": "I understand and confirm the role change",
       "scanTermsAcceptedAt": "Terms accepted on",
+      "proFrameTitle": "Pro Frame",
+      "proFrameError": "Error updating Pro frame",
+      "proFrameSuccess": "Pro frame updated",
+      "proFrameNone": "No frame",
+      "proFrameBronze": "Bronze",
+      "proFrameSilver": "Silver",
+      "proFrameGold": "Gold",
+      "proFramePlatinum": "Platinum",
       "tabEdiciones": "Editions"
     },
     "ads": {

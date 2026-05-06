@@ -61,6 +61,7 @@ export default async function ProfilePage() {
       zenCoins: true,
       zenShards: true,
       isPro: true,
+      proPlan: true,
       proExpiresAt: true,
       externalDonationLink: true,
       requirePasswordForPoints: true,
@@ -194,6 +195,7 @@ export default async function ProfilePage() {
           initialZenShards={user.zenShards}
           initialExternalDonationLink={user.externalDonationLink ?? null}
           isPro={user.isPro}
+          proPlan={user.proPlan}
           proExpiresAt={user.proExpiresAt?.toISOString() ?? null}
           email={user.email}
           role={user.role}

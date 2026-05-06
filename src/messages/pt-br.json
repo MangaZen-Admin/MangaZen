@@ -814,6 +814,14 @@
       "scanRoleDialogBody3": "O descumprimento destas condições pode resultar na suspensão ou exclusão da conta e do conteúdo publicado.",
       "scanRoleDialogConfirm": "Entendo e confirmo a mudança de papel",
       "scanTermsAcceptedAt": "Termos aceitos em",
+      "proFrameTitle": "Marco Pro",
+      "proFrameError": "Erro ao atualizar o marco Pro",
+      "proFrameSuccess": "Marco Pro atualizado",
+      "proFrameNone": "Sem marco",
+      "proFrameBronze": "Bronze",
+      "proFrameSilver": "Prata",
+      "proFrameGold": "Ouro",
+      "proFramePlatinum": "Platina",
       "tabEdiciones": "Edições"
     },
     "ads": {

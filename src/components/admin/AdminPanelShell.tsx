@@ -21,6 +21,7 @@ import { resolveApiErrorMessage } from "@/lib/api-error";
 import { BadgeIcon } from "@/components/profile/BadgeIcon";
 import { getPublicProfileUrlKey } from "@/lib/public-profile-url";
 import { dateFnsLocaleFromAppLocale } from "@/lib/date-fns-locale";
+import { cn } from "@/lib/utils";
 import { ReauthDialog } from "@/components/security/ReauthDialog";
 import { AdminProGrantPanel } from "@/components/admin/AdminProGrantPanel";
 import { Button } from "@/components/ui/button";
@@ -70,6 +71,7 @@ type AdminUser = {
   username: string | null;
   email: string | null;
   image?: string | null;
+  proPlan?: string | null;
   role: "ADMIN" | "SCAN" | "CREATOR" | "USER";
   acceptedScanTermsAt?: Date | string | null;
   isTrusted?: boolean;
@@ -134,6 +136,16 @@ export default function AdminPanelShell({
   const tBadges = useTranslations("admin.userBadges");
   const locale = useLocale();
   const dfLocale = useMemo(() => dateFnsLocaleFromAppLocale(locale), [locale]);
+  const PLAN_LABELS: Record<string, string> = useMemo(
+    () => ({
+      none: t("proFrameNone"),
+      bronze: t("proFrameBronze"),
+      silver: t("proFrameSilver"),
+      gold: t("proFrameGold"),
+      platinum: t("proFramePlatinum"),
+    }),
+    [t]
+  );
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -480,6 +492,29 @@ export default function AdminPanelShell({
     }
   }
 
+  async function setProFrame(user: AdminUser, proPlan: string | null) {
+    setBusyUserId(user.id);
+    try {
+      const res = await fetch(`/api/admin/users/${user.id}/pro-frame`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ proPlan }),
+      });
+      if (!res.ok) {
+        toast.error(t("proFrameError"));
+        return;
+      }
+      setUsers((prev) =>
+        prev.map((u) => (u.id === user.id ? { ...u, proPlan } : u))
+      );
+      toast.success(t("proFrameSuccess"));
+    } catch {
+      toast.error(t("proFrameError"));
+    } finally {
+      setBusyUserId(null);
+    }
+  }
+
   function TabBadge({ count }: { count: number }) {
     if (count <= 0) return null;
     return (
@@ -820,6 +855,34 @@ export default function AdminPanelShell({
                                   </ul>
                                 </div>
                               )}
+
+                              <div className="rounded-lg border border-border bg-background/60 p-3 sm:col-span-2">
+                                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                                  {t("proFrameTitle")}
+                                </p>
+                                <div className="flex flex-wrap items-center gap-2">
+                                  {(
+                                    ["none", "bronze", "silver", "gold", "platinum"] as const
+                                  ).map((plan) => (
+                                    <button
+                                      key={plan}
+                                      type="button"
+                                      disabled={busyUserId === user.id}
+                                      onClick={() =>
+                                        void setProFrame(user, plan === "none" ? null : plan)
+                                      }
+                                      className={cn(
+                                        "rounded-full border px-3 py-1 text-xs font-medium transition",
+                                        user.proPlan === (plan === "none" ? null : plan)
+                                          ? "border-primary bg-primary/20 text-foreground"
+                                          : "border-border text-muted-foreground hover:border-primary/40"
+                                      )}
+                                    >
+                                      {PLAN_LABELS[plan]}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
                             </div>
                           </td>
                         </tr>

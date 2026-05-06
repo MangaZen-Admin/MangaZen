@@ -1330,6 +1330,14 @@
       "scanRoleDialogBody3": "Нарушение этих условий может привести к блокировке или удалению аккаунта и опубликованного контента.",
       "scanRoleDialogConfirm": "Я понимаю и подтверждаю смену роли",
       "scanTermsAcceptedAt": "Условия приняты",
+      "proFrameTitle": "Pro рамка",
+      "proFrameError": "Ошибка обновления Pro рамки",
+      "proFrameSuccess": "Pro рамка обновлена",
+      "proFrameNone": "Без рамки",
+      "proFrameBronze": "Бронза",
+      "proFrameSilver": "Серебро",
+      "proFrameGold": "Золото",
+      "proFramePlatinum": "Платина",
       "tabEdiciones": "Редакции"
     },
     "ads": {

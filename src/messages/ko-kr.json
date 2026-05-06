@@ -814,6 +814,14 @@
       "scanRoleDialogBody3": "이러한 조건을 위반할 경우 계정 및 게시된 콘텐츠가 정지되거나 삭제될 수 있습니다.",
       "scanRoleDialogConfirm": "이해하고 역할 변경을 확인합니다",
       "scanTermsAcceptedAt": "약관 동의일",
+      "proFrameTitle": "Pro 프레임",
+      "proFrameError": "Pro 프레임 업데이트 오류",
+      "proFrameSuccess": "Pro 프레임이 업데이트되었습니다",
+      "proFrameNone": "프레임 없음",
+      "proFrameBronze": "브론즈",
+      "proFrameSilver": "실버",
+      "proFrameGold": "골드",
+      "proFramePlatinum": "플래티넘",
       "tabEdiciones": "에디션"
     },
     "ads": {

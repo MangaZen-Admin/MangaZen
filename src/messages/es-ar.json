@@ -814,6 +814,14 @@
       "scanRoleDialogBody3": "El incumplimiento de estas condiciones puede resultar en la suspensión o eliminación de la cuenta y el contenido publicado.",
       "scanRoleDialogConfirm": "Entiendo y confirmo el cambio de rol",
       "scanTermsAcceptedAt": "Términos aceptados el",
+      "proFrameTitle": "Marco Pro",
+      "proFrameError": "Error al actualizar el marco Pro",
+      "proFrameSuccess": "Marco Pro actualizado",
+      "proFrameNone": "Sin marco",
+      "proFrameBronze": "Bronce",
+      "proFrameSilver": "Plata",
+      "proFrameGold": "Oro",
+      "proFramePlatinum": "Platino",
       "tabEdiciones": "Ediciones"
     },
     "ads": {

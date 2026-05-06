@@ -26,6 +26,7 @@ export default async function Navbar() {
           email: true,
           role: true,
           isPro: true,
+          proPlan: true,
           zenCoins: true,
           zenShards: true,
         },
@@ -113,6 +114,7 @@ export default async function Navbar() {
                 <UserMenu
                   displayName={displayName}
                   image={user.image}
+                  proPlan={user.proPlan}
                   isAdmin={user.role === "ADMIN"}
                   showScanPanel={canAccessScanPanel(user.role)}
                   adminReviewQueueCount={adminReviewQueueCount}

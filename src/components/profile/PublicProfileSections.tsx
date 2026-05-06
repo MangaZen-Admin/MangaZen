@@ -10,6 +10,7 @@ import { dateFnsLocaleFromAppLocale } from "@/lib/date-fns-locale";
 import type { findUserForPublicProfile } from "@/lib/resolve-profile-user";
 import type { loadPublicProfileSupplemental } from "@/lib/load-public-profile-extras";
 import { AdSlotShell } from "@/components/AdSlotShell";
+import { ProAvatarFrame } from "@/components/ui/ProAvatarFrame";
 
 type User = NonNullable<Awaited<ReturnType<typeof findUserForPublicProfile>>>;
 type Supplemental = Awaited<ReturnType<typeof loadPublicProfileSupplemental>>;
@@ -75,7 +76,11 @@ export async function PublicProfileFull({
 
         <div className="relative px-6 pb-6">
           <div className="relative -mt-12 mb-4 flex items-end justify-between">
-            <div className="relative h-24 w-24 overflow-hidden rounded-2xl border-4 border-card bg-muted shadow-lg">
+            <ProAvatarFrame
+              proPlan={user.proPlan as any}
+              size="xl"
+              className="rounded-2xl border-4 border-card bg-muted shadow-lg"
+            >
               {user.image ? (
                 <Image src={user.image} alt="" fill className="object-cover" unoptimized />
               ) : (
@@ -83,7 +88,7 @@ export async function PublicProfileFull({
                   {displayName.slice(0, 1).toUpperCase()}
                 </div>
               )}
-            </div>
+            </ProAvatarFrame>
             {isSelf && (
               <Link
                 href={`/${locale}/profile`}

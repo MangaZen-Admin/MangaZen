@@ -4,10 +4,12 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { ChevronDown, LogOut, ScanLine, Shield, User } from "lucide-react";
+import { ProAvatarFrame } from "@/components/ui/ProAvatarFrame";
 
 type UserMenuProps = {
   displayName: string;
   image: string | null;
+  proPlan?: string | null;
   isAdmin: boolean;
   /** Viene de `canAccessScanPanel(role)` en Navbar (SCAN, ADMIN o CREATOR). */
   showScanPanel?: boolean;
@@ -18,6 +20,7 @@ type UserMenuProps = {
 export default function UserMenu({
   displayName,
   image,
+  proPlan,
   isAdmin,
   showScanPanel = false,
   adminReviewQueueCount = 0,
@@ -46,7 +49,11 @@ export default function UserMenu({
         onClick={() => setOpen((prev) => !prev)}
         className="flex items-center gap-2 rounded-full border border-border bg-card px-2 py-1 text-foreground transition hover:border-primary hover:bg-primary/10 hover:shadow-none dark:hover:bg-card dark:hover:shadow-[0_0_14px_rgba(157,78,221,0.35)]"
       >
-        <div className="relative h-8 w-8 overflow-hidden rounded-full border border-border">
+        <ProAvatarFrame
+          proPlan={proPlan as "bronze" | "silver" | "gold" | "platinum" | null}
+          size="sm"
+          className="border border-border"
+        >
           {image ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={image} alt={`Avatar de ${displayName}`} className="h-full w-full object-cover" />
@@ -55,7 +62,7 @@ export default function UserMenu({
               {displayName.slice(0, 1).toUpperCase()}
             </div>
           )}
-        </div>
+        </ProAvatarFrame>
         <span className="hidden max-w-28 truncate text-sm text-foreground sm:inline">{displayName}</span>
         <ChevronDown className="hidden h-4 w-4 text-muted-foreground sm:block" />
       </button>

@@ -9,6 +9,7 @@ import { Coins, Crown, ExternalLink, Gem, Mail, Pencil, X } from "lucide-react";
 import { toast } from "sonner";
 import { ImageCropModal } from "@/components/profile/ImageCropModal";
 import { ProfileAdblockBanner } from "@/components/profile/ProfileAdblockBanner";
+import { ProAvatarFrame } from "@/components/ui/ProAvatarFrame";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { USERNAME_PATTERN } from "@/lib/validation/username-profile";
@@ -23,6 +24,7 @@ type ProfileAccountCardProps = {
   /** Ignorado en UI; los links se gestionan con DonationLinksEditor. */
   initialExternalDonationLink?: string | null;
   isPro: boolean;
+  proPlan?: string | null;
   proExpiresAt: string | null;
   email: string | null;
   role: string;
@@ -45,6 +47,7 @@ export function ProfileAccountCard({
   initialZenCoins,
   initialZenShards,
   isPro,
+  proPlan,
   proExpiresAt,
   email,
   role,
@@ -255,7 +258,7 @@ export function ProfileAccountCard({
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <div className="relative h-16 w-16 shrink-0">
-          <div className="h-16 w-16 overflow-hidden rounded-full border border-border bg-background">
+          <ProAvatarFrame proPlan={proPlan as any} size="lg" className="border border-border bg-background">
             {imageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={imageUrl} alt="" className="h-full w-full object-cover" />
@@ -264,7 +267,7 @@ export function ProfileAccountCard({
                 {displayName.slice(0, 1).toUpperCase()}
               </div>
             )}
-          </div>
+          </ProAvatarFrame>
           <label className="absolute bottom-0 right-0 cursor-pointer rounded-full border border-border bg-card p-1 shadow-sm hover:bg-muted">
             <Pencil className="h-3 w-3 text-muted-foreground" />
             <input
