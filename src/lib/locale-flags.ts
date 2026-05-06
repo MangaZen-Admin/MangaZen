@@ -7,6 +7,7 @@ export const LOCALE_TO_FLAG: Record<string, string> = {
   "ja-jp": "🇯🇵",
   "ko-kr": "🇰🇷",
   "zh-cn": "🇨🇳",
+  "ru-ru": "🇷🇺",
 };
 
 const LOCALE_TO_TWEMOJI: Record<string, string> = {
@@ -18,6 +19,7 @@ const LOCALE_TO_TWEMOJI: Record<string, string> = {
   "ja-jp": "1f1ef-1f1f5",
   "ko-kr": "1f1f0-1f1f7",
   "zh-cn": "1f1e8-1f1f3",
+  "ru-ru": "1f1f7-1f1fa",
 };
 
 const ES_ORDER = ["es-ar", "es-es"] as const;

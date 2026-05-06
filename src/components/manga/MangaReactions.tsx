@@ -28,6 +28,7 @@ export function MangaReactions({
   initialVoteChoice,
   isAuthenticated,
 }: MangaReactionsProps) {
+  const t = useTranslations("mangaReactions");
   const tBadges = useTranslations("badges");
   const [favorited, setFavorited] = useState(initialFavorited);
   const [voteChoice, setVoteChoice] = useState<VoteChoice>(initialVoteChoice);
@@ -99,7 +100,7 @@ export function MangaReactions({
         )}
       >
         <Heart className="h-4 w-4" />
-        Favorito ({counts.favoriteCount})
+        {t("favorite", { count: counts.favoriteCount })}
       </button>
 
       <button
@@ -114,7 +115,7 @@ export function MangaReactions({
         )}
       >
         <Flame className="h-4 w-4" />
-        Me gusta ({counts.likeCount})
+        {t("like", { count: counts.likeCount })}
       </button>
 
       <button
@@ -129,7 +130,7 @@ export function MangaReactions({
         )}
       >
         <ThumbsDown className="h-4 w-4" />
-        No me gusta ({counts.dislikeCount})
+        {t("dislike", { count: counts.dislikeCount })}
       </button>
 
       {showAuthPrompt && (

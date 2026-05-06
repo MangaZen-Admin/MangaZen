@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { BookX } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
-export default function NotFound() {
+export default async function NotFound() {
+  const t = await getTranslations("notFound");
+
   return (
     <main className="flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center px-4 text-center">
       <div className="relative mb-6">
@@ -12,11 +15,10 @@ export default function NotFound() {
       </div>
 
       <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-        Página no encontrada
+        {t("title")}
       </h1>
       <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
-        El manga que buscás se escapó al mundo de las sombras... o simplemente
-        esta página no existe.
+        {t("body")}
       </p>
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">
@@ -24,13 +26,13 @@ export default function NotFound() {
           href="/"
           className="rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
         >
-          Volver al inicio
+          {t("backHome")}
         </Link>
         <Link
           href="/library"
           className="rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground transition hover:border-primary/40 hover:bg-primary/5"
         >
-          Ver biblioteca
+          {t("viewLibrary")}
         </Link>
       </div>
     </main>

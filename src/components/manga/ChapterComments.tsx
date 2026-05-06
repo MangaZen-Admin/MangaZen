@@ -88,6 +88,7 @@ const LOCALE_LABEL_KEYS = {
   "ja-jp": "localeFilter.ja_jp",
   "ko-kr": "localeFilter.ko_kr",
   "zh-cn": "localeFilter.zh_cn",
+  "ru-ru": "localeFilter.ru_ru",
 } as const satisfies Record<AppLocale, string>;
 
 const VOTE_DEBOUNCE_MS = 400;

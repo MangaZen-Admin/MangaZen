@@ -509,7 +509,7 @@ export default function AdminPanelShell({
           </TabsTrigger>
           <TabsTrigger value="ediciones" className="gap-1.5">
             <FileEdit className="h-3.5 w-3.5" aria-hidden />
-            Ediciones
+            {t("tabEdiciones")}
           </TabsTrigger>
           <TabsTrigger value="comunidad" className="gap-1.5">
             {t("tabComunidad")}

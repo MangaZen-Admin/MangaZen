@@ -15,21 +15,20 @@ type AdScriptRow = {
   isActive: boolean;
 };
 
-const SLOT_OPTIONS = [
-  { id: "global", label: "🌐 Script global (todos los slots)" },
-  { id: "home-between-sections", label: "Home — entre secciones" },
-  { id: "manga-detail-before-chapters", label: "Ficha manga — antes de capítulos" },
-  { id: "reader-end-of-chapter", label: "Lector — fin de capítulo" },
-  { id: "library-after-10", label: "Biblioteca — tras 10 resultados" },
-  { id: "library-after-25", label: "Biblioteca — tras 25 resultados" },
-  { id: "library-after-50", label: "Biblioteca — cada 50 resultados" },
-  { id: "news-between-sections", label: "Novedades — entre secciones" },
-  { id: "community-between-sections", label: "Comunidad — entre secciones" },
-  { id: "profile-public-bottom", label: "Perfil público — al final" },
-];
-
 export function AdminAdsPanel() {
   const t = useTranslations("admin.ads");
+  const SLOT_OPTIONS = [
+    { id: "global", label: t("slots.global") },
+    { id: "home-between-sections", label: t("slots.homeBetween") },
+    { id: "manga-detail-before-chapters", label: t("slots.mangaDetailBefore") },
+    { id: "reader-end-of-chapter", label: t("slots.readerEnd") },
+    { id: "library-after-10", label: t("slots.libraryAfter10") },
+    { id: "library-after-25", label: t("slots.libraryAfter25") },
+    { id: "library-after-50", label: t("slots.libraryAfter50") },
+    { id: "news-between-sections", label: t("slots.newsBetween") },
+    { id: "community-between-sections", label: t("slots.communityBetween") },
+    { id: "profile-public-bottom", label: t("slots.profilePublicBottom") },
+  ];
   const [scripts, setScripts] = useState<AdScriptRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);

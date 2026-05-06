@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import Cropper from "react-easy-crop";
 import type { Area, Point } from "react-easy-crop";
 import { Check, X, ZoomIn, ZoomOut } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 
 async function getCroppedImg(imageSrc: string, pixelCrop: Area): Promise<Blob> {
@@ -54,6 +55,7 @@ type Props = {
 };
 
 export function ImageCropModal({ imageSrc, aspect, title, onCancel, onConfirm, shape = "rect" }: Props) {
+  const t = useTranslations("imageCrop");
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [minZoom, setMinZoom] = useState(1);
@@ -159,11 +161,11 @@ export function ImageCropModal({ imageSrc, aspect, title, onCancel, onConfirm, s
 
         <div className="flex justify-end gap-2">
           <Button type="button" variant="outline" onClick={onCancel} disabled={busy}>
-            Cancelar
+            {t("cancel")}
           </Button>
           <Button type="button" onClick={() => void handleConfirm()} disabled={busy}>
             <Check className="mr-1.5 h-4 w-4" />
-            Aplicar recorte
+            {t("apply")}
           </Button>
         </div>
       </div>

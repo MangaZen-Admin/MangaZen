@@ -7,6 +7,10 @@
     "placeholder": "广告",
     "label": "广告"
   },
+  "adultContent": {
+    "title": "🔞 成人内容",
+    "subtitle": "即将推出。"
+  },
   "auth": {
     "loginTitle": "登录",
     "loginSubtitle": "登录后可投票、收藏并关注作品。",
@@ -65,6 +69,8 @@
     "balanceLine": "余额：{balance} {currency}",
     "cancel": "取消",
     "confirm": "确认",
+    "reauthLabel": "确认密码",
+    "reauthPlaceholder": "请输入密码...",
     "toastBoosted": "推广已应用。",
     "errors": {
       "generic": "无法应用推广。",
@@ -187,7 +193,11 @@
     "libraryEmptyReading": "您目前没有在读任何漫画。",
     "libraryEmptyCompleted": "您还没有完成任何漫画。",
     "libraryEmptyDropped": "您没有放弃任何漫画。",
-    "libraryEmptyPlanToRead": "您的待读列表是空的。"
+    "libraryEmptyPlanToRead": "您的待读列表是空的。",
+    "avatarUpdated": "头像已更新",
+    "avatarError": "无法更新头像",
+    "cropAvatarTitle": "裁剪头像",
+    "cropBannerTitle": "裁剪横幅"
   },
   "chapterComments": {
     "title": "章节评论",
@@ -201,7 +211,8 @@
       "pt_br": "葡萄牙语（巴西）",
       "ja_jp": "日语",
       "ko_kr": "韩语",
-      "zh_cn": "中文（简体）"
+      "zh_cn": "中文（简体）",
+      "ru_ru": "俄语"
     },
     "newLabel": "你的评论",
     "placeholder": "写一条评论…",
@@ -322,7 +333,20 @@
       "save": "保存",
       "saved": "已保存。",
       "saveError": "无法保存。",
-      "empty": "暂无章节。"
+      "empty": "暂无章节。",
+      "searchError": "搜索错误",
+      "searchPlaceholder": "搜索漫画或章节...",
+      "searchButton": "搜索",
+      "resultsCount": "{count}个结果",
+      "recentChapters": "最近上传的10章",
+      "eaBadge": "Early Access",
+      "configureButton": "配置",
+      "modalTitle": "配置Early Access",
+      "activateEA": "激活Early Access",
+      "availableUntil": "可用至",
+      "priceLabel": "价格 (ZenCoins)",
+      "chapterShort": "话",
+      "cancel": "取消"
     }
   },
   "userMenu": {
@@ -531,7 +555,8 @@
       "pt-br": "葡萄牙语（巴西）",
       "ja-jp": "日语",
       "ko-kr": "韩语",
-      "zh-cn": "中文（简体）"
+      "zh-cn": "中文（简体）",
+      "ru-ru": "俄语"
     },
     "upload": {
       "heading": "上传章节",
@@ -559,7 +584,12 @@
       "noPages": "请至少添加一张图片。",
       "noZip": "请选择 ZIP 文件。",
       "startsWithSinglePageLabel": "跨页的第一页单独显示",
-      "startsWithSinglePageTooltip": "若本章以单独封面开始请开启；若从第 1 页就是跨页则关闭。"
+      "startsWithSinglePageTooltip": "若本章以单独封面开始请开启；若从第 1 页就是跨页则关闭。",
+      "chooseFiles": "选择文件",
+      "chooseFile": "选择文件",
+      "noFilesSelected": "未选择文件",
+      "noFileSelected": "未选择文件",
+      "filesSelected": "已选择 {count} 个文件"
     },
     "myUploads": {
       "heading": "我的上传",
@@ -611,7 +641,23 @@
       "progress": "{pct}% 完成",
       "submit": "创建漫画",
       "submitting": "创建中…",
-      "success": "漫画创建成功。"
+      "success": "漫画创建成功。",
+      "countryRequired": "原产国为必填项",
+      "altTitlesLabel": "备用标题",
+      "optional": "（可选）",
+      "addAltTitle": "+ 添加标题",
+      "releaseYear": "发行年份",
+      "publisher": "出版社",
+      "publisherPlaceholder": "例: 集英社, Webtoon...",
+      "countryLabel": "原产国",
+      "countrySelect": "选择...",
+      "countryJP": "日本 🇯🇵",
+      "countryKR": "韩国 🇰🇷",
+      "countryCN": "中国 🇨🇳",
+      "countryUS": "美国 🇺🇸",
+      "countryFR": "法国 🇫🇷",
+      "countryOther": "其他...",
+      "countryCustomPlaceholder": "输入国家..."
     },
     "mangaStatus": {
       "ONGOING": "连载中",
@@ -671,6 +717,43 @@
       "RATE_LIMITED": "搜索过于频繁，请几秒后重试。",
       "ID_REQUIRED": "需要标识符。",
       "NOT_FOUND": "未找到资源。"
+    },
+    "edit": {
+      "button": "编辑",
+      "title": "编辑上传",
+      "chapterSection": "章节",
+      "chapterNumber": "编号",
+      "chapterTitle": "章节标题",
+      "mangaSection": "漫画",
+      "mangaTitle": "标题",
+      "mangaDescription": "描述",
+      "mangaAuthor": "作者",
+      "mangaArtist": "画师",
+      "mangaPublisher": "出版社",
+      "mangaYear": "年份",
+      "mangaCover": "封面",
+      "noCoverChanges": "无更改",
+      "changeCover": "更改封面",
+      "removeCover": "移除",
+      "altTitles": "备用标题",
+      "addAltTitle": "+ 添加",
+      "noAltTitles": "没有备用标题。",
+      "altTitlePlaceholder": "备用标题...",
+      "localeEnUs": "英语（美国）",
+      "localeEnGb": "英语（英国）",
+      "localeEsAr": "西班牙语（拉丁美洲）",
+      "localeEsEs": "西班牙语（西班牙）",
+      "localePtBr": "葡萄牙语（巴西）",
+      "localeJaJp": "日语",
+      "localeKoKr": "韩语",
+      "localeZhCn": "中文（简体）",
+      "localeRuRu": "俄语",
+      "genres": "类型和主题",
+      "cancel": "取消",
+      "save": "保存更改",
+      "saveSuccess": "更改已保存",
+      "pendingReview": "您的更改已发送给管理员审核。",
+      "saveError": "保存更改时出错"
     }
   },
   "admin": {
@@ -730,7 +813,8 @@
       "scanRoleDialogBody2": "MangaZen对该用户上传内容引起的版权侵权或其他法律问题不承担责任。",
       "scanRoleDialogBody3": "违反这些条件可能导致账户及已发布内容被暂停或删除。",
       "scanRoleDialogConfirm": "我理解并确认角色更改",
-      "scanTermsAcceptedAt": "条款接受日期"
+      "scanTermsAcceptedAt": "条款接受日期",
+      "tabEdiciones": "编辑"
     },
     "ads": {
       "title": "广告管理",
@@ -749,7 +833,19 @@
       "errorSave": "保存出错。",
       "errorDelete": "删除出错。",
       "active": "活跃",
-      "inactive": "不活跃"
+      "inactive": "不活跃",
+      "slots": {
+        "global": "🌐 全局脚本（所有槽位）",
+        "homeBetween": "首页 — 区块之间",
+        "mangaDetailBefore": "漫画页面 — 章节之前",
+        "readerEnd": "阅读器 — 章节结束",
+        "libraryAfter10": "图书馆 — 10个结果后",
+        "libraryAfter25": "图书馆 — 25个结果后",
+        "libraryAfter50": "图书馆 — 每50个结果",
+        "newsBetween": "新闻 — 区块之间",
+        "communityBetween": "社区 — 区块之间",
+        "profilePublicBottom": "公开资料 — 底部"
+      }
     },
     "scanStats": {
       "title": "扫图与创作者统计",
@@ -802,7 +898,18 @@
       "rejectTitle": "拒绝章节",
       "rejectNotesPlaceholder": "给上传者的备注（可选）…",
       "cancel": "取消",
-      "confirmReject": "确认拒绝"
+      "confirmReject": "确认拒绝",
+      "toastTrustedError": "更新错误",
+      "toastTrusted": "用户已标记为受信任",
+      "toastUntrusted": "审核已激活",
+      "trustedLabel": "受信任",
+      "trustedDesc": "无需管理员审核即可发布和编辑",
+      "untrustedDesc": "其上传和编辑需要审批",
+      "removeTrust": "取消信任",
+      "addTrust": "标记为受信任",
+      "colModeration": "审核",
+      "trustedBadge": "受信任",
+      "untrustedBadge": "审核中"
     },
     "pendingMangas": {
       "title": "待审核漫画",
@@ -988,7 +1095,57 @@
         "week": "本周",
         "month": "本月"
       },
-      "contentShowing": "显示 {shown} / {total} 项"
+      "contentShowing": "显示 {shown} / {total} 项",
+      "searchHint": "使用搜索找到用户。",
+      "viewOnPage": "在页面查看 →"
+    },
+    "editions": {
+      "errorProcessing": "处理请求时出错",
+      "changeApproved": "更改已批准",
+      "changeRejected": "更改已拒绝",
+      "error": "错误",
+      "reportReviewed": "举报已标记为已审核",
+      "reasonWrongInfo": "信息错误",
+      "reasonWrongCover": "封面错误",
+      "reasonDuplicate": "重复漫画",
+      "reasonInappropriate": "内容不当",
+      "reasonOther": "其他",
+      "requestsTitle": "编辑请求",
+      "loading": "加载中...",
+      "requestsEmpty": "没有待处理的请求。",
+      "typeMangaEdit": "漫画编辑",
+      "typeChapterEdit": "章节编辑",
+      "by": "由 {name}",
+      "before": "之前",
+      "after": "之后",
+      "notePlaceholder": "给扫描组的备注（可选）...",
+      "approve": "批准",
+      "reject": "拒绝",
+      "reportsTitle": "漫画举报",
+      "reportsEmpty": "没有待处理的举报。",
+      "viewManga": "查看漫画",
+      "reviewed": "已审核"
+    },
+    "proGrant": {
+      "title": "管理Pro",
+      "searchPlaceholder": "邮箱或用户名...",
+      "notFound": "未找到用户。",
+      "noName": "无名称",
+      "proActive": "Pro已激活",
+      "noPro": "无Pro",
+      "expires": "到期: ",
+      "permanent": "永久",
+      "durationLabel": "时长",
+      "permanentHint": "永久Pro请将日期留空。",
+      "activate": "激活Pro",
+      "deactivate": "停用",
+      "errorSave": "保存错误",
+      "proActivated": "Pro已激活",
+      "proDeactivated": "Pro已停用",
+      "days7": "7天",
+      "days30": "30天",
+      "days90": "90天",
+      "year1": "1年"
     }
   },
   "notifications": {
@@ -1003,7 +1160,15 @@
     "mangaApproved": "你的漫画《{title}》已通过。",
     "mangaRejected": "你的漫画《{title}》已拒绝。",
     "mangaRequestApproved": "你的漫画请求《{title}》已通过。",
-    "mangaRequestRejected": "你的漫画请求《{title}》已拒绝。"
+    "mangaRequestRejected": "你的漫画请求《{title}》已拒绝。",
+    "changeRequestChapterApproved": "✅ 您对{manga}第{number}话的编辑已获批准",
+    "changeRequestChapterApprovedNoManga": "✅ 您对第{number}话的编辑已获批准",
+    "changeRequestMangaApproved": "✅ 您对《{title}》的编辑已获批准",
+    "changeRequestApproved": "✅ 您的编辑已获批准",
+    "changeRequestChapterRejected": "❌ 您对{manga}第{number}话的编辑已被拒绝",
+    "changeRequestChapterRejectedNoManga": "❌ 您对第{number}话的编辑已被拒绝",
+    "changeRequestMangaRejected": "❌ 您对《{title}》的编辑已被拒绝",
+    "changeRequestRejected": "❌ 您的编辑已被拒绝"
   },
   "badges": {
     "earnedTitle": "新徽章解锁！",
@@ -1167,13 +1332,15 @@
     "noProgressYet": "暂无阅读进度。",
     "commentsTitle": "精选评论",
     "commentsEmpty": "暂无评论。",
-    "chapterShort": "第{n}话",
+    "chapterShort": "话",
     "uploadsTitle": "上传（扫图）",
     "uploadsTotalChapters": "已提交章节",
     "uploadsApproved": "已通过",
     "uploadsMangas": "参与系列",
     "zenCoinsLabel": "Zen Coins",
-    "zenShardsLabel": "Zen Shards"
+    "zenShardsLabel": "Zen Shards",
+    "uploadedMangasTitle": "已上传漫画",
+    "noCover": "无封面"
   },
   "presence": {
     "footerLoading": "…",
@@ -1372,5 +1539,103 @@
   },
   "mangaComments": {
     "title": "漫画评论"
+  },
+  "theme": {
+    "activateLight": "切换到浅色模式",
+    "activateDark": "切换到深色模式",
+    "light": "浅色模式",
+    "dark": "深色模式"
+  },
+  "mangaReport": {
+    "button": "举报",
+    "title": "举报漫画",
+    "reasonLabel": "原因",
+    "detailsLabel": "详情（可选）",
+    "detailsPlaceholder": "描述问题...",
+    "cancel": "取消",
+    "submit": "提交举报",
+    "reasonWrongInfo": "信息错误",
+    "reasonWrongCover": "封面错误",
+    "reasonDuplicate": "重复漫画",
+    "reasonInappropriate": "内容不当",
+    "reasonOther": "其他",
+    "alreadyReportedMax": "此漫画已被举报，团队正在审核中。",
+    "thankYou": "感谢您的举报。我们将尽快审核。",
+    "loginRequired": "您需要登录才能举报",
+    "alreadyReported": "您之前已举报过此漫画",
+    "maxReached": "此漫画已被足够多的用户举报",
+    "errorSubmit": "提交举报时出错",
+    "success": "举报提交成功"
+  },
+  "mangaPage": {
+    "notFoundTitle": "未找到漫画 | MangaZen",
+    "notFoundDescription": "请求的漫画不存在或已被删除。",
+    "defaultDescription": "在MangaZen上阅读{title}。评分 {score}。",
+    "noCover": "无封面",
+    "year": "年份",
+    "information": "信息",
+    "author": "作者",
+    "artist": "画师",
+    "publisher": "出版社",
+    "country": "国家",
+    "type": "类型",
+    "status": "状态",
+    "demographic": "受众",
+    "genres": "类型和主题",
+    "altTitles": "备用标题"
+  },
+  "notFound": {
+    "title": "页面未找到",
+    "body": "您寻找的漫画逃到了暗影世界... 或者这个页面根本不存在。",
+    "backHome": "返回首页",
+    "viewLibrary": "查看图书馆"
+  },
+  "proPlan": {
+    "sectionTitle": "Pro订阅",
+    "alreadyPro": "您已有活跃计划。可以更改或添加白金计划。",
+    "errorUnexpected": "意外错误",
+    "oneTime": "一次性",
+    "perMonth": "/月",
+    "buyNow": "立即购买",
+    "subscribe": "订阅",
+    "featureNoAds": "无广告",
+    "featureNoAdsForever": "永久无广告",
+    "featureUnlimitedDownloads": "无限下载",
+    "featureUnlimitedRequests": "无限请求",
+    "featurePremiumAvatar": "高级头像和横幅",
+    "featureZenCoins": "每月400ZC",
+    "featureOneTimePay": "一次性付款",
+    "featureCompatible": "与任何订阅兼容",
+    "bronze": {
+      "name": "青铜"
+    },
+    "silver": {
+      "name": "白银"
+    },
+    "gold": {
+      "name": "黄金"
+    },
+    "platinum": {
+      "name": "白金"
+    }
+  },
+  "imageCrop": {
+    "cancel": "取消",
+    "apply": "应用裁剪"
+  },
+  "scanTerms": {
+    "title": "免责声明 - 角色 {role}",
+    "intro": "继续之前，请阅读并接受以下条款。",
+    "conditions": "角色 {role} 的使用条款:",
+    "term1": "接受此角色即表示您声明自己是所有者，或拥有在MangaZen上传和分发所发布内容的明确授权。",
+    "term2": "MangaZen不对您上传内容引起的版权侵权或其他法律问题负责。",
+    "term3": "违反这些条件可能导致您的帐户和已发布内容被暂停或删除。",
+    "reject": "拒绝并返回USER",
+    "accept": "我接受条款"
+  },
+  "mangaReactions": {
+    "favorite": "收藏 ({count})",
+    "like": "点赞 ({count})",
+    "dislike": "踩 ({count})"
   }
 }

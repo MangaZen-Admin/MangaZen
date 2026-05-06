@@ -19,6 +19,7 @@ const LOCALE_NAMES: Record<string, string> = {
   "ja-jp": "日本語",
   "ko-kr": "한국어",
   "zh-cn": "中文",
+  "ru-ru": "Русский",
 };
 
 export default function LanguageSwitcher() {

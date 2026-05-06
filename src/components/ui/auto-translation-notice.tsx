@@ -3,7 +3,7 @@
 import { Info } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
-const AUTO_TRANSLATION_LOCALES = new Set(["ja-jp", "ko-kr", "zh-cn"]);
+const AUTO_TRANSLATION_LOCALES = new Set(["ja-jp", "ko-kr", "zh-cn", "ru-ru"]);
 
 export function AutoTranslationNotice() {
   const locale = useLocale();

@@ -193,7 +193,11 @@
     "libraryEmptyReading": "No estás leyendo ningún manga ahora.",
     "libraryEmptyCompleted": "No completaste ningún manga todavía.",
     "libraryEmptyDropped": "No abandonaste ningún manga.",
-    "libraryEmptyPlanToRead": "No tenés manga en tu lista de pendientes."
+    "libraryEmptyPlanToRead": "No tenés manga en tu lista de pendientes.",
+    "avatarUpdated": "Foto de perfil actualizada",
+    "avatarError": "No se pudo actualizar la foto de perfil",
+    "cropAvatarTitle": "Recortar foto de perfil",
+    "cropBannerTitle": "Recortar banner de perfil"
   },
   "chapterComments": {
     "title": "Comentarios del capítulo",
@@ -207,7 +211,8 @@
       "pt_br": "Portugués (Brasil)",
       "ja_jp": "Japonés",
       "ko_kr": "Coreano",
-      "zh_cn": "Chino (simplificado)"
+      "zh_cn": "Chino (simplificado)",
+      "ru_ru": "Ruso"
     },
     "newLabel": "Tu comentario",
     "placeholder": "Escribe un comentario…",
@@ -328,7 +333,20 @@
       "save": "Guardar",
       "saved": "Cambios guardados.",
       "saveError": "No se pudo guardar.",
-      "empty": "No hay capítulos."
+      "empty": "No hay capítulos.",
+      "searchError": "Error al buscar",
+      "searchPlaceholder": "Buscar manga o capítulo...",
+      "searchButton": "Buscar",
+      "resultsCount": "{count} resultado(s)",
+      "recentChapters": "Últimos 10 capítulos subidos",
+      "eaBadge": "Early Access",
+      "configureButton": "Configurar",
+      "modalTitle": "Configurar Early Access",
+      "activateEA": "Activar Early Access",
+      "availableUntil": "Disponible hasta",
+      "priceLabel": "Precio (ZenCoins)",
+      "chapterShort": "Cap.",
+      "cancel": "Cancelar"
     }
   },
   "userMenu": {
@@ -537,7 +555,8 @@
       "pt-br": "Portugués (Brasil)",
       "ja-jp": "Japonés",
       "ko-kr": "Coreano",
-      "zh-cn": "Chino (simplificado)"
+      "zh-cn": "Chino (simplificado)",
+      "ru-ru": "Ruso"
     },
     "upload": {
       "heading": "Subir capítulo",
@@ -622,7 +641,23 @@
       "progress": "{pct}% completado",
       "submit": "Crear manga",
       "submitting": "Creando…",
-      "success": "Manga creado correctamente."
+      "success": "Manga creado correctamente.",
+      "countryRequired": "El país de origen es obligatorio",
+      "altTitlesLabel": "Títulos alternativos",
+      "optional": "(opcional)",
+      "addAltTitle": "+ Agregar título",
+      "releaseYear": "Año de lanzamiento",
+      "publisher": "Editorial",
+      "publisherPlaceholder": "Ej: Shueisha, Webtoon...",
+      "countryLabel": "País de origen",
+      "countrySelect": "Seleccionar...",
+      "countryJP": "Japón 🇯🇵",
+      "countryKR": "Corea del Sur 🇰🇷",
+      "countryCN": "China 🇨🇳",
+      "countryUS": "Estados Unidos 🇺🇸",
+      "countryFR": "Francia 🇫🇷",
+      "countryOther": "Otro...",
+      "countryCustomPlaceholder": "Escribí el país..."
     },
     "mangaStatus": {
       "ONGOING": "En emisión",
@@ -682,6 +717,43 @@
       "RATE_LIMITED": "Demasiadas búsquedas. Intenta de nuevo en unos segundos.",
       "ID_REQUIRED": "Falta el identificador.",
       "NOT_FOUND": "No se encontró el recurso."
+    },
+    "edit": {
+      "button": "Editar",
+      "title": "Editar subida",
+      "chapterSection": "Capítulo",
+      "chapterNumber": "Número",
+      "chapterTitle": "Título del capítulo",
+      "mangaSection": "Manga",
+      "mangaTitle": "Título",
+      "mangaDescription": "Descripción",
+      "mangaAuthor": "Autor",
+      "mangaArtist": "Arte",
+      "mangaPublisher": "Editorial",
+      "mangaYear": "Año",
+      "mangaCover": "Portada",
+      "noCoverChanges": "Sin cambios",
+      "changeCover": "Cambiar portada",
+      "removeCover": "Quitar",
+      "altTitles": "Títulos alternativos",
+      "addAltTitle": "+ Agregar",
+      "noAltTitles": "Sin títulos alternativos.",
+      "altTitlePlaceholder": "Título alternativo...",
+      "localeEnUs": "Inglés (US)",
+      "localeEnGb": "Inglés (GB)",
+      "localeEsAr": "Español (LA)",
+      "localeEsEs": "Español (ES)",
+      "localePtBr": "Portugués (BR)",
+      "localeJaJp": "Japonés",
+      "localeKoKr": "Coreano",
+      "localeZhCn": "Chino (CN)",
+      "localeRuRu": "Ruso",
+      "genres": "Géneros y temáticas",
+      "cancel": "Cancelar",
+      "save": "Guardar cambios",
+      "saveSuccess": "Cambios guardados",
+      "pendingReview": "Tus cambios fueron enviados al admin para revisión.",
+      "saveError": "Error al guardar los cambios"
     }
   },
   "admin": {
@@ -741,7 +813,8 @@
       "scanRoleDialogBody2": "MangaZen no se hace responsable por infracciones de derechos de autor u otros problemas legales derivados del contenido subido por este usuario.",
       "scanRoleDialogBody3": "El incumplimiento de estas condiciones puede resultar en la suspensión o eliminación de la cuenta y el contenido publicado.",
       "scanRoleDialogConfirm": "Entiendo y confirmo el cambio de rol",
-      "scanTermsAcceptedAt": "Términos aceptados el"
+      "scanTermsAcceptedAt": "Términos aceptados el",
+      "tabEdiciones": "Ediciones"
     },
     "ads": {
       "title": "Publicidad",
@@ -760,7 +833,19 @@
       "errorSave": "Error al guardar.",
       "errorDelete": "Error al eliminar.",
       "active": "Activo",
-      "inactive": "Inactivo"
+      "inactive": "Inactivo",
+      "slots": {
+        "global": "🌐 Script global (todos los slots)",
+        "homeBetween": "Home — entre secciones",
+        "mangaDetailBefore": "Ficha manga — antes de capítulos",
+        "readerEnd": "Lector — fin de capítulo",
+        "libraryAfter10": "Biblioteca — tras 10 resultados",
+        "libraryAfter25": "Biblioteca — tras 25 resultados",
+        "libraryAfter50": "Biblioteca — cada 50 resultados",
+        "newsBetween": "Novedades — entre secciones",
+        "communityBetween": "Comunidad — entre secciones",
+        "profilePublicBottom": "Perfil público — al final"
+      }
     },
     "scanStats": {
       "title": "Estadísticas de scans y creadores",
@@ -813,7 +898,18 @@
       "rejectTitle": "Rechazar capítulo",
       "rejectNotesPlaceholder": "Notas opcionales para quien subió…",
       "cancel": "Cancelar",
-      "confirmReject": "Confirmar rechazo"
+      "confirmReject": "Confirmar rechazo",
+      "toastTrustedError": "Error al actualizar",
+      "toastTrusted": "Usuario marcado como confiable",
+      "toastUntrusted": "Moderación activada",
+      "trustedLabel": "Confiable",
+      "trustedDesc": "Publica y edita sin revisión del admin",
+      "untrustedDesc": "Sus subidas y ediciones requieren aprobación",
+      "removeTrust": "Quitar confianza",
+      "addTrust": "Marcar como confiable",
+      "colModeration": "Moderación",
+      "trustedBadge": "Confiable",
+      "untrustedBadge": "Bajo Moderación"
     },
     "pendingMangas": {
       "title": "Mangas pendientes de revisión",
@@ -999,7 +1095,57 @@
         "week": "Esta semana",
         "month": "Este mes"
       },
-      "contentShowing": "Mostrando {shown} de {total} elementos"
+      "contentShowing": "Mostrando {shown} de {total} elementos",
+      "searchHint": "Usá el buscador para encontrar un usuario.",
+      "viewOnPage": "Ver en la página →"
+    },
+    "editions": {
+      "errorProcessing": "Error al procesar la solicitud",
+      "changeApproved": "Cambio aprobado",
+      "changeRejected": "Cambio rechazado",
+      "error": "Error",
+      "reportReviewed": "Denuncia marcada como revisada",
+      "reasonWrongInfo": "Información incorrecta",
+      "reasonWrongCover": "Portada incorrecta",
+      "reasonDuplicate": "Manga duplicado",
+      "reasonInappropriate": "Contenido inapropiado",
+      "reasonOther": "Otro",
+      "requestsTitle": "Solicitudes de edición",
+      "loading": "Cargando...",
+      "requestsEmpty": "No hay solicitudes pendientes.",
+      "typeMangaEdit": "Edición de manga",
+      "typeChapterEdit": "Edición de capítulo",
+      "by": "Por {name}",
+      "before": "Antes",
+      "after": "Después",
+      "notePlaceholder": "Nota para el scan (opcional)...",
+      "approve": "Aprobar",
+      "reject": "Rechazar",
+      "reportsTitle": "Denuncias de mangas",
+      "reportsEmpty": "No hay denuncias pendientes.",
+      "viewManga": "Ver manga",
+      "reviewed": "Revisado"
+    },
+    "proGrant": {
+      "title": "Gestionar Pro",
+      "searchPlaceholder": "Email o username...",
+      "notFound": "No se encontró ningún usuario.",
+      "noName": "Sin nombre",
+      "proActive": "Pro activo",
+      "noPro": "Sin Pro",
+      "expires": "Vence: ",
+      "permanent": "Permanente",
+      "durationLabel": "Duración",
+      "permanentHint": "Dejá la fecha vacía para Pro permanente.",
+      "activate": "Activar Pro",
+      "deactivate": "Desactivar",
+      "errorSave": "Error al guardar",
+      "proActivated": "Pro activado",
+      "proDeactivated": "Pro desactivado",
+      "days7": "7 días",
+      "days30": "30 días",
+      "days90": "90 días",
+      "year1": "1 año"
     }
   },
   "notifications": {
@@ -1014,7 +1160,15 @@
     "mangaApproved": "Se aprobó tu manga «{title}».",
     "mangaRejected": "Se rechazó tu manga «{title}».",
     "mangaRequestApproved": "Se aprobó tu petición de manga «{title}».",
-    "mangaRequestRejected": "Se rechazó tu petición de manga «{title}»."
+    "mangaRequestRejected": "Se rechazó tu petición de manga «{title}».",
+    "changeRequestChapterApproved": "✅ Tu edición del Cap. {number} de {manga} fue aprobada",
+    "changeRequestChapterApprovedNoManga": "✅ Tu edición del Cap. {number} fue aprobada",
+    "changeRequestMangaApproved": "✅ Tu edición de «{title}» fue aprobada",
+    "changeRequestApproved": "✅ Tu edición fue aprobada",
+    "changeRequestChapterRejected": "❌ Tu edición del Cap. {number} de {manga} fue rechazada",
+    "changeRequestChapterRejectedNoManga": "❌ Tu edición del Cap. {number} fue rechazada",
+    "changeRequestMangaRejected": "❌ Tu edición de «{title}» fue rechazada",
+    "changeRequestRejected": "❌ Tu edición fue rechazada"
   },
   "badges": {
     "earnedTitle": "¡Nueva insignia desbloqueada!",
@@ -1178,13 +1332,15 @@
     "noProgressYet": "Todavía no hay progreso de lectura.",
     "commentsTitle": "Comentarios destacados",
     "commentsEmpty": "Todavía no hay comentarios.",
-    "chapterShort": "Cap. {n}",
+    "chapterShort": "caps.",
     "uploadsTitle": "Subidas (scan)",
     "uploadsTotalChapters": "Capítulos enviados",
     "uploadsApproved": "Aprobados",
     "uploadsMangas": "Obras en las que participó",
     "zenCoinsLabel": "Zen Coins",
-    "zenShardsLabel": "Zen Shards"
+    "zenShardsLabel": "Zen Shards",
+    "uploadedMangasTitle": "Mangas subidos",
+    "noCover": "Sin portada"
   },
   "legal": {
     "autoTranslationNotice": "",
@@ -1457,5 +1613,103 @@
   },
   "mangaComments": {
     "title": "Comentarios del manga"
+  },
+  "theme": {
+    "activateLight": "Activar modo claro",
+    "activateDark": "Activar modo oscuro",
+    "light": "Modo claro",
+    "dark": "Modo oscuro"
+  },
+  "mangaReport": {
+    "button": "Reportar",
+    "title": "Reportar manga",
+    "reasonLabel": "Motivo",
+    "detailsLabel": "Detalles (opcional)",
+    "detailsPlaceholder": "Describí el problema...",
+    "cancel": "Cancelar",
+    "submit": "Enviar reporte",
+    "reasonWrongInfo": "Información incorrecta",
+    "reasonWrongCover": "Portada incorrecta",
+    "reasonDuplicate": "Manga duplicado",
+    "reasonInappropriate": "Contenido inapropiado",
+    "reasonOther": "Otro",
+    "alreadyReportedMax": "Este manga ya fue reportado y está siendo revisado por el equipo.",
+    "thankYou": "Gracias por tu reporte. Lo revisaremos pronto.",
+    "loginRequired": "Necesitás iniciar sesión para reportar",
+    "alreadyReported": "Ya reportaste este manga anteriormente",
+    "maxReached": "Este manga ya fue reportado por suficientes usuarios",
+    "errorSubmit": "Error al enviar el reporte",
+    "success": "Reporte enviado correctamente"
+  },
+  "mangaPage": {
+    "notFoundTitle": "Manga no encontrado | MangaZen",
+    "notFoundDescription": "El manga solicitado no existe o fue eliminado.",
+    "defaultDescription": "Leé {title} en MangaZen. Puntuación {score}.",
+    "noCover": "Sin portada",
+    "year": "Año",
+    "information": "Información",
+    "author": "Autor",
+    "artist": "Arte",
+    "publisher": "Editorial",
+    "country": "País",
+    "type": "Tipo",
+    "status": "Estado",
+    "demographic": "Demografía",
+    "genres": "Géneros y temáticas",
+    "altTitles": "Títulos alternativos"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "body": "El manga que buscás se escapó al mundo de las sombras... o simplemente esta página no existe.",
+    "backHome": "Volver al inicio",
+    "viewLibrary": "Ver biblioteca"
+  },
+  "proPlan": {
+    "sectionTitle": "Suscripción Pro",
+    "alreadyPro": "Ya tenés un plan activo. Podés cambiar o agregar el plan Platino.",
+    "errorUnexpected": "Error inesperado",
+    "oneTime": "único",
+    "perMonth": "/mes",
+    "buyNow": "Comprar ahora",
+    "subscribe": "Suscribirse",
+    "featureNoAds": "Sin anuncios",
+    "featureNoAdsForever": "Sin anuncios para siempre",
+    "featureUnlimitedDownloads": "Descargas sin límite",
+    "featureUnlimitedRequests": "Peticiones sin límite",
+    "featurePremiumAvatar": "Avatar y banner premium",
+    "featureZenCoins": "400 ZC al mes",
+    "featureOneTimePay": "Pago único",
+    "featureCompatible": "Compatible con cualquier suscripción",
+    "bronze": {
+      "name": "Bronce"
+    },
+    "silver": {
+      "name": "Plata"
+    },
+    "gold": {
+      "name": "Oro"
+    },
+    "platinum": {
+      "name": "Platino"
+    }
+  },
+  "imageCrop": {
+    "cancel": "Cancelar",
+    "apply": "Aplicar recorte"
+  },
+  "scanTerms": {
+    "title": "Descargo de responsabilidad - Rol {role}",
+    "intro": "Antes de continuar, leé y aceptá los siguientes términos.",
+    "conditions": "Condiciones de uso del rol {role}:",
+    "term1": "Al aceptar este rol, declarás ser propietario o tener autorización expresa para subir y distribuir el contenido que publiques en MangaZen.",
+    "term2": "MangaZen no se hace responsable por infracciones de derechos de autor u otros problemas legales derivados del contenido subido por vos.",
+    "term3": "El incumplimiento de estas condiciones puede resultar en la suspensión o eliminación de tu cuenta y el contenido publicado.",
+    "reject": "Rechazar y volver a USER",
+    "accept": "Acepto los términos"
+  },
+  "mangaReactions": {
+    "favorite": "Favorito ({count})",
+    "like": "Me gusta ({count})",
+    "dislike": "No me gusta ({count})"
   }
 }

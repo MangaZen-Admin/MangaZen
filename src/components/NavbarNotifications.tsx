@@ -143,22 +143,22 @@ export function NavbarNotifications({ initialUnread }: NavbarNotificationsProps)
         const mt = typeof n.payload?.mangaTitle === "string" ? n.payload.mangaTitle : "";
         const cn = typeof n.payload?.chapterNumber === "number" ? n.payload.chapterNumber : null;
         if (crType === "CHAPTER_EDIT") {
-          return cn != null
-            ? `✅ Tu edición del Cap. ${cn}${mt ? ` de ${mt}` : ""} fue aprobada`
-            : `✅ Tu edición del capítulo fue aprobada`;
+          if (cn != null && mt) return t("changeRequestChapterApproved", { number: cn, manga: mt });
+          if (cn != null) return t("changeRequestChapterApprovedNoManga", { number: cn });
+          return t("changeRequestApproved");
         }
-        return mt ? `✅ Tu edición de "${mt}" fue aprobada` : "✅ Tu edición fue aprobada";
+        return mt ? t("changeRequestMangaApproved", { title: mt }) : t("changeRequestApproved");
       }
       case "CHANGE_REQUEST_REJECTED": {
         const crType = typeof n.payload?.type === "string" ? n.payload.type : "";
         const mt = typeof n.payload?.mangaTitle === "string" ? n.payload.mangaTitle : "";
         const cn = typeof n.payload?.chapterNumber === "number" ? n.payload.chapterNumber : null;
         if (crType === "CHAPTER_EDIT") {
-          return cn != null
-            ? `❌ Tu edición del Cap. ${cn}${mt ? ` de ${mt}` : ""} fue rechazada`
-            : `❌ Tu edición del capítulo fue rechazada`;
+          if (cn != null && mt) return t("changeRequestChapterRejected", { number: cn, manga: mt });
+          if (cn != null) return t("changeRequestChapterRejectedNoManga", { number: cn });
+          return t("changeRequestRejected");
         }
-        return mt ? `❌ Tu edición de "${mt}" fue rechazada` : "❌ Tu edición fue rechazada";
+        return mt ? t("changeRequestMangaRejected", { title: mt }) : t("changeRequestRejected");
       }
       default:
         return t("generic");

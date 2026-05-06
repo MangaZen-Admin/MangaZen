@@ -162,13 +162,13 @@ export function ProfileAccountCard({
       });
       const data = (await res.json()) as { url?: string; error?: string };
       if (res.ok && data.url) {
-        toast.success("Foto de perfil actualizada");
+        toast.success(t("avatarUpdated"));
         router.refresh();
       } else {
-        toast.error("No se pudo actualizar la foto de perfil");
+        toast.error(t("avatarError"));
       }
     } catch {
-      toast.error("No se pudo actualizar la foto de perfil");
+      toast.error(t("avatarError"));
     } finally {
       setAvatarBusy(false);
     }
@@ -443,7 +443,7 @@ export function ProfileAccountCard({
           imageSrc={avatarCropSrc}
           aspect={1}
           shape="round"
-          title="Recortar foto de perfil"
+          title={t("cropAvatarTitle")}
           onCancel={() => setAvatarCropSrc(null)}
           onConfirm={(blob) => void onAvatarCropConfirm(blob)}
         />
@@ -454,7 +454,7 @@ export function ProfileAccountCard({
           imageSrc={bannerCropSrc}
           aspect={3 / 1}
           shape="rect"
-          title="Recortar banner de perfil"
+          title={t("cropBannerTitle")}
           onCancel={() => setBannerCropSrc(null)}
           onConfirm={(blob) => void onBannerCropConfirm(blob)}
         />

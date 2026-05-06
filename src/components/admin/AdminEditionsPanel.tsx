@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { Check, X, Loader2, FileEdit, Flag } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { dateFnsLocaleFromAppLocale } from "@/lib/date-fns-locale";
@@ -35,6 +35,7 @@ type MangaReport = {
 
 export function AdminEditionsPanel() {
   const locale = useLocale();
+  const t = useTranslations("admin.editions");
   const dfLocale = useMemo(() => dateFnsLocaleFromAppLocale(locale), [locale]);
   const [requests, setRequests] = useState<ChangeRequest[]>([]);
   const [reports, setReports] = useState<MangaReport[]>([]);
@@ -75,10 +76,10 @@ export function AdminEditionsPanel() {
         body: JSON.stringify({ action, adminNote: adminNote[id] ?? "" }),
       });
       if (!res.ok) {
-        toast.error("Error al procesar la solicitud");
+        toast.error(t("errorProcessing"));
         return;
       }
-      toast.success(action === "approve" ? "Cambio aprobado" : "Cambio rechazado");
+      toast.success(action === "approve" ? t("changeApproved") : t("changeRejected"));
       setRequests((prev) => prev.filter((r) => r.id !== id));
     } finally {
       setBusyId(null);
@@ -94,22 +95,22 @@ export function AdminEditionsPanel() {
         body: JSON.stringify({ status: "REVIEWED" }),
       });
       if (!res.ok) {
-        toast.error("Error");
+        toast.error(t("error"));
         return;
       }
       setReports((prev) => prev.filter((r) => r.id !== id));
-      toast.success("Denuncia marcada como revisada");
+      toast.success(t("reportReviewed"));
     } finally {
       setBusyId(null);
     }
   }
 
   const REASON_LABELS: Record<string, string> = {
-    WRONG_INFO: "Información incorrecta",
-    WRONG_COVER: "Portada incorrecta",
-    DUPLICATE: "Manga duplicado",
-    INAPPROPRIATE: "Contenido inapropiado",
-    OTHER: "Otro",
+    WRONG_INFO: t("reasonWrongInfo"),
+    WRONG_COVER: t("reasonWrongCover"),
+    DUPLICATE: t("reasonDuplicate"),
+    INAPPROPRIATE: t("reasonInappropriate"),
+    OTHER: t("reasonOther"),
   };
 
   return (
@@ -117,7 +118,7 @@ export function AdminEditionsPanel() {
       <section className="rounded-xl border border-border bg-card p-5 shadow-sm">
         <div className="mb-4 flex items-center gap-2">
           <FileEdit className="h-5 w-5 text-primary" />
-          <h2 className="text-lg font-semibold">Solicitudes de edición</h2>
+          <h2 className="text-lg font-semibold">{t("requestsTitle")}</h2>
           {requests.length > 0 && (
             <span className="rounded-full bg-primary px-2 py-0.5 text-xs font-bold text-primary-foreground">
               {requests.length}
@@ -126,9 +127,9 @@ export function AdminEditionsPanel() {
         </div>
 
         {loading ? (
-          <p className="text-sm text-muted-foreground">Cargando...</p>
+          <p className="text-sm text-muted-foreground">{t("loading")}</p>
         ) : requests.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No hay solicitudes pendientes.</p>
+          <p className="text-sm text-muted-foreground">{t("requestsEmpty")}</p>
         ) : (
           <div className="space-y-4">
             {requests.map((cr) => (
@@ -136,10 +137,10 @@ export function AdminEditionsPanel() {
                 <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
                   <div>
                     <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      {cr.type === "MANGA_EDIT" ? "Edición de manga" : "Edición de capítulo"}
+                      {cr.type === "MANGA_EDIT" ? t("typeMangaEdit") : t("typeChapterEdit")}
                     </span>
                     <p className="mt-0.5 text-sm font-medium text-foreground">
-                      Por {cr.requester.name ?? cr.requester.email ?? "—"}
+                      {t("by", { name: cr.requester.name ?? cr.requester.email ?? "—" })}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {formatDistanceToNow(new Date(cr.createdAt), {
@@ -152,7 +153,7 @@ export function AdminEditionsPanel() {
 
                 <div className="mb-3 grid gap-2 sm:grid-cols-2">
                   <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3">
-                    <p className="mb-1 text-xs font-semibold text-destructive">Antes</p>
+                    <p className="mb-1 text-xs font-semibold text-destructive">{t("before")}</p>
                     {Object.entries(cr.previousData)
                       .filter(([key, val]) => val !== cr.newData[key])
                       .map(([key, val]) => (
@@ -163,7 +164,7 @@ export function AdminEditionsPanel() {
                       ))}
                   </div>
                   <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
-                    <p className="mb-1 text-xs font-semibold text-primary">Después</p>
+                    <p className="mb-1 text-xs font-semibold text-primary">{t("after")}</p>
                     {Object.entries(cr.newData)
                       .filter(([key, val]) => val !== cr.previousData[key])
                       .map(([key, val]) => (
@@ -178,7 +179,7 @@ export function AdminEditionsPanel() {
                 <input
                   value={adminNote[cr.id] ?? ""}
                   onChange={(e) => setAdminNote((prev) => ({ ...prev, [cr.id]: e.target.value }))}
-                  placeholder="Nota para el scan (opcional)..."
+                  placeholder={t("notePlaceholder")}
                   className="mb-3 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none ring-primary/30 focus:ring-2"
                 />
 
@@ -193,7 +194,7 @@ export function AdminEditionsPanel() {
                     ) : (
                       <Check className="mr-1 h-3.5 w-3.5" />
                     )}
-                    Aprobar
+                    {t("approve")}
                   </Button>
                   <Button
                     size="sm"
@@ -202,7 +203,7 @@ export function AdminEditionsPanel() {
                     onClick={() => void handleAction(cr.id, "reject")}
                   >
                     <X className="mr-1 h-3.5 w-3.5" />
-                    Rechazar
+                    {t("reject")}
                   </Button>
                 </div>
               </div>
@@ -214,7 +215,7 @@ export function AdminEditionsPanel() {
       <section className="rounded-xl border border-border bg-card p-5 shadow-sm">
         <div className="mb-4 flex items-center gap-2">
           <Flag className="h-5 w-5 text-destructive" />
-          <h2 className="text-lg font-semibold">Denuncias de mangas</h2>
+          <h2 className="text-lg font-semibold">{t("reportsTitle")}</h2>
           {reports.length > 0 && (
             <span className="rounded-full bg-destructive px-2 py-0.5 text-xs font-bold text-destructive-foreground">
               {reports.length}
@@ -223,9 +224,9 @@ export function AdminEditionsPanel() {
         </div>
 
         {loading ? (
-          <p className="text-sm text-muted-foreground">Cargando...</p>
+          <p className="text-sm text-muted-foreground">{t("loading")}</p>
         ) : reports.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No hay denuncias pendientes.</p>
+          <p className="text-sm text-muted-foreground">{t("reportsEmpty")}</p>
         ) : (
           <div className="space-y-3">
             {reports.map((r) => (
@@ -240,7 +241,7 @@ export function AdminEditionsPanel() {
                     {r.details && ` — ${r.details}`}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Por {r.user.name ?? r.user.email ?? "—"} ·{" "}
+                    {t("by", { name: r.user.name ?? r.user.email ?? "—" })} ·{" "}
                     {formatDistanceToNow(new Date(r.createdAt), {
                       addSuffix: true,
                       locale: dfLocale,
@@ -250,7 +251,7 @@ export function AdminEditionsPanel() {
                 <div className="flex gap-2">
                   <Button size="sm" variant="outline" asChild>
                     <a href={`/${locale}/manga/${r.manga.slug}`} target="_blank" rel="noreferrer">
-                      Ver manga
+                      {t("viewManga")}
                     </a>
                   </Button>
                   <Button
@@ -261,7 +262,7 @@ export function AdminEditionsPanel() {
                     {busyId === r.id ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
                     ) : (
-                      "Revisado"
+                      t("reviewed")
                     )}
                   </Button>
                 </div>

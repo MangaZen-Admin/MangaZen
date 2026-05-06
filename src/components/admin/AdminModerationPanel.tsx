@@ -287,7 +287,7 @@ export function AdminModerationPanel() {
 
         {search.trim().length === 0 && !loading && (
           <p className="mt-4 text-sm text-muted-foreground">
-            Usá el buscador para encontrar un usuario.
+            {t("searchHint")}
           </p>
         )}
 
@@ -510,7 +510,7 @@ export function AdminModerationPanel() {
                       target="_blank"
                       className="text-xs text-primary hover:underline"
                     >
-                      Ver en la página →
+                      {t("viewOnPage")}
                     </Link>
                   )}
                 </div>

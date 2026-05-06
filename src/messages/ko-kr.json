@@ -7,6 +7,10 @@
     "placeholder": "광고",
     "label": "광고"
   },
+  "adultContent": {
+    "title": "🔞 성인 콘텐츠",
+    "subtitle": "곧 제공될 예정입니다."
+  },
   "auth": {
     "loginTitle": "로그인",
     "loginSubtitle": "로그인하여 투표, 즐겨찾기 저장, 작품 팔로우를 할 수 있습니다.",
@@ -65,6 +69,8 @@
     "balanceLine": "잔액: {balance} {currency}",
     "cancel": "취소",
     "confirm": "확인",
+    "reauthLabel": "확인 비밀번호",
+    "reauthPlaceholder": "비밀번호를 입력하세요...",
     "toastBoosted": "프로모션이 적용되었습니다.",
     "errors": {
       "generic": "프로모션을 적용할 수 없습니다.",
@@ -187,7 +193,11 @@
     "libraryEmptyReading": "현재 읽고 있는 만화가 없습니다.",
     "libraryEmptyCompleted": "아직 완독한 만화가 없습니다.",
     "libraryEmptyDropped": "중단한 만화가 없습니다.",
-    "libraryEmptyPlanToRead": "읽을 예정 목록이 비어 있습니다."
+    "libraryEmptyPlanToRead": "읽을 예정 목록이 비어 있습니다.",
+    "avatarUpdated": "프로필 사진이 업데이트되었습니다",
+    "avatarError": "프로필 사진을 업데이트할 수 없습니다",
+    "cropAvatarTitle": "프로필 사진 자르기",
+    "cropBannerTitle": "배너 자르기"
   },
   "chapterComments": {
     "title": "회차 댓글",
@@ -201,7 +211,8 @@
       "pt_br": "포르투갈어(브라질)",
       "ja_jp": "일본어",
       "ko_kr": "한국어",
-      "zh_cn": "중국어(간체)"
+      "zh_cn": "중국어(간체)",
+      "ru_ru": "러시아어"
     },
     "newLabel": "내 댓글",
     "placeholder": "댓글을 작성하세요…",
@@ -322,7 +333,20 @@
       "save": "저장",
       "saved": "저장됨.",
       "saveError": "저장할 수 없습니다.",
-      "empty": "회차가 없습니다."
+      "empty": "회차가 없습니다.",
+      "searchError": "검색 오류",
+      "searchPlaceholder": "만화 또는 챕터 검색...",
+      "searchButton": "검색",
+      "resultsCount": "{count}개 결과",
+      "recentChapters": "최근 10개 챕터",
+      "eaBadge": "Early Access",
+      "configureButton": "설정",
+      "modalTitle": "Early Access 설정",
+      "activateEA": "Early Access 활성화",
+      "availableUntil": "이용 가능 기간",
+      "priceLabel": "가격 (ZenCoins)",
+      "chapterShort": "화",
+      "cancel": "취소"
     }
   },
   "userMenu": {
@@ -531,7 +555,8 @@
       "pt-br": "포르투갈어(브라질)",
       "ja-jp": "일본어",
       "ko-kr": "한국어",
-      "zh-cn": "중국어(간체)"
+      "zh-cn": "중국어(간체)",
+      "ru-ru": "러시아어"
     },
     "upload": {
       "heading": "회차 업로드",
@@ -559,7 +584,12 @@
       "noPages": "이미지를 1장 이상 추가하세요.",
       "noZip": "ZIP 파일을 선택하세요.",
       "startsWithSinglePageLabel": "두 페이지 펼침에서 첫 장을 단독으로",
-      "startsWithSinglePageTooltip": "표지만 단독이면 켜세요. 1페이지부터 펼침이 시작되면 끄세요."
+      "startsWithSinglePageTooltip": "표지만 단독이면 켜세요. 1페이지부터 펼침이 시작되면 끄세요.",
+      "chooseFiles": "파일 선택",
+      "chooseFile": "파일 선택",
+      "noFilesSelected": "선택된 파일 없음",
+      "noFileSelected": "선택된 파일 없음",
+      "filesSelected": "{count}개 파일 선택됨"
     },
     "myUploads": {
       "heading": "내 업로드",
@@ -611,7 +641,23 @@
       "progress": "{pct}% 완료",
       "submit": "만화 만들기",
       "submitting": "만드는 중…",
-      "success": "만화를 만들었습니다."
+      "success": "만화를 만들었습니다.",
+      "countryRequired": "원산지 국가는 필수입니다",
+      "altTitlesLabel": "대체 제목",
+      "optional": "(선택사항)",
+      "addAltTitle": "+ 제목 추가",
+      "releaseYear": "출시 연도",
+      "publisher": "출판사",
+      "publisherPlaceholder": "예: 슈에이샤, Webtoon...",
+      "countryLabel": "원산지 국가",
+      "countrySelect": "선택...",
+      "countryJP": "일본 🇯🇵",
+      "countryKR": "한국 🇰🇷",
+      "countryCN": "중국 🇨🇳",
+      "countryUS": "미국 🇺🇸",
+      "countryFR": "프랑스 🇫🇷",
+      "countryOther": "기타...",
+      "countryCustomPlaceholder": "국가를 입력하세요..."
     },
     "mangaStatus": {
       "ONGOING": "연재 중",
@@ -671,6 +717,43 @@
       "RATE_LIMITED": "검색이 너무 많습니다. 잠시 후 다시 시도하세요.",
       "ID_REQUIRED": "식별자가 필요합니다.",
       "NOT_FOUND": "리소스를 찾을 수 없습니다."
+    },
+    "edit": {
+      "button": "편집",
+      "title": "업로드 편집",
+      "chapterSection": "챕터",
+      "chapterNumber": "번호",
+      "chapterTitle": "챕터 제목",
+      "mangaSection": "만화",
+      "mangaTitle": "제목",
+      "mangaDescription": "설명",
+      "mangaAuthor": "저자",
+      "mangaArtist": "아티스트",
+      "mangaPublisher": "출판사",
+      "mangaYear": "연도",
+      "mangaCover": "표지",
+      "noCoverChanges": "변경 없음",
+      "changeCover": "표지 변경",
+      "removeCover": "제거",
+      "altTitles": "대체 제목",
+      "addAltTitle": "+ 추가",
+      "noAltTitles": "대체 제목 없음.",
+      "altTitlePlaceholder": "대체 제목...",
+      "localeEnUs": "영어 (미국)",
+      "localeEnGb": "영어 (영국)",
+      "localeEsAr": "스페인어 (중남미)",
+      "localeEsEs": "스페인어 (스페인)",
+      "localePtBr": "포르투갈어 (브라질)",
+      "localeJaJp": "일본어",
+      "localeKoKr": "한국어",
+      "localeZhCn": "중국어 (간체)",
+      "localeRuRu": "러시아어",
+      "genres": "장르 및 테마",
+      "cancel": "취소",
+      "save": "변경 사항 저장",
+      "saveSuccess": "변경 사항이 저장되었습니다",
+      "pendingReview": "변경 사항이 검토를 위해 관리자에게 전송되었습니다.",
+      "saveError": "변경 사항 저장 중 오류가 발생했습니다"
     }
   },
   "admin": {
@@ -730,7 +813,8 @@
       "scanRoleDialogBody2": "MangaZen은 이 사용자가 업로드한 콘텐츠로 인한 저작권 침해 또는 기타 법적 문제에 대해 책임을 지지 않습니다.",
       "scanRoleDialogBody3": "이러한 조건을 위반할 경우 계정 및 게시된 콘텐츠가 정지되거나 삭제될 수 있습니다.",
       "scanRoleDialogConfirm": "이해하고 역할 변경을 확인합니다",
-      "scanTermsAcceptedAt": "약관 동의일"
+      "scanTermsAcceptedAt": "약관 동의일",
+      "tabEdiciones": "에디션"
     },
     "ads": {
       "title": "광고 관리",
@@ -749,7 +833,19 @@
       "errorSave": "저장 오류.",
       "errorDelete": "삭제 오류.",
       "active": "활성",
-      "inactive": "비활성"
+      "inactive": "비활성",
+      "slots": {
+        "global": "🌐 글로벌 스크립트 (모든 슬롯)",
+        "homeBetween": "홈 — 섹션 사이",
+        "mangaDetailBefore": "만화 페이지 — 챕터 이전",
+        "readerEnd": "리더 — 챕터 끝",
+        "libraryAfter10": "라이브러리 — 10개 결과 후",
+        "libraryAfter25": "라이브러리 — 25개 결과 후",
+        "libraryAfter50": "라이브러리 — 50개마다",
+        "newsBetween": "뉴스 — 섹션 사이",
+        "communityBetween": "커뮤니티 — 섹션 사이",
+        "profilePublicBottom": "공개 프로필 — 하단"
+      }
     },
     "scanStats": {
       "title": "스캔·크리에이터 통계",
@@ -802,7 +898,18 @@
       "rejectTitle": "화 거절",
       "rejectNotesPlaceholder": "업로더에게 메모(선택)…",
       "cancel": "취소",
-      "confirmReject": "거절 확인"
+      "confirmReject": "거절 확인",
+      "toastTrustedError": "업데이트 오류",
+      "toastTrusted": "사용자를 신뢰로 표시",
+      "toastUntrusted": "모더레이션 활성화",
+      "trustedLabel": "신뢰",
+      "trustedDesc": "관리자 검토 없이 게시 및 편집 가능",
+      "untrustedDesc": "업로드 및 편집은 승인이 필요",
+      "removeTrust": "신뢰 제거",
+      "addTrust": "신뢰로 표시",
+      "colModeration": "모더레이션",
+      "trustedBadge": "신뢰",
+      "untrustedBadge": "모더레이션 중"
     },
     "pendingMangas": {
       "title": "검토 대기 만화",
@@ -988,7 +1095,57 @@
         "week": "이번 주",
         "month": "이번 달"
       },
-      "contentShowing": "{total}개 중 {shown}개 표시"
+      "contentShowing": "{total}개 중 {shown}개 표시",
+      "searchHint": "검색창으로 사용자를 찾으세요.",
+      "viewOnPage": "페이지에서 보기 →"
+    },
+    "editions": {
+      "errorProcessing": "요청 처리 중 오류가 발생했습니다",
+      "changeApproved": "변경이 승인되었습니다",
+      "changeRejected": "변경이 거부되었습니다",
+      "error": "오류",
+      "reportReviewed": "신고가 검토됨으로 표시되었습니다",
+      "reasonWrongInfo": "잘못된 정보",
+      "reasonWrongCover": "잘못된 표지",
+      "reasonDuplicate": "중복 만화",
+      "reasonInappropriate": "부적절한 콘텐츠",
+      "reasonOther": "기타",
+      "requestsTitle": "편집 요청",
+      "loading": "로딩 중...",
+      "requestsEmpty": "보류 중인 요청이 없습니다.",
+      "typeMangaEdit": "만화 편집",
+      "typeChapterEdit": "챕터 편집",
+      "by": "{name} 작성",
+      "before": "이전",
+      "after": "이후",
+      "notePlaceholder": "스캔 그룹에 대한 메모 (선택사항)...",
+      "approve": "승인",
+      "reject": "거부",
+      "reportsTitle": "만화 신고",
+      "reportsEmpty": "보류 중인 신고가 없습니다.",
+      "viewManga": "만화 보기",
+      "reviewed": "검토됨"
+    },
+    "proGrant": {
+      "title": "Pro 관리",
+      "searchPlaceholder": "이메일 또는 사용자명...",
+      "notFound": "사용자를 찾을 수 없습니다.",
+      "noName": "이름 없음",
+      "proActive": "Pro 활성",
+      "noPro": "Pro 없음",
+      "expires": "만료: ",
+      "permanent": "영구",
+      "durationLabel": "기간",
+      "permanentHint": "영구 Pro는 날짜를 비워두세요.",
+      "activate": "Pro 활성화",
+      "deactivate": "비활성화",
+      "errorSave": "저장 오류",
+      "proActivated": "Pro 활성화됨",
+      "proDeactivated": "Pro 비활성화됨",
+      "days7": "7일",
+      "days30": "30일",
+      "days90": "90일",
+      "year1": "1년"
     }
   },
   "notifications": {
@@ -1003,7 +1160,15 @@
     "mangaApproved": "만화 「{title}」이(가) 승인되었습니다.",
     "mangaRejected": "만화 「{title}」이(가) 거절되었습니다.",
     "mangaRequestApproved": "만화 요청 「{title}」이(가) 승인되었습니다.",
-    "mangaRequestRejected": "만화 요청 「{title}」이(가) 거절되었습니다."
+    "mangaRequestRejected": "만화 요청 「{title}」이(가) 거절되었습니다.",
+    "changeRequestChapterApproved": "✅ {manga} {number}화 편집이 승인되었습니다",
+    "changeRequestChapterApprovedNoManga": "✅ {number}화 편집이 승인되었습니다",
+    "changeRequestMangaApproved": "✅ 「{title}」편집이 승인되었습니다",
+    "changeRequestApproved": "✅ 편집이 승인되었습니다",
+    "changeRequestChapterRejected": "❌ {manga} {number}화 편집이 거부되었습니다",
+    "changeRequestChapterRejectedNoManga": "❌ {number}화 편집이 거부되었습니다",
+    "changeRequestMangaRejected": "❌ 「{title}」편집이 거부되었습니다",
+    "changeRequestRejected": "❌ 편집이 거부되었습니다"
   },
   "badges": {
     "earnedTitle": "새 배지 해제!",
@@ -1167,13 +1332,15 @@
     "noProgressYet": "아직 읽기 진행이 없습니다.",
     "commentsTitle": "주목할 댓글",
     "commentsEmpty": "아직 댓글이 없습니다.",
-    "chapterShort": "{n}화",
+    "chapterShort": "화",
     "uploadsTitle": "업로드(스캔)",
     "uploadsTotalChapters": "제출한 회",
     "uploadsApproved": "승인됨",
     "uploadsMangas": "기여한 시리즈",
     "zenCoinsLabel": "Zen Coins",
-    "zenShardsLabel": "Zen Shards"
+    "zenShardsLabel": "Zen Shards",
+    "uploadedMangasTitle": "업로드된 만화",
+    "noCover": "표지 없음"
   },
   "presence": {
     "footerLoading": "…",
@@ -1372,5 +1539,103 @@
   },
   "mangaComments": {
     "title": "만화 댓글"
+  },
+  "theme": {
+    "activateLight": "라이트 모드로 전환",
+    "activateDark": "다크 모드로 전환",
+    "light": "라이트 모드",
+    "dark": "다크 모드"
+  },
+  "mangaReport": {
+    "button": "신고",
+    "title": "만화 신고",
+    "reasonLabel": "이유",
+    "detailsLabel": "세부사항 (선택사항)",
+    "detailsPlaceholder": "문제를 설명해주세요...",
+    "cancel": "취소",
+    "submit": "신고 제출",
+    "reasonWrongInfo": "잘못된 정보",
+    "reasonWrongCover": "잘못된 표지",
+    "reasonDuplicate": "중복 만화",
+    "reasonInappropriate": "부적절한 콘텐츠",
+    "reasonOther": "기타",
+    "alreadyReportedMax": "이 만화는 이미 신고되어 팀에서 검토 중입니다.",
+    "thankYou": "신고해주셔서 감사합니다. 곧 검토하겠습니다.",
+    "loginRequired": "신고하려면 로그인이 필요합니다",
+    "alreadyReported": "이미 이 만화를 신고했습니다",
+    "maxReached": "이 만화는 이미 충분한 수의 신고를 받았습니다",
+    "errorSubmit": "신고 제출 중 오류가 발생했습니다",
+    "success": "신고가 성공적으로 제출되었습니다"
+  },
+  "mangaPage": {
+    "notFoundTitle": "만화를 찾을 수 없습니다 | MangaZen",
+    "notFoundDescription": "요청한 만화가 존재하지 않거나 삭제되었습니다.",
+    "defaultDescription": "MangaZen에서 {title} 읽기. 점수 {score}.",
+    "noCover": "표지 없음",
+    "year": "연도",
+    "information": "정보",
+    "author": "저자",
+    "artist": "아티스트",
+    "publisher": "출판사",
+    "country": "국가",
+    "type": "유형",
+    "status": "상태",
+    "demographic": "대상 독자",
+    "genres": "장르 및 테마",
+    "altTitles": "대체 제목"
+  },
+  "notFound": {
+    "title": "페이지를 찾을 수 없습니다",
+    "body": "찾고 있는 만화가 그림자 세계로 도망갔거나, 이 페이지가 존재하지 않습니다.",
+    "backHome": "홈으로 돌아가기",
+    "viewLibrary": "라이브러리 보기"
+  },
+  "proPlan": {
+    "sectionTitle": "Pro 구독",
+    "alreadyPro": "이미 활성 플랜이 있습니다. 플래티넘 플랜으로 변경하거나 추가할 수 있습니다.",
+    "errorUnexpected": "예상치 못한 오류",
+    "oneTime": "일회성",
+    "perMonth": "/월",
+    "buyNow": "지금 구매",
+    "subscribe": "구독",
+    "featureNoAds": "광고 없음",
+    "featureNoAdsForever": "영구 광고 없음",
+    "featureUnlimitedDownloads": "무제한 다운로드",
+    "featureUnlimitedRequests": "무제한 요청",
+    "featurePremiumAvatar": "프리미엄 아바타 및 배너",
+    "featureZenCoins": "월 400 ZC",
+    "featureOneTimePay": "일회성 결제",
+    "featureCompatible": "모든 구독과 호환",
+    "bronze": {
+      "name": "브론즈"
+    },
+    "silver": {
+      "name": "실버"
+    },
+    "gold": {
+      "name": "골드"
+    },
+    "platinum": {
+      "name": "플래티넘"
+    }
+  },
+  "imageCrop": {
+    "cancel": "취소",
+    "apply": "자르기 적용"
+  },
+  "scanTerms": {
+    "title": "면책 조항 - 역할 {role}",
+    "intro": "계속하기 전에 다음 약관을 읽고 동의해 주세요.",
+    "conditions": "역할 {role} 이용 약관:",
+    "term1": "이 역할을 수락함으로써, MangaZen에 게시하는 콘텐츠의 소유자이거나 업로드 및 배포에 대한 명시적 허가를 가지고 있음을 선언합니다.",
+    "term2": "MangaZen은 귀하가 업로드한 콘텐츠로 인한 저작권 침해나 기타 법적 문제에 대해 책임을 지지 않습니다.",
+    "term3": "이 조건을 위반하면 계정과 게시된 콘텐츠의 정지 또는 삭제로 이어질 수 있습니다.",
+    "reject": "거부하고 USER로 돌아가기",
+    "accept": "약관에 동의합니다"
+  },
+  "mangaReactions": {
+    "favorite": "즐겨찾기 ({count})",
+    "like": "좋아요 ({count})",
+    "dislike": "싫어요 ({count})"
   }
 }

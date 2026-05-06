@@ -193,7 +193,11 @@
     "libraryEmptyReading": "現在読んでいるマンガはありません。",
     "libraryEmptyCompleted": "まだ完読したマンガはありません。",
     "libraryEmptyDropped": "中断したマンガはありません。",
-    "libraryEmptyPlanToRead": "読む予定のマンガはありません。"
+    "libraryEmptyPlanToRead": "読む予定のマンガはありません。",
+    "avatarUpdated": "プロフィール写真が更新されました",
+    "avatarError": "プロフィール写真を更新できませんでした",
+    "cropAvatarTitle": "プロフィール写真をトリミング",
+    "cropBannerTitle": "バナーをトリミング"
   },
   "chapterComments": {
     "title": "章のコメント",
@@ -207,7 +211,8 @@
       "pt_br": "ポルトガル語（ブラジル）",
       "ja_jp": "日本語",
       "ko_kr": "韓国語",
-      "zh_cn": "中国語（簡体字）"
+      "zh_cn": "中国語（簡体字）",
+      "ru_ru": "ロシア語"
     },
     "newLabel": "あなたのコメント",
     "placeholder": "コメントを書く…",
@@ -328,7 +333,20 @@
       "save": "保存",
       "saved": "保存しました。",
       "saveError": "保存できませんでした。",
-      "empty": "章がありません。"
+      "empty": "章がありません。",
+      "searchError": "検索エラー",
+      "searchPlaceholder": "マンガまたはチャプターを検索...",
+      "searchButton": "検索",
+      "resultsCount": "{count}件の結果",
+      "recentChapters": "最近の10チャプター",
+      "eaBadge": "Early Access",
+      "configureButton": "設定",
+      "modalTitle": "Early Accessを設定",
+      "activateEA": "Early Accessを有効化",
+      "availableUntil": "利用可能期限",
+      "priceLabel": "価格 (ZenCoins)",
+      "chapterShort": "話",
+      "cancel": "キャンセル"
     }
   },
   "userMenu": {
@@ -537,7 +555,8 @@
       "pt-br": "ポルトガル語（ブラジル）",
       "ja-jp": "日本語",
       "ko-kr": "韓国語",
-      "zh-cn": "中国語（簡体字）"
+      "zh-cn": "中国語（簡体字）",
+      "ru-ru": "ロシア語"
     },
     "upload": {
       "heading": "章をアップロード",
@@ -622,7 +641,23 @@
       "progress": "{pct}% 完了",
       "submit": "マンガを作成",
       "submitting": "作成中…",
-      "success": "マンガを作成しました。"
+      "success": "マンガを作成しました。",
+      "countryRequired": "原産国は必須です",
+      "altTitlesLabel": "別タイトル",
+      "optional": "（任意）",
+      "addAltTitle": "+ タイトルを追加",
+      "releaseYear": "発行年",
+      "publisher": "出版社",
+      "publisherPlaceholder": "例: 集英社, Webtoon...",
+      "countryLabel": "原産国",
+      "countrySelect": "選択...",
+      "countryJP": "日本 🇯🇵",
+      "countryKR": "韓国 🇰🇷",
+      "countryCN": "中国 🇨🇳",
+      "countryUS": "アメリカ 🇺🇸",
+      "countryFR": "フランス 🇫🇷",
+      "countryOther": "その他...",
+      "countryCustomPlaceholder": "国を入力..."
     },
     "mangaStatus": {
       "ONGOING": "連載中",
@@ -682,6 +717,43 @@
       "RATE_LIMITED": "検索が多すぎます。数秒後にもう一度お試しください。",
       "ID_REQUIRED": "識別子が必要です。",
       "NOT_FOUND": "リソースが見つかりません。"
+    },
+    "edit": {
+      "button": "編集",
+      "title": "アップロードを編集",
+      "chapterSection": "チャプター",
+      "chapterNumber": "番号",
+      "chapterTitle": "チャプタータイトル",
+      "mangaSection": "マンガ",
+      "mangaTitle": "タイトル",
+      "mangaDescription": "説明",
+      "mangaAuthor": "著者",
+      "mangaArtist": "アーティスト",
+      "mangaPublisher": "出版社",
+      "mangaYear": "年",
+      "mangaCover": "表紙",
+      "noCoverChanges": "変更なし",
+      "changeCover": "表紙を変更",
+      "removeCover": "削除",
+      "altTitles": "別タイトル",
+      "addAltTitle": "+ 追加",
+      "noAltTitles": "別タイトルなし。",
+      "altTitlePlaceholder": "別タイトル...",
+      "localeEnUs": "英語 (米国)",
+      "localeEnGb": "英語 (英国)",
+      "localeEsAr": "スペイン語 (中南米)",
+      "localeEsEs": "スペイン語 (スペイン)",
+      "localePtBr": "ポルトガル語 (ブラジル)",
+      "localeJaJp": "日本語",
+      "localeKoKr": "韓国語",
+      "localeZhCn": "中国語 (簡体字)",
+      "localeRuRu": "ロシア語",
+      "genres": "ジャンルとテーマ",
+      "cancel": "キャンセル",
+      "save": "変更を保存",
+      "saveSuccess": "変更が保存されました",
+      "pendingReview": "変更が管理者に送信されました。",
+      "saveError": "変更の保存中にエラーが発生しました"
     }
   },
   "admin": {
@@ -741,7 +813,8 @@
       "scanRoleDialogBody2": "MangaZenは、このユーザーがアップロードしたコンテンツによる著作権侵害やその他の法的問題について責任を負いません。",
       "scanRoleDialogBody3": "これらの条件に違反した場合、アカウントと公開コンテンツの停止または削除につながる可能性があります。",
       "scanRoleDialogConfirm": "理解した上でロール変更を確認します",
-      "scanTermsAcceptedAt": "利用規約の同意日"
+      "scanTermsAcceptedAt": "利用規約の同意日",
+      "tabEdiciones": "編集"
     },
     "ads": {
       "title": "広告管理",
@@ -760,7 +833,19 @@
       "errorSave": "保存エラー。",
       "errorDelete": "削除エラー。",
       "active": "有効",
-      "inactive": "無効"
+      "inactive": "無効",
+      "slots": {
+        "global": "🌐 グローバルスクリプト（全スロット）",
+        "homeBetween": "ホーム — セクション間",
+        "mangaDetailBefore": "マンガページ — チャプター前",
+        "readerEnd": "リーダー — チャプター終了",
+        "libraryAfter10": "ライブラリ — 10件後",
+        "libraryAfter25": "ライブラリ — 25件後",
+        "libraryAfter50": "ライブラリ — 50件ごと",
+        "newsBetween": "ニュース — セクション間",
+        "communityBetween": "コミュニティ — セクション間",
+        "profilePublicBottom": "公開プロフィール — 下部"
+      }
     },
     "scanStats": {
       "title": "スキャン・クリエイター統計",
@@ -813,7 +898,18 @@
       "rejectTitle": "話を却下",
       "rejectNotesPlaceholder": "アップロード者へのメモ（任意）…",
       "cancel": "キャンセル",
-      "confirmReject": "却下を確定"
+      "confirmReject": "却下を確定",
+      "toastTrustedError": "更新エラー",
+      "toastTrusted": "ユーザーを信頼済みとしてマーク",
+      "toastUntrusted": "モデレーション有効化",
+      "trustedLabel": "信頼済み",
+      "trustedDesc": "管理者の承認なしで投稿・編集可能",
+      "untrustedDesc": "投稿・編集は承認が必要",
+      "removeTrust": "信頼を解除",
+      "addTrust": "信頼済みにする",
+      "colModeration": "モデレーション",
+      "trustedBadge": "信頼済み",
+      "untrustedBadge": "モデレーション中"
     },
     "pendingMangas": {
       "title": "審査待ちのマンガ",
@@ -999,7 +1095,57 @@
         "week": "今週",
         "month": "今月"
       },
-      "contentShowing": "{total}件中{shown}件表示"
+      "contentShowing": "{total}件中{shown}件表示",
+      "searchHint": "検索バーでユーザーを探してください。",
+      "viewOnPage": "ページで見る →"
+    },
+    "editions": {
+      "errorProcessing": "リクエストの処理中にエラーが発生しました",
+      "changeApproved": "変更が承認されました",
+      "changeRejected": "変更が却下されました",
+      "error": "エラー",
+      "reportReviewed": "報告が確認済みとしてマークされました",
+      "reasonWrongInfo": "情報が間違っています",
+      "reasonWrongCover": "表紙が間違っています",
+      "reasonDuplicate": "重複したマンガ",
+      "reasonInappropriate": "不適切なコンテンツ",
+      "reasonOther": "その他",
+      "requestsTitle": "編集リクエスト",
+      "loading": "読み込み中...",
+      "requestsEmpty": "保留中のリクエストはありません。",
+      "typeMangaEdit": "マンガの編集",
+      "typeChapterEdit": "チャプターの編集",
+      "by": "{name} による",
+      "before": "変更前",
+      "after": "変更後",
+      "notePlaceholder": "スキャングループへのメモ（任意）...",
+      "approve": "承認",
+      "reject": "却下",
+      "reportsTitle": "マンガの報告",
+      "reportsEmpty": "保留中の報告はありません。",
+      "viewManga": "マンガを見る",
+      "reviewed": "確認済み"
+    },
+    "proGrant": {
+      "title": "Pro管理",
+      "searchPlaceholder": "メールまたはユーザー名...",
+      "notFound": "ユーザーが見つかりません。",
+      "noName": "名前なし",
+      "proActive": "Proアクティブ",
+      "noPro": "Proなし",
+      "expires": "期限: ",
+      "permanent": "永久",
+      "durationLabel": "期間",
+      "permanentHint": "永久Proの場合は日付を空白にしてください。",
+      "activate": "Proを有効化",
+      "deactivate": "無効化",
+      "errorSave": "保存エラー",
+      "proActivated": "Proが有効化されました",
+      "proDeactivated": "Proが無効化されました",
+      "days7": "7日間",
+      "days30": "30日間",
+      "days90": "90日間",
+      "year1": "1年"
     }
   },
   "notifications": {
@@ -1014,7 +1160,15 @@
     "mangaApproved": "マンガ「{title}」が承認されました。",
     "mangaRejected": "マンガ「{title}」が却下されました。",
     "mangaRequestApproved": "マンガリクエスト「{title}」が承認されました。",
-    "mangaRequestRejected": "マンガリクエスト「{title}」が却下されました。"
+    "mangaRequestRejected": "マンガリクエスト「{title}」が却下されました。",
+    "changeRequestChapterApproved": "✅ {manga}の第{number}話の編集が承認されました",
+    "changeRequestChapterApprovedNoManga": "✅ 第{number}話の編集が承認されました",
+    "changeRequestMangaApproved": "✅ 「{title}」の編集が承認されました",
+    "changeRequestApproved": "✅ 編集が承認されました",
+    "changeRequestChapterRejected": "❌ {manga}の第{number}話の編集が却下されました",
+    "changeRequestChapterRejectedNoManga": "❌ 第{number}話の編集が却下されました",
+    "changeRequestMangaRejected": "❌ 「{title}」の編集が却下されました",
+    "changeRequestRejected": "❌ 編集が却下されました"
   },
   "badges": {
     "earnedTitle": "新しいバッジを獲得！",
@@ -1178,13 +1332,15 @@
     "noProgressYet": "まだ読書の進捗がありません。",
     "commentsTitle": "注目のコメント",
     "commentsEmpty": "まだコメントがありません。",
-    "chapterShort": "第{n}話",
+    "chapterShort": "話",
     "uploadsTitle": "アップロード（スキャン）",
     "uploadsTotalChapters": "提出した章",
     "uploadsApproved": "承認済",
     "uploadsMangas": "貢献したシリーズ",
     "zenCoinsLabel": "Zen Coins",
-    "zenShardsLabel": "Zen Shards"
+    "zenShardsLabel": "Zen Shards",
+    "uploadedMangasTitle": "アップロードされたマンガ",
+    "noCover": "カバーなし"
   },
   "presence": {
     "footerLoading": "…",
@@ -1383,5 +1539,103 @@
   },
   "mangaComments": {
     "title": "マンガへのコメント"
+  },
+  "theme": {
+    "activateLight": "ライトモードに切り替え",
+    "activateDark": "ダークモードに切り替え",
+    "light": "ライトモード",
+    "dark": "ダークモード"
+  },
+  "mangaReport": {
+    "button": "報告",
+    "title": "マンガを報告",
+    "reasonLabel": "理由",
+    "detailsLabel": "詳細（任意）",
+    "detailsPlaceholder": "問題を説明してください...",
+    "cancel": "キャンセル",
+    "submit": "報告を送信",
+    "reasonWrongInfo": "情報が間違っています",
+    "reasonWrongCover": "表紙が間違っています",
+    "reasonDuplicate": "重複したマンガ",
+    "reasonInappropriate": "不適切なコンテンツ",
+    "reasonOther": "その他",
+    "alreadyReportedMax": "このマンガはすでに報告されており、チームが確認中です。",
+    "thankYou": "ご報告ありがとうございます。まもなく確認します。",
+    "loginRequired": "報告するにはログインが必要です",
+    "alreadyReported": "このマンガはすでに報告済みです",
+    "maxReached": "このマンガはすでに十分な数の報告を受けています",
+    "errorSubmit": "報告の送信中にエラーが発生しました",
+    "success": "報告が正常に送信されました"
+  },
+  "mangaPage": {
+    "notFoundTitle": "マンガが見つかりません | MangaZen",
+    "notFoundDescription": "リクエストされたマンガは存在しないか削除されました。",
+    "defaultDescription": "MangaZenで{title}を読む。スコア {score}。",
+    "noCover": "カバーなし",
+    "year": "年",
+    "information": "情報",
+    "author": "著者",
+    "artist": "アーティスト",
+    "publisher": "出版社",
+    "country": "国",
+    "type": "タイプ",
+    "status": "ステータス",
+    "demographic": "対象読者",
+    "genres": "ジャンルとテーマ",
+    "altTitles": "別タイトル"
+  },
+  "notFound": {
+    "title": "ページが見つかりません",
+    "body": "お探しのマンガは影の世界に逃げてしまったか、このページは存在しません。",
+    "backHome": "ホームに戻る",
+    "viewLibrary": "ライブラリを見る"
+  },
+  "proPlan": {
+    "sectionTitle": "Proサブスクリプション",
+    "alreadyPro": "すでにアクティブなプランがあります。プラチナプランに変更または追加できます。",
+    "errorUnexpected": "予期しないエラー",
+    "oneTime": "買い切り",
+    "perMonth": "/月",
+    "buyNow": "今すぐ購入",
+    "subscribe": "サブスクリプション",
+    "featureNoAds": "広告なし",
+    "featureNoAdsForever": "永久に広告なし",
+    "featureUnlimitedDownloads": "無制限ダウンロード",
+    "featureUnlimitedRequests": "無制限リクエスト",
+    "featurePremiumAvatar": "プレミアムアバター・バナー",
+    "featureZenCoins": "月400ZC",
+    "featureOneTimePay": "買い切り支払い",
+    "featureCompatible": "どのサブスクリプションとも互換性あり",
+    "bronze": {
+      "name": "ブロンズ"
+    },
+    "silver": {
+      "name": "シルバー"
+    },
+    "gold": {
+      "name": "ゴールド"
+    },
+    "platinum": {
+      "name": "プラチナ"
+    }
+  },
+  "imageCrop": {
+    "cancel": "キャンセル",
+    "apply": "トリミングを適用"
+  },
+  "scanTerms": {
+    "title": "免責事項 - ロール {role}",
+    "intro": "続ける前に、以下の規約を読んで同意してください。",
+    "conditions": "ロール {role} の利用規約:",
+    "term1": "このロールを受け入れることで、MangaZenに投稿・配布するコンテンツの所有者であるか、明示的な許可を持っていることを宣言します。",
+    "term2": "MangaZenは、あなたがアップロードしたコンテンツに起因する著作権侵害やその他の法的問題について責任を負いません。",
+    "term3": "これらの条件に違反した場合、アカウントと投稿コンテンツの停止または削除につながる可能性があります。",
+    "reject": "拒否してUSERに戻る",
+    "accept": "規約に同意する"
+  },
+  "mangaReactions": {
+    "favorite": "お気に入り ({count})",
+    "like": "いいね ({count})",
+    "dislike": "よくない ({count})"
   }
 }

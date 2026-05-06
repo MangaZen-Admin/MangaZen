@@ -1,5 +1,5 @@
 import type { Locale } from "date-fns";
-import { enGB, enUS, es, ja, ko, ptBR, zhCN } from "date-fns/locale";
+import { enGB, enUS, es, ja, ko, ptBR, ru, zhCN } from "date-fns/locale";
 
 /** Maps next-intl app locale (`es-ar`, `en-us`, …) to date-fns `Locale`. */
 export function dateFnsLocaleFromAppLocale(appLocale: string): Locale {
@@ -11,6 +11,7 @@ export function dateFnsLocaleFromAppLocale(appLocale: string): Locale {
     "pt-br": ptBR,
     "ja-jp": ja,
     "ko-kr": ko,
+    "ru-ru": ru,
     "zh-cn": zhCN,
   };
   return map[appLocale] ?? enUS;

@@ -373,7 +373,7 @@ export async function PublicProfileFull({
 
       {supplemental.uploadedMangas && supplemental.uploadedMangas.length > 0 && (
         <section className="rounded-2xl border border-primary/20 bg-card p-6 shadow-sm dark:border-border dark:shadow-none">
-          <h2 className="text-lg font-semibold text-foreground">Mangas subidos</h2>
+          <h2 className="text-lg font-semibold text-foreground">{t("uploadedMangasTitle")}</h2>
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {supplemental.uploadedMangas.map((manga) => (
               <Link
@@ -393,12 +393,12 @@ export async function PublicProfileFull({
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
-                      Sin portada
+                      {t("noCover")}
                     </div>
                   )}
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
                     <p className="text-[10px] font-semibold text-white">
-                      ★ {manga.scoreAvg.toFixed(1)} · {manga.chaptersCount} caps.
+                      ★ {manga.scoreAvg.toFixed(1)} · {manga.chaptersCount} {t("chapterShort")}
                     </p>
                   </div>
                 </div>

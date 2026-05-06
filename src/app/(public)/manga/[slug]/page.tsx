@@ -174,6 +174,7 @@ async function getRelatedMangas(
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+  const t = await getTranslations("mangaPage");
   const manga = await prisma.manga.findUnique({
     where: { slug },
     select: {
@@ -188,8 +189,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!manga) {
     return {
-      title: "Manga no encontrado | MangaZen",
-      description: "El manga solicitado no existe o fue eliminado.",
+      title: t("notFoundTitle"),
+      description: t("notFoundDescription"),
     };
   }
 
@@ -210,15 +211,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     })
   ) {
     return {
-      title: "Manga no encontrado | MangaZen",
-      description: "El manga solicitado no existe o fue eliminado.",
+      title: t("notFoundTitle"),
+      description: t("notFoundDescription"),
     };
   }
 
   const title = `${manga.title} | MangaZen`;
   const description = manga.description
     ? manga.description.slice(0, 200)
-    : `Leé ${manga.title} en MangaZen. Puntuación ${manga.scoreAvg.toFixed(1)}.`;
+    : t("defaultDescription", { title: manga.title, score: manga.scoreAvg.toFixed(1) });
 
   return {
     title,
@@ -251,6 +252,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function MangaDetailPage({ params }: PageProps) {
   const locale = await getLocale();
   const intlLocale = appLocaleToBcp47(locale);
+  const tPage = await getTranslations("mangaPage");
   const tCat = await getTranslations("catalog");
   const tDon = await getTranslations("donation");
   const tStatus = await getTranslations("scanPanel.mangaStatus");
@@ -440,7 +442,7 @@ export default async function MangaDetailPage({ params }: PageProps) {
               />
             ) : (
               <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
-                Sin portada
+                {tPage("noCover")}
               </div>
             )}
           </div>
@@ -536,7 +538,7 @@ export default async function MangaDetailPage({ params }: PageProps) {
           </div>
           <div className="rounded-xl border border-border bg-card p-3 text-center">
             <p className="text-xl font-bold">{manga.releaseYear}</p>
-            <p className="text-xs text-muted-foreground">Año</p>
+            <p className="text-xs text-muted-foreground">{tPage("year")}</p>
           </div>
         </div>
 
@@ -654,47 +656,47 @@ export default async function MangaDetailPage({ params }: PageProps) {
             {/* Metadata */}
             <div className="rounded-xl border border-border bg-card p-5">
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-widest text-muted-foreground">
-                Información
+                {tPage("information")}
               </h3>
               <dl className="space-y-3 text-sm">
                 {manga.author && (
                   <div className="flex justify-between gap-2">
-                    <dt className="text-muted-foreground">Autor</dt>
+                    <dt className="text-muted-foreground">{tPage("author")}</dt>
                     <dd className="text-right font-medium text-foreground">{manga.author}</dd>
                   </div>
                 )}
                 {manga.artist && manga.artist !== manga.author && (
                   <div className="flex justify-between gap-2">
-                    <dt className="text-muted-foreground">Arte</dt>
+                    <dt className="text-muted-foreground">{tPage("artist")}</dt>
                     <dd className="text-right font-medium text-foreground">{manga.artist}</dd>
                   </div>
                 )}
                 {manga.publisher && (
                   <div className="flex justify-between gap-2">
-                    <dt className="text-muted-foreground">Editorial</dt>
+                    <dt className="text-muted-foreground">{tPage("publisher")}</dt>
                     <dd className="text-right font-medium text-foreground">{manga.publisher}</dd>
                   </div>
                 )}
                 {manga.country && (
                   <div className="flex justify-between gap-2">
-                    <dt className="text-muted-foreground">País</dt>
+                    <dt className="text-muted-foreground">{tPage("country")}</dt>
                     <dd className="text-right font-medium text-foreground">{manga.country}</dd>
                   </div>
                 )}
                 {manga.releaseYear && (
                   <div className="flex justify-between gap-2">
-                    <dt className="text-muted-foreground">Año</dt>
+                    <dt className="text-muted-foreground">{tPage("year")}</dt>
                     <dd className="text-right font-medium text-foreground">{manga.releaseYear}</dd>
                   </div>
                 )}
                 <div className="flex justify-between gap-2">
-                  <dt className="text-muted-foreground">Tipo</dt>
+                  <dt className="text-muted-foreground">{tPage("type")}</dt>
                   <dd className="text-right font-medium text-foreground">
                     {tType.has(manga.type) ? tType(manga.type) : manga.type}
                   </dd>
                 </div>
                 <div className="flex justify-between gap-2">
-                  <dt className="text-muted-foreground">Estado</dt>
+                  <dt className="text-muted-foreground">{tPage("status")}</dt>
                   <dd className="text-right font-medium">
                     <span
                       className={cn(
@@ -710,7 +712,7 @@ export default async function MangaDetailPage({ params }: PageProps) {
                 </div>
                 {manga.demographic && (
                   <div className="flex justify-between gap-2">
-                    <dt className="text-muted-foreground">Demografía</dt>
+                    <dt className="text-muted-foreground">{tPage("demographic")}</dt>
                     <dd className="text-right font-medium text-foreground">
                       {tDemo.has(manga.demographic) ? tDemo(manga.demographic) : manga.demographic}
                     </dd>
@@ -723,7 +725,7 @@ export default async function MangaDetailPage({ params }: PageProps) {
             {manga.tags.length > 0 && (
               <div className="rounded-xl border border-border bg-card p-5">
                 <h3 className="mb-3 text-sm font-semibold uppercase tracking-widest text-muted-foreground">
-                  Géneros y temáticas
+                  {tPage("genres")}
                 </h3>
                 <div className="flex flex-wrap gap-1.5">
                   {manga.tags.map((relation) => (
@@ -742,7 +744,7 @@ export default async function MangaDetailPage({ params }: PageProps) {
             {manga.alternativeTitles.length > 0 && (
               <div className="rounded-xl border border-border bg-card p-5">
                 <h3 className="mb-3 text-sm font-semibold uppercase tracking-widest text-muted-foreground">
-                  Títulos alternativos
+                  {tPage("altTitles")}
                 </h3>
                 <ul className="space-y-2">
                   {manga.alternativeTitles.map((at) => (

@@ -3,6 +3,7 @@
 import { useState, type ChangeEvent, type KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Crown, Search, Loader2, CheckCircle, XCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -20,12 +21,12 @@ type UserProInfo = {
 };
 
 const PRESETS = [
-  { label: "7 días", days: 7 },
-  { label: "30 días", days: 30 },
-  { label: "90 días", days: 90 },
-  { label: "1 año", days: 365 },
-  { label: "Permanente", days: 0 },
-];
+  { key: "days7", days: 7 },
+  { key: "days30", days: 30 },
+  { key: "days90", days: 90 },
+  { key: "year1", days: 365 },
+  { key: "permanent", days: 0 },
+] as const;
 
 function addDays(days: number): string {
   const d = new Date();
@@ -35,6 +36,7 @@ function addDays(days: number): string {
 
 export function AdminProGrantPanel() {
   const router = useRouter();
+  const t = useTranslations("admin.proGrant");
   const [query, setQuery] = useState("");
   const [searching, setSearching] = useState(false);
   const [user, setUser] = useState<UserProInfo | null>(null);
@@ -95,15 +97,15 @@ export function AdminProGrantPanel() {
         }),
       });
       if (!res.ok) {
-        toast.error("Error al guardar");
+        toast.error(t("errorSave"));
         return;
       }
       const updated = (await res.json()) as Partial<UserProInfo>;
       setUser((prev) => (prev ? { ...prev, ...updated } : prev));
-      toast.success(activate ? "Pro activado" : "Pro desactivado");
+      toast.success(activate ? t("proActivated") : t("proDeactivated"));
       router.refresh();
     } catch {
-      toast.error("Error al guardar");
+      toast.error(t("errorSave"));
     } finally {
       setSaving(false);
     }
@@ -113,14 +115,14 @@ export function AdminProGrantPanel() {
     <div className="rounded-xl border border-border bg-card p-6">
       <div className="mb-5 flex items-center gap-2">
         <Crown className="h-5 w-5 text-yellow-400" />
-        <h2 className="text-lg font-bold">Gestionar Pro</h2>
+        <h2 className="text-lg font-bold">{t("title")}</h2>
       </div>
 
       {/* Buscador */}
       <div className="mb-4 flex gap-2">
         <input
           type="search"
-          placeholder="Email o username..."
+          placeholder={t("searchPlaceholder")}
           value={query}
           onChange={(e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
           onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && void handleSearch()}
@@ -131,14 +133,14 @@ export function AdminProGrantPanel() {
         </Button>
       </div>
 
-      {notFound && <p className="text-sm text-muted-foreground">No se encontró ningún usuario.</p>}
+      {notFound && <p className="text-sm text-muted-foreground">{t("notFound")}</p>}
 
       {user && (
         <div className="space-y-4">
           {/* Info usuario */}
           <div className="flex items-center gap-3 rounded-lg bg-muted/40 p-3">
             <div className="min-w-0 flex-1">
-              <p className="truncate font-medium">{user.name ?? user.username ?? "Sin nombre"}</p>
+              <p className="truncate font-medium">{user.name ?? user.username ?? t("noName")}</p>
               <p className="truncate text-xs text-muted-foreground">{user.email}</p>
             </div>
             <span
@@ -150,27 +152,27 @@ export function AdminProGrantPanel() {
               )}
             >
               {user.isPro ? <CheckCircle className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
-              {user.isPro ? "Pro activo" : "Sin Pro"}
+              {user.isPro ? t("proActive") : t("noPro")}
             </span>
           </div>
 
           {/* Vencimiento actual */}
           {user.isPro && (
             <p className="text-xs text-muted-foreground">
-              Vence:{" "}
+              {t("expires")}
               {user.proExpiresAt
                 ? new Date(user.proExpiresAt).toLocaleDateString("es-AR")
-                : "Permanente"}
+                : t("permanent")}
             </p>
           )}
 
           {/* Selector de duración */}
           <div>
-            <p className="mb-2 text-sm font-medium">Duración</p>
+            <p className="mb-2 text-sm font-medium">{t("durationLabel")}</p>
             <div className="mb-2 flex flex-wrap gap-2">
               {PRESETS.map((p) => (
                 <button
-                  key={p.label}
+                  key={p.key}
                   type="button"
                   onClick={() => setExpiresAt(p.days === 0 ? "" : addDays(p.days))}
                   className={cn(
@@ -180,7 +182,7 @@ export function AdminProGrantPanel() {
                       : "border-border hover:border-foreground"
                   )}
                 >
-                  {p.label}
+                  {t(p.key)}
                 </button>
               ))}
             </div>
@@ -190,7 +192,7 @@ export function AdminProGrantPanel() {
               onChange={(e: ChangeEvent<HTMLInputElement>) => setExpiresAt(e.target.value)}
               className={cn(inputClass, "w-full")}
             />
-            <p className="mt-1 text-xs text-muted-foreground">Dejá la fecha vacía para Pro permanente.</p>
+            <p className="mt-1 text-xs text-muted-foreground">{t("permanentHint")}</p>
           </div>
 
           {/* Acciones */}
@@ -201,7 +203,7 @@ export function AdminProGrantPanel() {
               disabled={saving}
               className="flex-1 bg-gradient-to-r from-yellow-500 to-amber-400 font-semibold text-black"
             >
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Activar Pro"}
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : t("activate")}
             </Button>
             {user.isPro && (
               <Button
@@ -211,7 +213,7 @@ export function AdminProGrantPanel() {
                 variant="destructive"
                 className="flex-1"
               >
-                Desactivar
+                {t("deactivate")}
               </Button>
             )}
           </div>

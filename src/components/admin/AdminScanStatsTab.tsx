@@ -189,7 +189,7 @@ export function AdminScanStatsTab() {
         body: JSON.stringify({ isTrusted: nextTrusted }),
       });
       if (!res.ok) {
-        toast.error("Error al actualizar");
+        toast.error(t("toastTrustedError"));
         return;
       }
       const data = (await res.json()) as { user: { isTrusted: boolean } };
@@ -207,7 +207,7 @@ export function AdminScanStatsTab() {
           : prev,
       );
       toast.success(
-        data.user.isTrusted ? "Usuario marcado como confiable" : "Moderación activada",
+        data.user.isTrusted ? t("toastTrusted") : t("toastUntrusted"),
       );
     } finally {
       setBusyTrustedUserId(null);
@@ -292,12 +292,12 @@ export function AdminScanStatsTab() {
               )}
               <div>
                 <p className="text-sm font-medium text-foreground">
-                  {detail.user.isTrusted ? "Confiable" : "Bajo Moderación"}
+                  {detail.user.isTrusted ? t("trustedLabel") : t("untrustedBadge")}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {detail.user.isTrusted
-                    ? "Publica y edita sin revisión del admin"
-                    : "Sus subidas y ediciones requieren aprobación"}
+                    ? t("trustedDesc")
+                    : t("untrustedDesc")}
                 </p>
               </div>
             </div>
@@ -311,9 +311,9 @@ export function AdminScanStatsTab() {
               {busyTrustedUserId === detail.user.id ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : detail.user.isTrusted ? (
-                "Quitar confianza"
+                t("removeTrust")
               ) : (
-                "Marcar como confiable"
+                t("addTrust")
               )}
             </Button>
           </div>
@@ -628,7 +628,7 @@ export function AdminScanStatsTab() {
                 <th className="px-3 py-3 text-right">{t("colRejected")}</th>
                 <th className="px-3 py-3 text-right">{t("colViews")}</th>
                 <th className="px-3 py-3 text-right">{t("colZen")}</th>
-                <th className="px-3 py-3 text-left">Moderación</th>
+                <th className="px-3 py-3 text-left">{t("colModeration")}</th>
                 <th className="px-3 py-3 text-left">{t("colLastUpload")}</th>
               </tr>
             </thead>
@@ -685,12 +685,12 @@ export function AdminScanStatsTab() {
                     {row.isTrusted ? (
                       <span className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary">
                         <Shield className="h-3 w-3" />
-                        Confiable
+                        {t("trustedBadge")}
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
                         <Eye className="h-3 w-3" />
-                        Bajo Moderación
+                        {t("untrustedBadge")}
                       </span>
                     )}
                   </td>

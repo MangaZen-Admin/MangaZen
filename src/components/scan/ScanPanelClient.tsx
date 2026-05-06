@@ -44,6 +44,7 @@ import {
   SCAN_MANGA_TYPES,
 } from "@/lib/scan-manga-constants";
 import { ScanStatsPanel } from "@/components/scan/ScanStatsPanel";
+import { translateCatalogTagName } from "@/lib/catalog-tag-i18n";
 
 type TabId = "stats" | "upload" | "myUploads" | "boost" | "newManga";
 
@@ -834,6 +835,7 @@ function UploadChapterSection({
 
 function MyUploadsSection() {
   const t = useTranslations("scanPanel");
+  const tCatalog = useTranslations("catalog");
   const locale = useLocale();
   const [rows, setRows] = useState<UploadRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -1017,7 +1019,7 @@ function MyUploadsSection() {
                             })();
                           }}
                         >
-                          Editar
+                          {t("edit.button")}
                         </button>
                         {confirmId === r.uploadId ? (
                           <>
@@ -1072,7 +1074,7 @@ function MyUploadsSection() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
           <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border border-border bg-card p-5 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Editar subida</h3>
+              <h3 className="text-lg font-semibold">{t("edit.title")}</h3>
               <button
                 type="button"
                 onClick={() => {
@@ -1088,11 +1090,11 @@ function MyUploadsSection() {
 
             <div className="mb-5">
               <h4 className="mb-3 text-sm font-medium uppercase tracking-wide text-muted-foreground">
-                Capítulo
+                {t("edit.chapterSection")}
               </h4>
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="text-xs text-muted-foreground">Número</label>
+                  <label className="text-xs text-muted-foreground">{t("edit.chapterNumber")}</label>
                   <input
                     type="number"
                     value={editDraft.chapterNumber}
@@ -1105,7 +1107,7 @@ function MyUploadsSection() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-muted-foreground">Título del capítulo</label>
+                  <label className="text-xs text-muted-foreground">{t("edit.chapterTitle")}</label>
                   <input
                     type="text"
                     value={editDraft.chapterTitle}
@@ -1122,11 +1124,11 @@ function MyUploadsSection() {
 
             <div className="mb-5">
               <h4 className="mb-3 text-sm font-medium uppercase tracking-wide text-muted-foreground">
-                Manga
+                {t("edit.mangaSection")}
               </h4>
               <div className="space-y-3">
                 <div>
-                  <label className="text-xs text-muted-foreground">Título</label>
+                  <label className="text-xs text-muted-foreground">{t("edit.mangaTitle")}</label>
                   <input
                     type="text"
                     value={editDraft.mangaTitle}
@@ -1139,7 +1141,7 @@ function MyUploadsSection() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-muted-foreground">Descripción</label>
+                  <label className="text-xs text-muted-foreground">{t("edit.mangaDescription")}</label>
                   <textarea
                     rows={3}
                     value={editDraft.mangaDescription}
@@ -1153,7 +1155,7 @@ function MyUploadsSection() {
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
-                    <label className="text-xs text-muted-foreground">Autor</label>
+                    <label className="text-xs text-muted-foreground">{t("edit.mangaAuthor")}</label>
                     <input
                       type="text"
                       value={editDraft.mangaAuthor}
@@ -1166,7 +1168,7 @@ function MyUploadsSection() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-muted-foreground">Arte</label>
+                    <label className="text-xs text-muted-foreground">{t("edit.mangaArtist")}</label>
                     <input
                       type="text"
                       value={editDraft.mangaArtist}
@@ -1179,7 +1181,7 @@ function MyUploadsSection() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-muted-foreground">Editorial</label>
+                    <label className="text-xs text-muted-foreground">{t("edit.mangaPublisher")}</label>
                     <input
                       type="text"
                       value={editDraft.mangaPublisher}
@@ -1192,7 +1194,7 @@ function MyUploadsSection() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-muted-foreground">Año</label>
+                    <label className="text-xs text-muted-foreground">{t("edit.mangaYear")}</label>
                     <input
                       type="number"
                       value={editDraft.mangaReleaseYear}
@@ -1205,7 +1207,7 @@ function MyUploadsSection() {
                     />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="text-xs text-muted-foreground">Portada</label>
+                    <label className="text-xs text-muted-foreground">{t("edit.mangaCover")}</label>
                     <div className="mt-1 flex items-center gap-3">
                       {coverPreview ? (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -1216,11 +1218,11 @@ function MyUploadsSection() {
                         />
                       ) : (
                         <div className="flex h-20 w-14 items-center justify-center rounded-lg border border-border bg-muted/40 text-xs text-muted-foreground">
-                          Sin cambios
+                          {t("edit.noCoverChanges")}
                         </div>
                       )}
                       <label className="cursor-pointer rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium text-foreground hover:border-primary/40 hover:bg-primary/5">
-                        Cambiar portada
+                        {t("edit.changeCover")}
                         <input
                           type="file"
                           accept="image/*"
@@ -1243,14 +1245,14 @@ function MyUploadsSection() {
                             setCoverPreview(null);
                           }}
                         >
-                          Quitar
+                          {t("edit.removeCover")}
                         </button>
                       )}
                     </div>
                   </div>
                   <div className="sm:col-span-2">
                     <div className="mb-2 flex items-center justify-between">
-                      <label className="text-xs text-muted-foreground">Títulos alternativos</label>
+                      <label className="text-xs text-muted-foreground">{t("edit.altTitles")}</label>
                       <button
                         type="button"
                         onClick={() =>
@@ -1268,11 +1270,11 @@ function MyUploadsSection() {
                         }
                         className="text-xs text-primary hover:underline"
                       >
-                        + Agregar
+                        {t("edit.addAltTitle")}
                       </button>
                     </div>
                     {editDraft.mangaAltTitles.length === 0 ? (
-                      <p className="text-xs text-muted-foreground">Sin títulos alternativos.</p>
+                      <p className="text-xs text-muted-foreground">{t("edit.noAltTitles")}</p>
                     ) : (
                       <div className="space-y-2">
                         {editDraft.mangaAltTitles.map((at, i) => (
@@ -1293,15 +1295,15 @@ function MyUploadsSection() {
                               }
                               className="rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
                             >
-                              <option value="en-us">Inglés (US)</option>
-                              <option value="en-gb">Inglés (GB)</option>
-                              <option value="es-ar">Español (LA)</option>
-                              <option value="es-es">Español (ES)</option>
-                              <option value="pt-br">Portugués (BR)</option>
-                              <option value="ja-jp">Japonés</option>
-                              <option value="ko-kr">Coreano</option>
-                              <option value="zh-cn">Chino (CN)</option>
-                              <option value="fr-fr">Francés</option>
+                              <option value="en-us">{t("edit.localeEnUs")}</option>
+                              <option value="en-gb">{t("edit.localeEnGb")}</option>
+                              <option value="es-ar">{t("edit.localeEsAr")}</option>
+                              <option value="es-es">{t("edit.localeEsEs")}</option>
+                              <option value="pt-br">{t("edit.localePtBr")}</option>
+                              <option value="ja-jp">{t("edit.localeJaJp")}</option>
+                              <option value="ko-kr">{t("edit.localeKoKr")}</option>
+                              <option value="zh-cn">{t("edit.localeZhCn")}</option>
+                              <option value="ru-ru">{t("edit.localeRuRu")}</option>
                             </select>
                             <input
                               value={at.title}
@@ -1317,7 +1319,7 @@ function MyUploadsSection() {
                                     : prev,
                                 )
                               }
-                              placeholder="Título alternativo..."
+                              placeholder={t("edit.altTitlePlaceholder")}
                               className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
                             />
                             <button
@@ -1342,7 +1344,7 @@ function MyUploadsSection() {
                     )}
                   </div>
                   <div className="sm:col-span-2">
-                    <span className="text-xs text-muted-foreground">Géneros y temáticas</span>
+                    <span className="text-xs text-muted-foreground">{t("edit.genres")}</span>
                     <div className="scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent mt-2 max-h-32 overflow-y-auto rounded-lg border border-border bg-background p-2">
                       <div className="flex flex-wrap gap-1.5">
                         {availableTags.map((tag) => (
@@ -1367,7 +1369,7 @@ function MyUploadsSection() {
                                 : "border-border text-muted-foreground hover:border-primary/40"
                             }`}
                           >
-                            {tag.name}
+                            {translateCatalogTagName(tag.name, (k) => tCatalog(k))}
                           </button>
                         ))}
                       </div>
@@ -1388,7 +1390,7 @@ function MyUploadsSection() {
                 }}
                 disabled={editBusy}
               >
-                Cancelar
+                {t("edit.cancel")}
               </Button>
               <Button
                 type="button"
@@ -1431,22 +1433,22 @@ function MyUploadsSection() {
                     const mgData = (await mgRes.json()) as { pendingReview?: boolean };
                     if (!mgRes.ok) throw new Error("manga");
 
-                    toast.success("Cambios guardados");
+                    toast.success(t("edit.saveSuccess"));
                     if (mgData.pendingReview || chData.pendingReview) {
-                      toast.info("Tus cambios fueron enviados al admin para revisión.");
+                      toast.info(t("edit.pendingReview"));
                     }
                     setEditDraft(null);
                     setCoverPreview(null);
                     setCoverFile(null);
                     void load();
                   } catch {
-                    toast.error("Error al guardar los cambios");
+                    toast.error(t("edit.saveError"));
                   } finally {
                     setEditBusy(false);
                   }
                 }}
               >
-                {editBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : "Guardar cambios"}
+                {editBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : t("edit.save")}
               </Button>
             </div>
           </div>
@@ -1762,6 +1764,7 @@ function BoostSection() {
 
 function NewMangaSection() {
   const t = useTranslations("scanPanel");
+  const tCatalog = useTranslations("catalog");
   const [tags, setTags] = useState<TagRow[]>([]);
   const [tagIds, setTagIds] = useState<Set<string>>(new Set());
   const [title, setTitle] = useState("");
@@ -1809,7 +1812,7 @@ function NewMangaSection() {
       return;
     }
     if (!country) {
-      toast.error("El país de origen es obligatorio");
+      toast.error(t("newManga.countryRequired"));
       return;
     }
     const formData = new FormData();
@@ -1889,7 +1892,8 @@ function NewMangaSection() {
           <div className="sm:col-span-2">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-foreground">
-                Títulos alternativos <span className="text-xs text-muted-foreground">(opcional)</span>
+                {t("newManga.altTitlesLabel")}{" "}
+                <span className="text-xs text-muted-foreground">{t("newManga.optional")}</span>
               </span>
               <button
                 type="button"
@@ -1897,7 +1901,7 @@ function NewMangaSection() {
                 onClick={() => setAltTitles((prev) => [...prev, { locale: "en-us", title: "" }])}
                 className="text-xs text-primary hover:underline"
               >
-                + Agregar título
+                {t("newManga.addAltTitle")}
               </button>
             </div>
             {altTitles.length > 0 && (
@@ -1914,15 +1918,15 @@ function NewMangaSection() {
                       className="rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
                       disabled={busy}
                     >
-                      <option value="en-us">Inglés (US)</option>
-                      <option value="en-gb">Inglés (GB)</option>
-                      <option value="es-ar">Español (LA)</option>
-                      <option value="es-es">Español (ES)</option>
-                      <option value="pt-br">Portugués (BR)</option>
-                      <option value="ja-jp">Japonés</option>
-                      <option value="ko-kr">Coreano</option>
-                      <option value="zh-cn">Chino (CN)</option>
-                      <option value="fr-fr">Francés</option>
+                      <option value="en-us">{t("edit.localeEnUs")}</option>
+                      <option value="en-gb">{t("edit.localeEnGb")}</option>
+                      <option value="es-ar">{t("edit.localeEsAr")}</option>
+                      <option value="es-es">{t("edit.localeEsEs")}</option>
+                      <option value="pt-br">{t("edit.localePtBr")}</option>
+                      <option value="ja-jp">{t("edit.localeJaJp")}</option>
+                      <option value="ko-kr">{t("edit.localeKoKr")}</option>
+                      <option value="zh-cn">{t("edit.localeZhCn")}</option>
+                      <option value="ru-ru">{t("edit.localeRuRu")}</option>
                     </select>
                     <input
                       value={at.title}
@@ -1931,7 +1935,7 @@ function NewMangaSection() {
                           prev.map((a, j) => (j === i ? { ...a, title: e.target.value } : a)),
                         )
                       }
-                      placeholder="Título alternativo..."
+                      placeholder={t("edit.altTitlePlaceholder")}
                       className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
                       disabled={busy}
                     />
@@ -1984,7 +1988,7 @@ function NewMangaSection() {
         <div className="grid gap-4 sm:grid-cols-3">
           <div>
             <label className="text-sm font-medium text-foreground">
-              Año de lanzamiento <span className="text-destructive">*</span>
+              {t("newManga.releaseYear")} <span className="text-destructive">*</span>
             </label>
             <input
               required
@@ -1999,20 +2003,20 @@ function NewMangaSection() {
           </div>
           <div>
             <label className="text-sm font-medium text-foreground">
-              Editorial <span className="text-destructive">*</span>
+              {t("newManga.publisher")} <span className="text-destructive">*</span>
             </label>
             <input
               required
               value={publisher}
               onChange={(e) => setPublisher(e.target.value)}
-              placeholder="Ej: Shueisha, Webtoon..."
+              placeholder={t("newManga.publisherPlaceholder")}
               className="mt-1.5 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
               disabled={busy}
             />
           </div>
           <div>
             <label className="text-sm font-medium text-foreground">
-              País de origen <span className="text-destructive">*</span>
+              {t("newManga.countryLabel")} <span className="text-destructive">*</span>
             </label>
             <Select
               value={country || undefined}
@@ -2023,15 +2027,15 @@ function NewMangaSection() {
               disabled={busy}
             >
               <SelectTrigger className="mt-1.5 w-full">
-                <SelectValue placeholder="Seleccionar..." />
+                <SelectValue placeholder={t("newManga.countrySelect")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="JP">Japón 🇯🇵</SelectItem>
-                <SelectItem value="KR">Corea del Sur 🇰🇷</SelectItem>
-                <SelectItem value="CN">China 🇨🇳</SelectItem>
-                <SelectItem value="US">Estados Unidos 🇺🇸</SelectItem>
-                <SelectItem value="FR">Francia 🇫🇷</SelectItem>
-                <SelectItem value="OTHER">Otro...</SelectItem>
+                <SelectItem value="JP">{t("newManga.countryJP")}</SelectItem>
+                <SelectItem value="KR">{t("newManga.countryKR")}</SelectItem>
+                <SelectItem value="CN">{t("newManga.countryCN")}</SelectItem>
+                <SelectItem value="US">{t("newManga.countryUS")}</SelectItem>
+                <SelectItem value="FR">{t("newManga.countryFR")}</SelectItem>
+                <SelectItem value="OTHER">{t("newManga.countryOther")}</SelectItem>
               </SelectContent>
             </Select>
 
@@ -2040,7 +2044,7 @@ function NewMangaSection() {
                 required
                 value={customCountry}
                 onChange={(e) => setCustomCountry(e.target.value)}
-                placeholder="Escribí el país..."
+                placeholder={t("newManga.countryCustomPlaceholder")}
                 className="mt-2 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
                 disabled={busy}
               />
@@ -2132,7 +2136,7 @@ function NewMangaSection() {
                       : "border-border text-muted-foreground hover:border-primary/40"
                   }`}
                 >
-                  {tag.name}
+                  {translateCatalogTagName(tag.name, (k) => tCatalog(k))}
                 </button>
               ))}
             </div>

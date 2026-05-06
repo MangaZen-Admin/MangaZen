@@ -10,6 +10,7 @@ import { Megaphone, BookOpen, BookMarked, Users, Pin, Search } from "lucide-reac
 import { cn } from "@/lib/utils";
 import { dateFnsLocaleFromAppLocale } from "@/lib/date-fns-locale";
 import { AdSlot } from "@/components/AdSlot";
+import { translateCatalogTagName } from "@/lib/catalog-tag-i18n";
 
 type Announcement = {
   id: string;
@@ -66,6 +67,7 @@ type TFn = ReturnType<typeof useTranslations<"news">>;
 
 export function NewsPageClient({ locale, showAds }: { locale: string; showAds: boolean }) {
   const t = useTranslations("news");
+  const tCatalog = useTranslations("catalog");
   const dfLocale = dateFnsLocaleFromAppLocale(locale);
   const [data, setData] = useState<NewsPayload | null>(null);
   const [loading, setLoading] = useState(true);
@@ -204,7 +206,13 @@ export function NewsPageClient({ locale, showAds }: { locale: string; showAds: b
               ) : item.kind === "chapter" ? (
                 <ChapterCard item={item.data as RecentChapter} locale={locale} dfLocale={dfLocale} t={t} />
               ) : item.kind === "manga" ? (
-                <MangaCard item={item.data as RecentManga} locale={locale} dfLocale={dfLocale} t={t} />
+                <MangaCard
+                  item={item.data as RecentManga}
+                  locale={locale}
+                  dfLocale={dfLocale}
+                  t={t}
+                  translateTag={(name) => translateCatalogTagName(name, (k) => tCatalog(k))}
+                />
               ) : (
                 <ScanCard item={item.data as RecentScan} locale={locale} dfLocale={dfLocale} t={t} />
               );
@@ -244,6 +252,7 @@ export function NewsPageClient({ locale, showAds }: { locale: string; showAds: b
               locale={locale}
               dfLocale={dfLocale}
               t={t}
+              translateTag={(name) => translateCatalogTagName(name, (k) => tCatalog(k))}
             />
           ))}
         {tab === "scans" &&
@@ -348,11 +357,13 @@ function MangaCard({
   locale,
   dfLocale,
   t,
+  translateTag,
 }: {
   item: RecentManga;
   locale: string;
   dfLocale: Locale;
   t: TFn;
+  translateTag: (name: string) => string;
 }) {
   return (
     <Link
@@ -373,7 +384,7 @@ function MangaCard({
         <div className="mt-1 flex flex-wrap gap-1">
           {item.tags.slice(0, 2).map((rel) => (
             <span key={rel.tag.name} className="rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
-              {rel.tag.name}
+              {translateTag(rel.tag.name)}
             </span>
           ))}
         </div>

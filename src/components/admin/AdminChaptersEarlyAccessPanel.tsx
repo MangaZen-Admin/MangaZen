@@ -58,13 +58,13 @@ export function AdminChaptersEarlyAccessPanel({
       const res = await fetch(
         `/api/admin/chapters/search?q=${encodeURIComponent(query.trim())}`
       );
-      if (!res.ok) { setMessage({ type: "err", text: "Error al buscar" }); return; }
+      if (!res.ok) { setMessage({ type: "err", text: t("searchError") }); return; }
       const data = (await res.json()) as { chapters: SearchResult[] };
       setSearchResults(data.chapters);
     } finally {
       setSearching(false);
     }
-  }, [query]);
+  }, [query, t]);
 
   async function patchChapter(
     id: string,
@@ -115,12 +115,12 @@ export function AdminChaptersEarlyAccessPanel({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && void handleSearch()}
-            placeholder="Buscar manga o capítulo..."
+            placeholder={t("searchPlaceholder")}
             className="h-9 w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm text-foreground outline-none focus:ring-2 ring-primary/30"
           />
         </div>
         <Button type="button" size="sm" onClick={() => void handleSearch()} disabled={searching}>
-          {searching ? <Loader2 className="h-4 w-4 animate-spin" /> : "Buscar"}
+          {searching ? <Loader2 className="h-4 w-4 animate-spin" /> : t("searchButton")}
         </Button>
         {searchResults && (
           <Button
@@ -144,8 +144,8 @@ export function AdminChaptersEarlyAccessPanel({
       <div className="mt-4">
         <p className="mb-2 text-xs text-muted-foreground">
           {searchResults
-            ? `${searchResults.length} resultado(s)`
-            : "Últimos 10 capítulos subidos"}
+            ? t("resultsCount", { count: searchResults.length })
+            : t("recentChapters")}
         </p>
 
         {displayRows.length === 0 ? (
@@ -160,10 +160,10 @@ export function AdminChaptersEarlyAccessPanel({
                 <div className="min-w-0 flex-1">
                   <p className="font-medium text-foreground truncate">{row.mangaTitle}</p>
                   <p className="text-xs text-muted-foreground">
-                    Cap. {row.number} · {row.status}
+                    {t("chapterShort")} {row.number} · {row.status}
                     {row.isEarlyAccess && (
                       <span className="ml-2 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold text-primary">
-                        Early Access
+                        {t("eaBadge")}
                       </span>
                     )}
                   </p>
@@ -174,7 +174,7 @@ export function AdminChaptersEarlyAccessPanel({
                   variant="outline"
                   onClick={() => setSelectedRow(row)}
                 >
-                  Configurar
+                  {t("configureButton")}
                 </Button>
               </div>
             ))}
@@ -221,10 +221,10 @@ function AdminChapterEaModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
       <div className="w-full max-w-md rounded-xl border border-border bg-card p-5 shadow-lg">
         <h3 className="text-base font-semibold text-foreground mb-1">
-          Configurar Early Access
+          {t("modalTitle")}
         </h3>
         <p className="text-xs text-muted-foreground mb-4">
-          {row.mangaTitle} — Cap. {row.number}
+          {row.mangaTitle} — {t("chapterShort")} {row.number}
         </p>
 
         <div className="space-y-4">
@@ -236,11 +236,11 @@ function AdminChapterEaModal({
               disabled={saving}
               className="h-4 w-4 accent-primary"
             />
-            Activar Early Access
+            {t("activateEA")}
           </label>
 
           <div>
-            <label className="text-xs text-muted-foreground">Disponible hasta</label>
+            <label className="text-xs text-muted-foreground">{t("availableUntil")}</label>
             <input
               type="datetime-local"
               value={untilLocal}
@@ -251,7 +251,7 @@ function AdminChapterEaModal({
           </div>
 
           <div>
-            <label className="text-xs text-muted-foreground">Precio (ZenCoins)</label>
+            <label className="text-xs text-muted-foreground">{t("priceLabel")}</label>
             <input
               type="number"
               min={10}
@@ -266,7 +266,7 @@ function AdminChapterEaModal({
 
         <div className="mt-5 flex justify-end gap-2">
           <Button type="button" variant="outline" onClick={onCancel} disabled={saving}>
-            Cancelar
+            {t("cancel")}
           </Button>
           <Button
             type="button"

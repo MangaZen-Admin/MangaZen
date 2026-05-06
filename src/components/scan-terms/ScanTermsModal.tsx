@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +20,7 @@ type Props = {
 
 export function ScanTermsModal({ role }: Props) {
   const router = useRouter();
+  const t = useTranslations("scanTerms");
   const [busy, setBusy] = useState(false);
 
   async function handleAccept() {
@@ -54,35 +56,26 @@ export function ScanTermsModal({ role }: Props) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-primary" />
-            Descargo de responsabilidad - Rol {roleLabel}
+            {t("title", { role: roleLabel })}
           </DialogTitle>
           <DialogDescription>
-            Antes de continuar, leé y aceptá los siguientes términos.
+            {t("intro")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="max-h-64 overflow-y-auto space-y-3 rounded-lg border border-border bg-muted/30 p-4 text-sm leading-relaxed text-muted-foreground">
-          <p className="font-medium text-foreground">Condiciones de uso del rol {roleLabel}:</p>
-          <p>
-            Al aceptar este rol, declarás ser propietario o tener autorización expresa para subir
-            y distribuir el contenido que publiques en MangaZen.
-          </p>
-          <p>
-            MangaZen no se hace responsable por infracciones de derechos de autor u otros
-            problemas legales derivados del contenido subido por vos.
-          </p>
-          <p>
-            El incumplimiento de estas condiciones puede resultar en la suspensión o eliminación
-            de tu cuenta y el contenido publicado.
-          </p>
+          <p className="font-medium text-foreground">{t("conditions", { role: roleLabel })}</p>
+          <p>{t("term1")}</p>
+          <p>{t("term2")}</p>
+          <p>{t("term3")}</p>
         </div>
 
         <DialogFooter className="gap-2 sm:gap-0">
           <Button type="button" variant="outline" disabled={busy} onClick={handleReject}>
-            Rechazar y volver a USER
+            {t("reject")}
           </Button>
           <Button type="button" disabled={busy} onClick={handleAccept}>
-            Acepto los términos
+            {t("accept")}
           </Button>
         </DialogFooter>
       </DialogContent>
