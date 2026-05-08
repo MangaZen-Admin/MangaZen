@@ -1676,6 +1676,12 @@
     "reject": "Reject and return to USER",
     "accept": "I accept the terms"
   },
+  "serverError": {
+    "title": "Something went wrong",
+    "body": "An unexpected server error occurred. We're already on it. In the meantime, you can go back home or browse the library.",
+    "backHome": "Back to home",
+    "viewLibrary": "View library"
+  },
   "mangaReactions": {
     "favorite": "Favorite ({count})",
     "like": "Like ({count})",

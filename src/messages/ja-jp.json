@@ -1676,6 +1676,12 @@
     "reject": "拒否してUSERに戻る",
     "accept": "規約に同意する"
   },
+  "serverError": {
+    "title": "エラーが発生しました",
+    "body": "予期しないサーバーエラーが発生しました。すでに対応中です。トップページに戻るか、ライブラリをご覧ください。",
+    "backHome": "トップへ戻る",
+    "viewLibrary": "ライブラリを見る"
+  },
   "mangaReactions": {
     "favorite": "お気に入り ({count})",
     "like": "いいね ({count})",

@@ -1676,6 +1676,12 @@
     "reject": "拒绝并返回USER",
     "accept": "我接受条款"
   },
+  "serverError": {
+    "title": "出现了一些问题",
+    "body": "服务器发生了意外错误，我们已经在处理中。您可以返回首页或浏览图书馆。",
+    "backHome": "返回首页",
+    "viewLibrary": "查看图书馆"
+  },
   "mangaReactions": {
     "favorite": "收藏 ({count})",
     "like": "点赞 ({count})",

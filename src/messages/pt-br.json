@@ -1676,6 +1676,12 @@
     "reject": "Rejeitar e voltar a USER",
     "accept": "Aceito os termos"
   },
+  "serverError": {
+    "title": "Algo deu errado",
+    "body": "Ocorreu um erro inesperado no servidor. Já estamos cientes. Enquanto isso, você pode voltar ao início ou explorar a biblioteca.",
+    "backHome": "Voltar ao início",
+    "viewLibrary": "Ver biblioteca"
+  },
   "mangaReactions": {
     "favorite": "Favorito ({count})",
     "like": "Gostei ({count})",
