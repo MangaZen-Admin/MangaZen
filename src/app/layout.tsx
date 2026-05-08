@@ -42,6 +42,9 @@ export const metadata: Metadata = {
     title: "MangaZen - Tu plataforma de Manga",
     description: "Lee y comparte tus mangas favoritos en MangaZen.",
   },
+  other: {
+    referrer: "no-referrer-when-downgrade",
+  },
 };
 
 export default async function RootLayout({
