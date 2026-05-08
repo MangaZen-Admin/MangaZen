@@ -225,7 +225,9 @@
     "avatarUpdated": "Profile picture updated",
     "avatarError": "Could not update profile picture",
     "cropAvatarTitle": "Crop profile picture",
-    "cropBannerTitle": "Crop profile banner"
+    "cropBannerTitle": "Crop profile banner",
+    "loginStreakLabel": "Login streak",
+    "loginStreakValue": "{days} consecutive days"
   },
   "chapterComments": {
     "title": "Chapter comments",

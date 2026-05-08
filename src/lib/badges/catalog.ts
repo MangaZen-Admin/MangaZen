@@ -125,4 +125,22 @@ export const SEED_BADGES: SeedBadgeRow[] = [
     iconKey: "Crown",
     isHighlighted: true,
   },
+  {
+    name: "racha_7_dias",
+    description: "Iniciaste sesión 7 días consecutivos. ¡La constancia es tu superpoder!",
+    iconKey: "Flame",
+    isHighlighted: false,
+  },
+  {
+    name: "racha_30_dias",
+    description: "30 días seguidos sin faltar. Sos parte del alma de MangaZen.",
+    iconKey: "Zap",
+    isHighlighted: true,
+  },
+  {
+    name: "racha_100_dias",
+    description: "100 días consecutivos. Una hazaña legendaria que pocos logran.",
+    iconKey: "Trophy",
+    isHighlighted: true,
+  },
 ];

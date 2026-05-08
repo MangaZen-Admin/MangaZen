@@ -225,7 +225,9 @@
     "avatarUpdated": "프로필 사진이 업데이트되었습니다",
     "avatarError": "프로필 사진을 업데이트할 수 없습니다",
     "cropAvatarTitle": "프로필 사진 자르기",
-    "cropBannerTitle": "배너 자르기"
+    "cropBannerTitle": "배너 자르기",
+    "loginStreakLabel": "연속 로그인",
+    "loginStreakValue": "{days}일 연속"
   },
   "chapterComments": {
     "title": "회차 댓글",

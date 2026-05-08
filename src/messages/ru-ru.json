@@ -225,7 +225,9 @@
     "avatarUpdated": "Фото профиля обновлено",
     "avatarError": "Не удалось обновить фото профиля",
     "cropAvatarTitle": "Обрезать фото профиля",
-    "cropBannerTitle": "Обрезать баннер профиля"
+    "cropBannerTitle": "Обрезать баннер профиля",
+    "loginStreakLabel": "Серия входов",
+    "loginStreakValue": "{days} дней подряд"
   },
   "publicProfile": {
     "anonymousName": "Пользователь",

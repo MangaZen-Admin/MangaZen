@@ -27,6 +27,8 @@ model User {
   zenShards     Int       @default(0)
   /// Último premio diario de login (control 1 vez por día).
   lastDailyLoginAt DateTime?
+  /// Días consecutivos de login activos.
+  loginStreak        Int       @default(0)
   /// Premium temporal: si vence, isPro debe apagarse automáticamente.
   proExpiresAt  DateTime?
   /// Premium: lectura Early Access sin gastar moneda.

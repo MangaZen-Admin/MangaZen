@@ -185,10 +185,12 @@ export async function spendZenShards(
 
 export async function awardDailyLoginShardsIfEligible(userId: string, now = new Date()) {
   const dayStart = utcDayStart(now);
+  const yesterdayStart = new Date(dayStart.getTime() - 24 * 60 * 60 * 1000);
+
   return prisma.$transaction(async (tx) => {
     const user = await tx.user.findUnique({
       where: { id: userId },
-      select: { lastDailyLoginAt: true },
+      select: { lastDailyLoginAt: true, loginStreak: true },
     });
     if (!user) return { awarded: false as const };
 
@@ -196,10 +198,19 @@ export async function awardDailyLoginShardsIfEligible(userId: string, now = new 
       user.lastDailyLoginAt != null && user.lastDailyLoginAt.getTime() >= dayStart.getTime();
     if (alreadyAwarded) return { awarded: false as const };
 
+    // Calcular nuevo streak
+    const loginedYesterday =
+      user.lastDailyLoginAt != null &&
+      user.lastDailyLoginAt.getTime() >= yesterdayStart.getTime() &&
+      user.lastDailyLoginAt.getTime() < dayStart.getTime();
+
+    const newStreak = loginedYesterday ? (user.loginStreak ?? 0) + 1 : 1;
+
     const updated = await tx.user.update({
       where: { id: userId },
       data: {
         lastDailyLoginAt: now,
+        loginStreak: newStreak,
         zenShards: { increment: 2000 },
       },
       select: { zenShards: true },
@@ -216,7 +227,37 @@ export async function awardDailyLoginShardsIfEligible(userId: string, now = new 
       },
     });
 
-    return { awarded: true as const, balanceAfter: updated.zenShards };
+    // Otorgar insignias por hitos de streak
+    const STREAK_MILESTONES: Record<number, string> = {
+      7: "racha_7_dias",
+      30: "racha_30_dias",
+      100: "racha_100_dias",
+    };
+
+    const milestoneBadgeSlug = STREAK_MILESTONES[newStreak];
+    if (milestoneBadgeSlug) {
+      const badge = await tx.badge.findUnique({
+        where: { name: milestoneBadgeSlug },
+        select: { id: true },
+      });
+      if (badge) {
+        const alreadyHas = await tx.user.findFirst({
+          where: {
+            id: userId,
+            badges: { some: { id: badge.id } },
+          },
+          select: { id: true },
+        });
+        if (!alreadyHas) {
+          await tx.user.update({
+            where: { id: userId },
+            data: { badges: { connect: { id: badge.id } } },
+          });
+        }
+      }
+    }
+
+    return { awarded: true as const, balanceAfter: updated.zenShards, streak: newStreak };
   });
 }
 

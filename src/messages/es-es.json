@@ -225,7 +225,9 @@
     "avatarUpdated": "Foto de perfil actualizada",
     "avatarError": "No se pudo actualizar la foto de perfil",
     "cropAvatarTitle": "Recortar foto de perfil",
-    "cropBannerTitle": "Recortar banner de perfil"
+    "cropBannerTitle": "Recortar banner de perfil",
+    "loginStreakLabel": "Racha de login",
+    "loginStreakValue": "{days} días consecutivos"
   },
   "chapterComments": {
     "title": "Comentarios del capítulo",

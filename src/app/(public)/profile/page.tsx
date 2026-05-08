@@ -71,6 +71,7 @@ export default async function ProfilePage() {
       hideZenFromPublic: true,
       hideFavoritesFromPublic: true,
       hideReadingStatsFromPublic: true,
+      loginStreak: true,
       badges: {
         select: {
           id: true,
@@ -335,6 +336,17 @@ export default async function ProfilePage() {
               <p className="text-sm text-muted-foreground">{t("noProgressYet")}</p>
             )}
           </dl>
+          <div className="mt-4 flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3">
+            <span className="text-2xl">🔥</span>
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                {t("loginStreakLabel")}
+              </p>
+              <p className="text-lg font-semibold tabular-nums text-foreground">
+                {t("loginStreakValue", { days: user.loginStreak ?? 0 })}
+              </p>
+            </div>
+          </div>
         </section>
 
         <ProfileLibrary

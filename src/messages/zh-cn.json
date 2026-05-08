@@ -225,7 +225,9 @@
     "avatarUpdated": "头像已更新",
     "avatarError": "无法更新头像",
     "cropAvatarTitle": "裁剪头像",
-    "cropBannerTitle": "裁剪横幅"
+    "cropBannerTitle": "裁剪横幅",
+    "loginStreakLabel": "连续登录",
+    "loginStreakValue": "连续{days}天"
   },
   "chapterComments": {
     "title": "章节评论",

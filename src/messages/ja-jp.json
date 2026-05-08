@@ -225,7 +225,9 @@
     "avatarUpdated": "プロフィール写真が更新されました",
     "avatarError": "プロフィール写真を更新できませんでした",
     "cropAvatarTitle": "プロフィール写真をトリミング",
-    "cropBannerTitle": "バナーをトリミング"
+    "cropBannerTitle": "バナーをトリミング",
+    "loginStreakLabel": "ログイン連続日数",
+    "loginStreakValue": "{days}日連続"
   },
   "chapterComments": {
     "title": "章のコメント",
