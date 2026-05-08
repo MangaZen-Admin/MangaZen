@@ -32,7 +32,35 @@
     "continue": "계속",
     "errorInvalidRegisterData": "이름, 이메일, 6자 이상 비밀번호를 입력하세요.",
     "loginFooterPrompt": "계정이 없으신가요?",
-    "registerFooterPrompt": "이미 계정이 있으신가요?"
+    "registerFooterPrompt": "이미 계정이 있으신가요?",
+    "errorRateLimited": "로그인 시도 횟수가 너무 많습니다. {minutes}분 후에 다시 시도해 주세요.",
+    "successPasswordReset": "비밀번호가 성공적으로 재설정되었습니다. 이제 로그인할 수 있습니다.",
+    "forgotPasswordLink": "비밀번호를 잊으셨나요?",
+    "passwordResetDisabledNotice": "⚠️ 비밀번호 재설정 서비스가 일시적으로 비활성화되어 있습니다. 비밀번호를 잊지 않도록 주의해 주세요."
+  },
+  "forgotPassword": {
+    "title": "비밀번호를 잊으셨나요",
+    "subtitle": "이메일을 입력하시면 비밀번호 재설정 링크를 보내드립니다.",
+    "emailLabel": "이메일",
+    "emailPlaceholder": "you@email.com",
+    "submitButton": "링크 보내기",
+    "sentMessage": "해당 이메일로 계정이 존재하는 경우, 몇 분 내에 비밀번호 재설정 링크를 받으실 수 있습니다.",
+    "backToLogin": "로그인으로 돌아가기",
+    "errorInvalidEmail": "유효한 이메일 주소를 입력해 주세요."
+  },
+  "resetPassword": {
+    "title": "비밀번호 재설정",
+    "subtitle": "새 비밀번호를 입력해 주세요.",
+    "newPasswordLabel": "새 비밀번호",
+    "newPasswordPlaceholder": "최소 8자",
+    "confirmPasswordLabel": "비밀번호 확인",
+    "confirmPasswordPlaceholder": "새 비밀번호를 다시 입력",
+    "submitButton": "비밀번호 재설정",
+    "errorInvalidToken": "이 링크는 유효하지 않습니다.",
+    "errorExpiredToken": "이 링크는 만료되었거나 이미 사용되었습니다.",
+    "errorPasswordTooShort": "비밀번호는 최소 8자 이상이어야 합니다.",
+    "errorPasswordsMismatch": "비밀번호가 일치하지 않습니다.",
+    "requestNewLink": "새 링크 요청"
   },
   "home": {
     "continueReadingTitle": "이어보기",
@@ -1297,6 +1325,10 @@
     "reauthModalSubmit": "계속",
     "reauthShowPassword": "비밀번호 표시",
     "reauthHidePassword": "비밀번호 숨기기",
+    "reauthCodeSending": "이메일로 코드를 보내는 중...",
+    "reauthCodeSent": "코드가 전송되었습니다. 이메일을 확인하고 아래에 입력하세요.",
+    "reauthCodeSendError": "코드를 전송할 수 없습니다. 다시 시도해 주세요.",
+    "reauthCodeResend": "코드 재전송",
     "privacySectionTitle": "프라이버시와 공개 프로필",
     "privacySectionHint": "로그인한 사용자가 공개 프로필에서 무엇을 볼지 제어합니다. 비회원은 이름과 아바타만 봅니다.",
     "isProfilePublicLabel": "공개 프로필",

@@ -32,7 +32,35 @@
     "continue": "続ける",
     "errorInvalidRegisterData": "名前、メール、6文字以上のパスワードを入力してください。",
     "loginFooterPrompt": "アカウントをお持ちでないですか？",
-    "registerFooterPrompt": "すでにアカウントをお持ちですか？"
+    "registerFooterPrompt": "すでにアカウントをお持ちですか？",
+    "errorRateLimited": "ログイン試行回数が多すぎます。{minutes}分後に再試行してください。",
+    "successPasswordReset": "パスワードが正常にリセットされました。ログインできます。",
+    "forgotPasswordLink": "パスワードをお忘れですか？",
+    "passwordResetDisabledNotice": "⚠️ パスワードリセットサービスは一時的に無効です。パスワードをお忘れにならないようご注意ください。"
+  },
+  "forgotPassword": {
+    "title": "パスワードをお忘れですか",
+    "subtitle": "メールアドレスを入力すると、パスワードリセット用のリンクをお送りします。",
+    "emailLabel": "メールアドレス",
+    "emailPlaceholder": "you@email.com",
+    "submitButton": "リンクを送信",
+    "sentMessage": "そのメールアドレスでアカウントが存在する場合、数分以内にパスワードリセット用のリンクが届きます。",
+    "backToLogin": "ログインに戻る",
+    "errorInvalidEmail": "有効なメールアドレスを入力してください。"
+  },
+  "resetPassword": {
+    "title": "パスワードのリセット",
+    "subtitle": "新しいパスワードを入力してください。",
+    "newPasswordLabel": "新しいパスワード",
+    "newPasswordPlaceholder": "8文字以上",
+    "confirmPasswordLabel": "パスワードの確認",
+    "confirmPasswordPlaceholder": "新しいパスワードを再入力",
+    "submitButton": "パスワードをリセット",
+    "errorInvalidToken": "このリンクは無効です。",
+    "errorExpiredToken": "このリンクは期限切れか、すでに使用されています。",
+    "errorPasswordTooShort": "パスワードは8文字以上必要です。",
+    "errorPasswordsMismatch": "パスワードが一致しません。",
+    "requestNewLink": "新しいリンクをリクエスト"
   },
   "home": {
     "continueReadingTitle": "続きを読む",
@@ -1297,6 +1325,10 @@
     "reauthModalSubmit": "続行",
     "reauthShowPassword": "パスワードを表示",
     "reauthHidePassword": "パスワードを隠す",
+    "reauthCodeSending": "メールにコードを送信中...",
+    "reauthCodeSent": "コードを送信しました。メールを確認して以下に入力してください。",
+    "reauthCodeSendError": "コードを送信できませんでした。もう一度お試しください。",
+    "reauthCodeResend": "コードを再送信",
     "privacySectionTitle": "プライバシーと公開プロフィール",
     "privacySectionHint": "サインイン済みユーザーに公開プロフィールで何を見せるか制御します。未登録のゲストには名前とアバターのみ表示されます。",
     "isProfilePublicLabel": "公開プロフィール",

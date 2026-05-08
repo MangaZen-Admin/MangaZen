@@ -32,7 +32,35 @@
     "continue": "Продолжить",
     "errorInvalidRegisterData": "Заполните имя, email и пароль не менее 6 символов.",
     "loginFooterPrompt": "Нет аккаунта?",
-    "registerFooterPrompt": "Уже есть аккаунт?"
+    "registerFooterPrompt": "Уже есть аккаунт?",
+    "errorRateLimited": "Слишком много неудачных попыток. Повторите через {minutes} минут.",
+    "successPasswordReset": "Пароль успешно сброшен. Теперь вы можете войти.",
+    "forgotPasswordLink": "Забыли пароль?",
+    "passwordResetDisabledNotice": "⚠️ Сервис сброса пароля временно недоступен. Пожалуйста, не забывайте свой пароль."
+  },
+  "forgotPassword": {
+    "title": "Забыли пароль",
+    "subtitle": "Введите email и мы отправим вам ссылку для сброса пароля.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@email.com",
+    "submitButton": "Отправить ссылку",
+    "sentMessage": "Если аккаунт с таким email существует, вы получите ссылку для сброса пароля в ближайшие несколько минут.",
+    "backToLogin": "Вернуться к входу",
+    "errorInvalidEmail": "Введите корректный email."
+  },
+  "resetPassword": {
+    "title": "Сброс пароля",
+    "subtitle": "Введите новый пароль.",
+    "newPasswordLabel": "Новый пароль",
+    "newPasswordPlaceholder": "Минимум 8 символов",
+    "confirmPasswordLabel": "Подтвердите пароль",
+    "confirmPasswordPlaceholder": "Повторите новый пароль",
+    "submitButton": "Сбросить пароль",
+    "errorInvalidToken": "Эта ссылка недействительна.",
+    "errorExpiredToken": "Срок действия ссылки истёк или она уже была использована.",
+    "errorPasswordTooShort": "Пароль должен содержать не менее 8 символов.",
+    "errorPasswordsMismatch": "Пароли не совпадают.",
+    "requestNewLink": "Запросить новую ссылку"
   },
   "home": {
     "continueReadingTitle": "Продолжить чтение",
@@ -285,6 +313,10 @@
     "reauthModalSubmit": "Продолжить",
     "reauthShowPassword": "Показать пароль",
     "reauthHidePassword": "Скрыть пароль",
+    "reauthCodeSending": "Отправляем код на ваш email...",
+    "reauthCodeSent": "Код отправлен. Проверьте почту и введите его ниже.",
+    "reauthCodeSendError": "Не удалось отправить код. Попробуйте ещё раз.",
+    "reauthCodeResend": "Отправить код повторно",
     "privacySectionTitle": "Конфиденциальность и публичный профиль",
     "privacySectionHint": "Управляйте тем, что видят другие в вашем профиле.",
     "isProfilePublicLabel": "Публичный профиль",

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 
 type ReauthDialogProps = {
   open: boolean;
@@ -14,8 +15,40 @@ type ReauthDialogProps = {
 
 export function ReauthDialog({ open, reauthType, onClose, onConfirm, busy }: ReauthDialogProps) {
   const t = useTranslations("security");
+  const locale = useLocale();
   const [value, setValue] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [codeSent, setCodeSent] = useState(false);
+  const [codeSending, setCodeSending] = useState(false);
+  const [codeError, setCodeError] = useState<string | null>(null);
+
+  // Enviar código automáticamente al abrir el dialog en modo email_code
+  useEffect(() => {
+    if (!open || reauthType !== "email_code") return;
+    void sendCode();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, reauthType]);
+
+  async function sendCode() {
+    setCodeSending(true);
+    setCodeError(null);
+    try {
+      const res = await fetch("/api/auth/send-security-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ locale }),
+      });
+      if (!res.ok) {
+        setCodeError(t("reauthCodeSendError"));
+      } else {
+        setCodeSent(true);
+      }
+    } catch {
+      setCodeError(t("reauthCodeSendError"));
+    } finally {
+      setCodeSending(false);
+    }
+  }
 
   if (!open || !reauthType) return null;
 
@@ -34,6 +67,26 @@ export function ReauthDialog({ open, reauthType, onClose, onConfirm, busy }: Rea
           {title}
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">{t("reauthModalHint")}</p>
+
+        {reauthType === "email_code" && (
+          <div className="mt-3 rounded-lg border border-border bg-muted/40 px-3 py-2 text-sm text-muted-foreground">
+            {codeSending && (
+              <span className="flex items-center gap-2">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                {t("reauthCodeSending")}
+              </span>
+            )}
+            {!codeSending && codeSent && (
+              <span>{t("reauthCodeSent")}</span>
+            )}
+            {!codeSending && codeError && (
+              <span className="text-destructive">{codeError}</span>
+            )}
+            {!codeSending && !codeSent && !codeError && (
+              <span>{t("reauthCodeSending")}</span>
+            )}
+          </div>
+        )}
 
         <div className="mt-4 space-y-2">
           <label className="text-sm text-muted-foreground" htmlFor="reauth-field">
@@ -65,13 +118,25 @@ export function ReauthDialog({ open, reauthType, onClose, onConfirm, busy }: Rea
               type="text"
               inputMode="numeric"
               autoComplete="one-time-code"
+              maxLength={6}
               value={value}
-              onChange={(e) => setValue(e.target.value)}
+              onChange={(e) => setValue(e.target.value.replace(/\D/g, ""))}
               className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none transition focus:ring-2 focus:ring-primary/25"
               placeholder={t("reauthModalCodePlaceholder")}
             />
           )}
         </div>
+
+        {reauthType === "email_code" && !codeSending && (
+          <button
+            type="button"
+            onClick={() => void sendCode()}
+            className="mt-2 text-xs text-primary hover:underline disabled:opacity-50"
+            disabled={codeSending}
+          >
+            {t("reauthCodeResend")}
+          </button>
+        )}
 
         <div className="mt-5 flex justify-end gap-2">
           <button

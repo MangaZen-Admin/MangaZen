@@ -787,3 +787,26 @@ model MangaReport {
   @@index([mangaId, status])
   @@index([status, createdAt])
 }
+
+// ─────────────────────────────────────────
+// EMAIL — VERIFICACIÓN Y RESET
+// ─────────────────────────────────────────
+
+enum EmailVerificationType {
+  PASSWORD_RESET
+  SECURITY_CODE
+}
+
+model EmailVerification {
+  id        String                @id @default(cuid())
+  userId    String
+  email     String
+  codeHash  String
+  type      EmailVerificationType
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime              @default(now())
+
+  @@index([userId, type])
+  @@index([email, type])
+}

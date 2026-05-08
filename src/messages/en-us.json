@@ -32,7 +32,35 @@
     "continue": "Continue",
     "errorInvalidRegisterData": "Enter your name, email, and a password of at least 6 characters.",
     "loginFooterPrompt": "Don't have an account?",
-    "registerFooterPrompt": "Already have an account?"
+    "registerFooterPrompt": "Already have an account?",
+    "errorRateLimited": "Too many failed attempts. Please try again in {minutes} minutes.",
+    "successPasswordReset": "Your password has been reset successfully. You can now log in.",
+    "forgotPasswordLink": "Forgot your password?",
+    "passwordResetDisabledNotice": "⚠️ The password reset service is temporarily disabled. Please do not forget your password."
+  },
+  "forgotPassword": {
+    "title": "Forgot your password",
+    "subtitle": "Enter your email and we'll send you a link to reset your password.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@email.com",
+    "submitButton": "Send reset link",
+    "sentMessage": "If an account exists with that email, you'll receive a password reset link in the next few minutes.",
+    "backToLogin": "Back to login",
+    "errorInvalidEmail": "Please enter a valid email address."
+  },
+  "resetPassword": {
+    "title": "Reset your password",
+    "subtitle": "Enter your new password below.",
+    "newPasswordLabel": "New password",
+    "newPasswordPlaceholder": "At least 8 characters",
+    "confirmPasswordLabel": "Confirm password",
+    "confirmPasswordPlaceholder": "Repeat your new password",
+    "submitButton": "Reset password",
+    "errorInvalidToken": "This link is not valid.",
+    "errorExpiredToken": "This link has expired or has already been used.",
+    "errorPasswordTooShort": "Password must be at least 8 characters.",
+    "errorPasswordsMismatch": "Passwords do not match.",
+    "requestNewLink": "Request a new link"
   },
   "home": {
     "continueReadingTitle": "Continue reading",
@@ -1297,6 +1325,10 @@
     "reauthModalSubmit": "Continue",
     "reauthShowPassword": "Show password",
     "reauthHidePassword": "Hide password",
+    "reauthCodeSending": "Sending code to your email...",
+    "reauthCodeSent": "Code sent. Check your email and enter it below.",
+    "reauthCodeSendError": "Could not send the code. Please try again.",
+    "reauthCodeResend": "Resend code",
     "privacySectionTitle": "Privacy & public profile",
     "privacySectionHint": "Control what signed-in users see on your public profile. Guests without an account only see your name and avatar.",
     "isProfilePublicLabel": "Public profile",

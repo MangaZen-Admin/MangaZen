@@ -32,7 +32,35 @@
     "continue": "继续",
     "errorInvalidRegisterData": "请填写姓名、邮箱和至少 6 位密码。",
     "loginFooterPrompt": "还没有账号？",
-    "registerFooterPrompt": "已有账号？"
+    "registerFooterPrompt": "已有账号？",
+    "errorRateLimited": "登录尝试次数过多，请在 {minutes} 分钟后再试。",
+    "successPasswordReset": "您的密码已成功重置，现在可以登录了。",
+    "forgotPasswordLink": "忘记密码？",
+    "passwordResetDisabledNotice": "⚠️ 密码重置服务暂时不可用。请妥善保管您的密码，切勿遗忘。"
+  },
+  "forgotPassword": {
+    "title": "忘记密码",
+    "subtitle": "输入您的邮箱，我们将发送一个重置密码的链接。",
+    "emailLabel": "邮箱",
+    "emailPlaceholder": "you@email.com",
+    "submitButton": "发送链接",
+    "sentMessage": "如果该邮箱存在账户，您将在几分钟内收到密码重置链接。",
+    "backToLogin": "返回登录",
+    "errorInvalidEmail": "请输入有效的邮箱地址。"
+  },
+  "resetPassword": {
+    "title": "重置密码",
+    "subtitle": "请输入您的新密码。",
+    "newPasswordLabel": "新密码",
+    "newPasswordPlaceholder": "至少8个字符",
+    "confirmPasswordLabel": "确认密码",
+    "confirmPasswordPlaceholder": "再次输入新密码",
+    "submitButton": "重置密码",
+    "errorInvalidToken": "此链接无效。",
+    "errorExpiredToken": "此链接已过期或已被使用。",
+    "errorPasswordTooShort": "密码至少需要8个字符。",
+    "errorPasswordsMismatch": "两次输入的密码不一致。",
+    "requestNewLink": "重新申请链接"
   },
   "home": {
     "continueReadingTitle": "继续阅读",
@@ -1297,6 +1325,10 @@
     "reauthModalSubmit": "继续",
     "reauthShowPassword": "显示密码",
     "reauthHidePassword": "隐藏密码",
+    "reauthCodeSending": "正在发送验证码到您的邮箱...",
+    "reauthCodeSent": "验证码已发送，请查收邮件并在下方输入。",
+    "reauthCodeSendError": "验证码发送失败，请重试。",
+    "reauthCodeResend": "重新发送验证码",
     "privacySectionTitle": "隐私与公开资料",
     "privacySectionHint": "控制登录用户在你的公开资料页能看到的内容。访客只能看到姓名与头像。",
     "isProfilePublicLabel": "公开资料",

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { verifyPassword } from "@/lib/auth-password";
+import { validateAndConsumeSecurityCode } from "@/lib/email-verification";
 
 export type ReauthAction = "SPEND_ZEN" | "CHANGE_EMAIL" | "CHANGE_PASSWORD";
 
@@ -42,14 +43,6 @@ export async function requireReauth(
   }
 
   if ((action === "CHANGE_EMAIL" || action === "CHANGE_PASSWORD") && user.requireEmailCodeForPoints) {
-    const code = typeof body.reauth_code === "string" ? body.reauth_code.trim() : "";
-    if (!code) {
-      const payload: ReauthRequiredPayload = {
-        error: "REAUTH_REQUIRED",
-        reauthType: "email_code",
-      };
-      return NextResponse.json(payload, { status: 403 });
-    }
     if (!user.email) {
       const payload: ReauthRequiredPayload = {
         error: "REAUTH_REQUIRED",
@@ -58,13 +51,17 @@ export async function requireReauth(
       };
       return NextResponse.json(payload, { status: 403 });
     }
-    const valid = await prisma.verificationToken.findFirst({
-      where: {
-        identifier: user.email,
-        token: code,
-        expires: { gt: new Date() },
-      },
-    });
+
+    const code = typeof body.reauth_code === "string" ? body.reauth_code.trim() : "";
+    if (!code) {
+      const payload: ReauthRequiredPayload = {
+        error: "REAUTH_REQUIRED",
+        reauthType: "email_code",
+      };
+      return NextResponse.json(payload, { status: 403 });
+    }
+
+    const valid = await validateAndConsumeSecurityCode(userId, code);
     if (!valid) {
       const payload: ReauthRequiredPayload = {
         error: "REAUTH_REQUIRED",
@@ -72,6 +69,7 @@ export async function requireReauth(
       };
       return NextResponse.json(payload, { status: 403 });
     }
+
     return null;
   }
 

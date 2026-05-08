@@ -28,9 +28,10 @@ export async function PATCH(request: Request) {
   if (typeof o.requirePasswordForPoints === "boolean") {
     data.requirePasswordForPoints = o.requirePasswordForPoints;
   }
-  if (typeof o.requireEmailCodeForPoints === "boolean") {
-    data.requireEmailCodeForPoints = o.requireEmailCodeForPoints;
-  }
+  // Temporalmente desactivado hasta tener dominio propio para emails
+  // if (typeof o.requireEmailCodeForPoints === "boolean") {
+  //   data.requireEmailCodeForPoints = o.requireEmailCodeForPoints;
+  // }
   if (typeof o.hideFromRankings === "boolean") {
     data.hideFromRankings = o.hideFromRankings;
   }

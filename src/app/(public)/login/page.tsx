@@ -106,12 +106,17 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         )}
         {error === "rate_limited" && (
           <div className="mt-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-foreground">
-            Demasiados intentos fallidos. Intentá de nuevo en {params.minutes ?? "15"} minutos.
+            {tAuth("errorRateLimited", { minutes: params.minutes ?? "15" })}
           </div>
         )}
         {success === "registered" && (
           <div className="mt-3 rounded-lg border border-primary/40 bg-primary/10 px-3 py-2 text-sm text-foreground">
             {tAuth("successRegistered")}
+          </div>
+        )}
+        {success === "password_reset" && (
+          <div className="mt-3 rounded-lg border border-primary/40 bg-primary/10 px-3 py-2 text-sm text-foreground">
+            {tAuth("successPasswordReset")}
           </div>
         )}
 
@@ -145,6 +150,13 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           >
             {tAuth("continue")}
           </button>
+          {/* Temporalmente desactivado hasta tener dominio propio para emails
+          <div className="text-right">
+            <a href="/forgot-password" className="text-sm text-primary hover:underline">
+              {tAuth("forgotPasswordLink")}
+            </a>
+          </div>
+          */}
         </form>
 
         <p className="mt-4 text-sm text-muted-foreground">

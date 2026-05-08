@@ -32,7 +32,35 @@
     "continue": "Continuar",
     "errorInvalidRegisterData": "Completá nombre, email y una contraseña de al menos 6 caracteres.",
     "loginFooterPrompt": "¿No tenés cuenta?",
-    "registerFooterPrompt": "¿Ya tenés cuenta?"
+    "registerFooterPrompt": "¿Ya tenés cuenta?",
+    "errorRateLimited": "Demasiados intentos fallidos. Intentá de nuevo en {minutes} minutos.",
+    "successPasswordReset": "Tu contraseña fue restablecida correctamente. Ya podés iniciar sesión.",
+    "forgotPasswordLink": "¿Olvidaste tu contraseña?",
+    "passwordResetDisabledNotice": "⚠️ El servicio de restablecimiento de contraseña está temporalmente deshabilitado. Por favor no olvides tu contraseña."
+  },
+  "forgotPassword": {
+    "title": "Olvidé mi contraseña",
+    "subtitle": "Ingresá tu email y te enviamos un enlace para restablecer tu contraseña.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "tu@email.com",
+    "submitButton": "Enviar enlace",
+    "sentMessage": "Si existe una cuenta con ese email, vas a recibir un enlace para restablecer tu contraseña en los próximos minutos.",
+    "backToLogin": "Volver al inicio de sesión",
+    "errorInvalidEmail": "Ingresá un email válido."
+  },
+  "resetPassword": {
+    "title": "Restablecer contraseña",
+    "subtitle": "Ingresá tu nueva contraseña.",
+    "newPasswordLabel": "Nueva contraseña",
+    "newPasswordPlaceholder": "Mínimo 8 caracteres",
+    "confirmPasswordLabel": "Confirmar contraseña",
+    "confirmPasswordPlaceholder": "Repetí tu nueva contraseña",
+    "submitButton": "Restablecer contraseña",
+    "errorInvalidToken": "El enlace no es válido.",
+    "errorExpiredToken": "El enlace expiró o ya fue utilizado.",
+    "errorPasswordTooShort": "La contraseña debe tener al menos 8 caracteres.",
+    "errorPasswordsMismatch": "Las contraseñas no coinciden.",
+    "requestNewLink": "Solicitar un nuevo enlace"
   },
   "home": {
     "continueReadingTitle": "Seguir leyendo",
@@ -1297,6 +1325,10 @@
     "reauthModalSubmit": "Continuar",
     "reauthShowPassword": "Mostrar contraseña",
     "reauthHidePassword": "Ocultar contraseña",
+    "reauthCodeSending": "Enviando código a tu email...",
+    "reauthCodeSent": "Código enviado. Revisá tu email e ingresalo abajo.",
+    "reauthCodeSendError": "No se pudo enviar el código. Intentá de nuevo.",
+    "reauthCodeResend": "Reenviar código",
     "privacySectionTitle": "Privacidad y perfil público",
     "privacySectionHint": "Controla qué ven en tu perfil los usuarios con sesión iniciada. Quienes no tienen cuenta solo ven nombre y avatar.",
     "isProfilePublicLabel": "Perfil público",
