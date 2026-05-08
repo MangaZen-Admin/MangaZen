@@ -44,7 +44,7 @@ export async function POST(request: Request) {
   const userId = auth.userId!;
 
   const now = Date.now();
-  const windowMs = 60 * 60 * 1000; // 1 hora
+  const windowMs = 60 * 60 * 1000;
   const maxPerHour = 5;
   const rlKey = `manga_req:${userId}`;
   const rlRecord = requestAttempts.get(rlKey);
@@ -68,6 +68,29 @@ export async function POST(request: Request) {
   const parsed = createMangaRequestBodySchema.safeParse(json);
   if (!parsed.success) {
     return NextResponse.json({ error: "INVALID_BODY", details: parsed.error.flatten() }, { status: 400 });
+  }
+
+  // Verificar plan del usuario
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { isPro: true, proPlan: true },
+  });
+
+  const SILVER_OR_ABOVE = ["silver", "gold"];
+  const hasSilverOrAbove = user?.isPro && user.proPlan && SILVER_OR_ABOVE.includes(user.proPlan);
+
+  if (!hasSilverOrAbove) {
+    // Límite: 1 solicitud por semana para usuarios sin Plata o superior
+    const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const recentCount = await prisma.mangaRequest.count({
+      where: {
+        userId,
+        createdAt: { gt: oneWeekAgo },
+      },
+    });
+    if (recentCount >= 1) {
+      return NextResponse.json({ error: "WEEKLY_LIMIT_REACHED" }, { status: 429 });
+    }
   }
 
   const pendingCount = await prisma.mangaRequest.count({

@@ -109,6 +109,15 @@ export function CommunityMangaRequestPanel({ isLoggedIn }: Props) {
         void load();
         return;
       }
+      if (res.status === 429) {
+        const data = (await res.json()) as { error?: string };
+        if (data.error === "WEEKLY_LIMIT_REACHED") {
+          setError(t("weeklyLimitReached"));
+        } else {
+          setError(t("submitError"));
+        }
+        return;
+      }
       if (!res.ok) {
         setError(t("submitError"));
         return;

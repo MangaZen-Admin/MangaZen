@@ -482,6 +482,7 @@
     "submit": "提交请求",
     "loginCta": "登录或注册后请求漫画。",
     "limitReached": "你已有三条待处理请求，请等待审核后再提交。",
+    "weeklyLimitReached": "每周只能提交1个请求。升级到白银或黄金计划即可无限制请求。",
     "success": "请求已提交。",
     "loadError": "无法加载你的请求列表。",
     "submitError": "无法发送请求，请重试。",

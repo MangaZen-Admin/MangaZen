@@ -482,6 +482,7 @@
     "submit": "Submit request",
     "loginCta": "Sign in or register to request a manga.",
     "limitReached": "You already have three pending requests. Wait for them to be reviewed before sending another.",
+    "weeklyLimitReached": "You can only submit 1 request per week. Upgrade to Silver or Gold to request without limits.",
     "success": "Request submitted.",
     "loadError": "Could not load your requests.",
     "submitError": "Could not send the request. Try again.",

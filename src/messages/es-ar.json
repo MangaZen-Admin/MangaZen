@@ -482,6 +482,7 @@
     "submit": "Enviar petición",
     "loginCta": "Inicia sesión o regístrate para pedir un manga.",
     "limitReached": "Ya tienes tres peticiones pendientes. Espera a que se revisen antes de enviar otra.",
+    "weeklyLimitReached": "Solo podés enviar 1 solicitud por semana. Actualizá tu plan a Plata u Oro para solicitar sin límite.",
     "success": "Petición enviada.",
     "loadError": "No se pudieron cargar tus peticiones.",
     "submitError": "No se pudo enviar la petición. Inténtalo de nuevo.",

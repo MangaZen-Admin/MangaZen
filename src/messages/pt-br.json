@@ -482,6 +482,7 @@
     "submit": "Enviar pedido",
     "loginCta": "Entre ou cadastre-se para pedir um mangá.",
     "limitReached": "Você já tem três pedidos pendentes. Aguarde a análise antes de enviar outro.",
+    "weeklyLimitReached": "Você só pode enviar 1 solicitação por semana. Atualize para Prata ou Ouro para solicitar sem limites.",
     "success": "Pedido enviado.",
     "loadError": "Não foi possível carregar seus pedidos.",
     "submitError": "Não foi possível enviar o pedido. Tente novamente.",
