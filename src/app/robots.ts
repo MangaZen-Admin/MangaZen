@@ -1,24 +1,14 @@
 import type { MetadataRoute } from "next";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://mangazen.com";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://mangazen-ar.vercel.app";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: [
-      {
-        userAgent: "*",
-        allow: "/",
-        disallow: [
-          "/api/",
-          "/*/admin",
-          "/*/profile",
-          "/*/scan-panel",
-          "/*/billing",
-          "/*/banned",
-          "/*/suspended",
-        ],
-      },
-    ],
-    sitemap: `${BASE_URL}/sitemap.xml`,
+    rules: {
+      userAgent: "*",
+      allow: "/",
+      disallow: ["/admin", "/scan", "/profile", "/billing", "/api/"],
+    },
+    sitemap: `${APP_URL}/sitemap.xml`,
   };
 }
