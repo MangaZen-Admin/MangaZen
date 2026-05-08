@@ -757,7 +757,7 @@ export default async function MangaDetailPage({ params }: PageProps) {
               </div>
             )}
 
-            <AdSlotShell slotId="manga-sidebar" height="h-40" />
+            <AdSlotShell slotId="manga-detail-sidebar" height="h-40" />
 
             <RelatedMangas mangas={relatedMangas} />
           </div>

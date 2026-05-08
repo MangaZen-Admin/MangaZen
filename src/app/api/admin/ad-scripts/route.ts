@@ -32,16 +32,18 @@ export async function POST(request: Request) {
   if (!adminId) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   const body = (await request.json()) as Record<string, unknown>;
   const slotId = typeof body.slotId === "string" ? body.slotId.trim() : "";
-  const script = typeof body.script === "string" ? body.script.trim() : "";
+  const scripts = Array.isArray(body.scripts)
+    ? (body.scripts as string[]).map((s) => s.trim()).filter(Boolean).slice(0, 3)
+    : [];
   const label = typeof body.label === "string" ? body.label.trim() : "";
   const isActive = body.isActive !== false;
-  if (!slotId || !script) {
+  if (!slotId || scripts.length === 0) {
     return NextResponse.json({ error: "MISSING_FIELDS" }, { status: 400 });
   }
   const ad = await prisma.adScript.upsert({
     where: { slotId },
-    create: { slotId, script, label: label || null, isActive },
-    update: { script, label: label || null, isActive },
+    create: { slotId, scripts, label: label || null, isActive },
+    update: { scripts, label: label || null, isActive },
   });
   return NextResponse.json({ ad });
 }

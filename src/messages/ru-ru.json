@@ -1405,8 +1405,13 @@
         "libraryAfter50": "Библиотека — каждые 50 результатов",
         "newsBetween": "Новости — между секциями",
         "communityBetween": "Сообщество — между секциями",
-        "profilePublicBottom": "Публичный профиль — внизу"
-      }
+        "profilePublicBottom": "Публичный профиль — внизу",
+        "mangaDetailSidebar": "Страница манги — сайдбар"
+      },
+      "scriptsLabel": "Скрипты рекламы (макс. 3)",
+      "scriptsCount": "рекламы",
+      "addScript": "Добавить рекламу",
+      "mangaDetailSidebar": "Страница манги — сайдбар"
     },
     "scanStats": {
       "title": "Статистика скан-групп и авторов",

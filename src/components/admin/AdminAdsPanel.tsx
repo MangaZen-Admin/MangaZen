@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, Trash2, Loader2 } from "lucide-react";
+import { Plus, Trash2, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 type AdScriptRow = {
   id: string;
   slotId: string;
-  script: string;
+  scripts: string[];
   label: string | null;
   isActive: boolean;
 };
@@ -21,6 +21,7 @@ export function AdminAdsPanel() {
     { id: "global", label: t("slots.global") },
     { id: "home-between-sections", label: t("slots.homeBetween") },
     { id: "manga-detail-before-chapters", label: t("slots.mangaDetailBefore") },
+    { id: "manga-detail-sidebar", label: t("slots.mangaDetailSidebar") },
     { id: "reader-end-of-chapter", label: t("slots.readerEnd") },
     { id: "library-after-10", label: t("slots.libraryAfter10") },
     { id: "library-after-25", label: t("slots.libraryAfter25") },
@@ -33,11 +34,10 @@ export function AdminAdsPanel() {
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
   const [newSlotId, setNewSlotId] = useState(SLOT_OPTIONS[0]!.id);
-  const [newLabel, setNewLabel] = useState("");
-  const [newScript, setNewScript] = useState("");
+  const [newScripts, setNewScripts] = useState<string[]>([""]);
   const [busy, setBusy] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
-  const [editScript, setEditScript] = useState("");
+  const [editScripts, setEditScripts] = useState<string[]>([""]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -55,8 +55,22 @@ export function AdminAdsPanel() {
     void load();
   }, [load]);
 
+  function addScriptField(arr: string[], set: (v: string[]) => void) {
+    if (arr.length >= 3) return;
+    set([...arr, ""]);
+  }
+
+  function removeScriptField(arr: string[], set: (v: string[]) => void, idx: number) {
+    set(arr.filter((_, i) => i !== idx));
+  }
+
+  function updateScriptField(arr: string[], set: (v: string[]) => void, idx: number, val: string) {
+    set(arr.map((s, i) => (i === idx ? val : s)));
+  }
+
   async function saveNew() {
-    if (!newScript.trim()) return;
+    const validScripts = newScripts.map((s) => s.trim()).filter(Boolean);
+    if (validScripts.length === 0) return;
     setBusy(true);
     try {
       const res = await fetch("/api/admin/ad-scripts", {
@@ -64,19 +78,15 @@ export function AdminAdsPanel() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           slotId: newSlotId,
-          script: newScript.trim(),
-          label: newLabel.trim() || SLOT_OPTIONS.find((s) => s.id === newSlotId)?.label,
+          scripts: validScripts,
+          label: SLOT_OPTIONS.find((s) => s.id === newSlotId)?.label,
           isActive: true,
         }),
       });
-      if (!res.ok) {
-        toast.error(t("errorSave"));
-        return;
-      }
+      if (!res.ok) { toast.error(t("errorSave")); return; }
       toast.success(t("saved"));
       setAdding(false);
-      setNewScript("");
-      setNewLabel("");
+      setNewScripts([""]);
       await load();
     } finally {
       setBusy(false);
@@ -89,21 +99,18 @@ export function AdminAdsPanel() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         slotId: ad.slotId,
-        script: ad.script,
+        scripts: ad.scripts,
         label: ad.label,
         isActive: !ad.isActive,
       }),
     });
-    if (!res.ok) {
-      toast.error(t("errorSave"));
-      return;
-    }
-    setScripts((prev) =>
-      prev.map((s) => (s.id === ad.id ? { ...s, isActive: !s.isActive } : s))
-    );
+    if (!res.ok) { toast.error(t("errorSave")); return; }
+    setScripts((prev) => prev.map((s) => (s.id === ad.id ? { ...s, isActive: !s.isActive } : s)));
   }
 
   async function saveEdit(ad: AdScriptRow) {
+    const validScripts = editScripts.map((s) => s.trim()).filter(Boolean);
+    if (validScripts.length === 0) return;
     setBusy(true);
     try {
       const res = await fetch("/api/admin/ad-scripts", {
@@ -111,15 +118,12 @@ export function AdminAdsPanel() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           slotId: ad.slotId,
-          script: editScript.trim(),
+          scripts: validScripts,
           label: ad.label,
           isActive: ad.isActive,
         }),
       });
-      if (!res.ok) {
-        toast.error(t("errorSave"));
-        return;
-      }
+      if (!res.ok) { toast.error(t("errorSave")); return; }
       toast.success(t("saved"));
       setEditId(null);
       await load();
@@ -133,10 +137,7 @@ export function AdminAdsPanel() {
     const res = await fetch(`/api/admin/ad-scripts?slotId=${encodeURIComponent(slotId)}`, {
       method: "DELETE",
     });
-    if (!res.ok) {
-      toast.error(t("errorDelete"));
-      return;
-    }
+    if (!res.ok) { toast.error(t("errorDelete")); return; }
     toast.success(t("deleted"));
     setScripts((prev) => prev.filter((s) => s.slotId !== slotId));
   }
@@ -152,14 +153,7 @@ export function AdminAdsPanel() {
           <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
         </div>
         {!adding && availableSlots.length > 0 && (
-          <Button
-            type="button"
-            size="sm"
-            onClick={() => {
-              setAdding(true);
-              setNewSlotId(availableSlots[0]!.id);
-            }}
-          >
+          <Button type="button" size="sm" onClick={() => { setAdding(true); setNewSlotId(availableSlots[0]!.id); setNewScripts([""]); }}>
             <Plus className="mr-1.5 h-4 w-4" />
             {t("addButton")}
           </Button>
@@ -170,35 +164,32 @@ export function AdminAdsPanel() {
         <div className="space-y-3 rounded-xl border border-border bg-card p-4">
           <div>
             <label className="text-xs text-muted-foreground">{t("slotLabel")}</label>
-            <select
-              value={newSlotId}
-              onChange={(e) => setNewSlotId(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none"
-            >
-              {availableSlots.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.label}
-                </option>
-              ))}
+            <select value={newSlotId} onChange={(e) => setNewSlotId(e.target.value)} className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none">
+              {availableSlots.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
             </select>
           </div>
-          <div>
-            <label className="text-xs text-muted-foreground">{t("scriptLabel")}</label>
-            <textarea
-              rows={5}
-              value={newScript}
-              onChange={(e) => setNewScript(e.target.value)}
-              placeholder={t("scriptPlaceholder")}
-              className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-mono outline-none focus:ring-2 focus:ring-primary/25"
-            />
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-xs text-muted-foreground">{t("scriptsLabel")}</label>
+              {newScripts.length < 3 && (
+                <button type="button" onClick={() => addScriptField(newScripts, setNewScripts)} className="text-xs text-primary hover:underline">
+                  + {t("addScript")}
+                </button>
+              )}
+            </div>
+            {newScripts.map((s, i) => (
+              <div key={i} className="flex gap-2">
+                <textarea rows={4} value={s} onChange={(e) => updateScriptField(newScripts, setNewScripts, i, e.target.value)} placeholder={t("scriptPlaceholder")} className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm font-mono outline-none focus:ring-2 focus:ring-primary/25" />
+                {newScripts.length > 1 && (
+                  <button type="button" onClick={() => removeScriptField(newScripts, setNewScripts, i)} className="self-start rounded-md border border-destructive/40 p-1.5 text-destructive hover:bg-destructive/10">
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
           <div className="flex gap-2">
-            <Button
-              type="button"
-              size="sm"
-              disabled={busy || !newScript.trim()}
-              onClick={() => void saveNew()}
-            >
+            <Button type="button" size="sm" disabled={busy || newScripts.every((s) => !s.trim())} onClick={() => void saveNew()}>
               {busy ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : null}
               {t("saveButton")}
             </Button>
@@ -220,7 +211,7 @@ export function AdminAdsPanel() {
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-foreground">{ad.label ?? ad.slotId}</p>
-                  <p className="text-xs text-muted-foreground">{ad.slotId}</p>
+                  <p className="text-xs text-muted-foreground">{ad.slotId} · {ad.scripts.length} {t("scriptsCount")}</p>
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
                   <button
@@ -239,7 +230,7 @@ export function AdminAdsPanel() {
                     type="button"
                     onClick={() => {
                       setEditId(ad.id);
-                      setEditScript(ad.script);
+                      setEditScripts(ad.scripts.length > 0 ? ad.scripts : [""]);
                     }}
                     className="rounded-md border border-border p-1.5 text-muted-foreground hover:text-foreground"
                   >
@@ -256,12 +247,24 @@ export function AdminAdsPanel() {
               </div>
               {editId === ad.id && (
                 <div className="mt-3 space-y-2">
-                  <textarea
-                    rows={5}
-                    value={editScript}
-                    onChange={(e) => setEditScript(e.target.value)}
-                    className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-mono outline-none focus:ring-2 focus:ring-primary/25"
-                  />
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs text-muted-foreground">{t("scriptsLabel")}</label>
+                    {editScripts.length < 3 && (
+                      <button type="button" onClick={() => addScriptField(editScripts, setEditScripts)} className="text-xs text-primary hover:underline">
+                        + {t("addScript")}
+                      </button>
+                    )}
+                  </div>
+                  {editScripts.map((s, i) => (
+                    <div key={i} className="flex gap-2">
+                      <textarea rows={4} value={s} onChange={(e) => updateScriptField(editScripts, setEditScripts, i, e.target.value)} className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm font-mono outline-none focus:ring-2 focus:ring-primary/25" />
+                      {editScripts.length > 1 && (
+                        <button type="button" onClick={() => removeScriptField(editScripts, setEditScripts, i)} className="self-start rounded-md border border-destructive/40 p-1.5 text-destructive hover:bg-destructive/10">
+                          <X className="h-3.5 w-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
                   <div className="flex gap-2">
                     <Button type="button" size="sm" disabled={busy} onClick={() => void saveEdit(ad)}>
                       {busy ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : null}

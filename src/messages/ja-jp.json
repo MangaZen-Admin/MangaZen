@@ -883,8 +883,13 @@
         "libraryAfter50": "ライブラリ — 50件ごと",
         "newsBetween": "ニュース — セクション間",
         "communityBetween": "コミュニティ — セクション間",
-        "profilePublicBottom": "公開プロフィール — 下部"
-      }
+        "profilePublicBottom": "公開プロフィール — 下部",
+        "mangaDetailSidebar": "マンガ詳細 — サイドバー"
+      },
+      "scriptsLabel": "広告スクリプト（最大3件）",
+      "scriptsCount": "広告",
+      "addScript": "広告を追加",
+      "mangaDetailSidebar": "マンガ詳細 — サイドバー"
     },
     "scanStats": {
       "title": "スキャン・クリエイター統計",

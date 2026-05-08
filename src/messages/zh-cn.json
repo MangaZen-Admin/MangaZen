@@ -883,8 +883,13 @@
         "libraryAfter50": "图书馆 — 每50个结果",
         "newsBetween": "新闻 — 区块之间",
         "communityBetween": "社区 — 区块之间",
-        "profilePublicBottom": "公开资料 — 底部"
-      }
+        "profilePublicBottom": "公开资料 — 底部",
+        "mangaDetailSidebar": "漫画详情 — 侧边栏"
+      },
+      "scriptsLabel": "广告脚本（最多3个）",
+      "scriptsCount": "个广告",
+      "addScript": "添加广告",
+      "mangaDetailSidebar": "漫画详情 — 侧边栏"
     },
     "scanStats": {
       "title": "扫图与创作者统计",

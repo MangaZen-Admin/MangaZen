@@ -6,11 +6,11 @@ export const runtime = "nodejs";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const slotId = searchParams.get("slotId");
-  if (!slotId) return NextResponse.json({ script: null });
+  if (!slotId) return NextResponse.json({ scripts: [] });
   const ad = await prisma.adScript.findUnique({
     where: { slotId },
-    select: { script: true, isActive: true },
+    select: { scripts: true, isActive: true },
   });
-  if (!ad || !ad.isActive) return NextResponse.json({ script: null });
-  return NextResponse.json({ script: ad.script });
+  if (!ad || !ad.isActive) return NextResponse.json({ scripts: [] });
+  return NextResponse.json({ scripts: ad.scripts as string[] });
 }

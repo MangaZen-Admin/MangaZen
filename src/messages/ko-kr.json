@@ -883,8 +883,13 @@
         "libraryAfter50": "라이브러리 — 50개마다",
         "newsBetween": "뉴스 — 섹션 사이",
         "communityBetween": "커뮤니티 — 섹션 사이",
-        "profilePublicBottom": "공개 프로필 — 하단"
-      }
+        "profilePublicBottom": "공개 프로필 — 하단",
+        "mangaDetailSidebar": "만화 상세 — 사이드바"
+      },
+      "scriptsLabel": "광고 스크립트 (최대 3개)",
+      "scriptsCount": "광고",
+      "addScript": "광고 추가",
+      "mangaDetailSidebar": "만화 상세 — 사이드바"
     },
     "scanStats": {
       "title": "스캔·크리에이터 통계",

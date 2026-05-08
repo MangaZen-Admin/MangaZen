@@ -883,8 +883,13 @@
         "libraryAfter50": "Biblioteca — a cada 50 resultados",
         "newsBetween": "Novidades — entre seções",
         "communityBetween": "Comunidade — entre seções",
-        "profilePublicBottom": "Perfil público — no final"
-      }
+        "profilePublicBottom": "Perfil público — no final",
+        "mangaDetailSidebar": "Ficha manga — sidebar"
+      },
+      "scriptsLabel": "Scripts de anúncio (máx. 3)",
+      "scriptsCount": "anúncios",
+      "addScript": "Adicionar anúncio",
+      "mangaDetailSidebar": "Ficha manga — sidebar"
     },
     "scanStats": {
       "title": "Estatísticas de scans e criadores",

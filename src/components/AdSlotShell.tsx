@@ -22,18 +22,18 @@ export async function AdSlotShell({ slotId, className, height }: AdSlotShellProp
   const [specificAd, globalAd] = await Promise.all([
     prisma.adScript.findUnique({
       where: { slotId },
-      select: { script: true, isActive: true },
+      select: { scripts: true, isActive: true },
     }),
     prisma.adScript.findUnique({
       where: { slotId: "global" },
-      select: { script: true, isActive: true },
+      select: { scripts: true, isActive: true },
     }),
   ]);
 
-  const adScript =
-    (specificAd?.isActive ? specificAd.script : null) ??
-    (globalAd?.isActive ? globalAd.script : null) ??
-    null;
+  const adScripts: string[] =
+    (specificAd?.isActive ? (specificAd.scripts as string[]) : null) ??
+    (globalAd?.isActive ? (globalAd.scripts as string[]) : null) ??
+    [];
 
-  return <AdSlot slotId={slotId} className={className} height={height} adScript={adScript} />;
+  return <AdSlot slotId={slotId} className={className} height={height} adScripts={adScripts} />;
 }
