@@ -16,11 +16,35 @@ const ALLOWED_BANNED_PATHS = ["/login", "/register", "/banned", "/suspended"];
 
 const LOCALE_PATTERN = /^\/(es-ar|es-es|en-us|en-gb|pt-br|ja-jp|ko-kr|zh-cn)/;
 
+const PROTECTED_PREFIXES = ["/admin", "/scan"];
+
+function isProtectedRoute(pathWithoutLocale: string): boolean {
+  return PROTECTED_PREFIXES.some(
+    (prefix) =>
+      pathWithoutLocale === prefix ||
+      pathWithoutLocale.startsWith(`${prefix}/`)
+  );
+}
+
 export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (BYPASS_PATTERNS.some((p) => p.test(pathname))) {
     return intlMiddleware(request);
+  }
+
+  const locale = pathname.match(LOCALE_PATTERN)?.[1] ?? "es-ar";
+  const pathWithoutLocale = pathname.replace(LOCALE_PATTERN, "") || "/";
+
+  // Protección de rutas admin y scan — verificar cookies antes de llegar al componente
+  if (isProtectedRoute(pathWithoutLocale)) {
+    const userId = request.cookies.get("mangazen_user_id")?.value;
+    const accessToken = request.cookies.get("mangazen_access_token")?.value;
+    if (!userId || !accessToken) {
+      const loginUrl = new URL(`/${locale}/login`, request.url);
+      loginUrl.searchParams.set("next", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
   }
 
   const sessionToken =
@@ -71,14 +95,11 @@ export default async function proxy(request: NextRequest) {
       }
     }
 
-    const pathWithoutLocale = pathname.replace(LOCALE_PATTERN, "") || "/";
     const isAllowed = ALLOWED_BANNED_PATHS.some(
       (p) => pathWithoutLocale === p || pathWithoutLocale.startsWith(p + "/")
     );
 
     if (!isAllowed) {
-      const locale = pathname.match(LOCALE_PATTERN)?.[1] ?? "es-ar";
-
       if (isBanned) {
         return NextResponse.redirect(new URL(`/${locale}/banned`, request.url));
       }
