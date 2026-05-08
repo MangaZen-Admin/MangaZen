@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
-import { Coins, Crown, Gem } from "lucide-react";
+import { Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/db";
 import UserMenu from "@/components/UserMenu";
@@ -12,6 +12,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ThemeToggle from "@/components/ThemeToggle";
 import { MobileNav } from "@/components/MobileNav";
 import { AdultContentButton } from "@/components/AdultContentButton";
+import { NavbarZenBalance } from "@/components/NavbarZenBalance";
 
 export default async function Navbar() {
   const locale = await getLocale();
@@ -96,20 +97,10 @@ export default async function Navbar() {
                     Pro
                   </Link>
                 ) : null}
-                <div className="hidden items-center gap-1.5 text-xs md:flex">
-                  <Link
-                    href="/billing"
-                    className="group inline-flex items-center gap-1.5 rounded-full border border-yellow-500/40 bg-yellow-500/10 px-2.5 py-1 text-yellow-700 transition-colors hover:border-yellow-500/70 hover:bg-yellow-500/20 dark:text-yellow-300"
-                  >
-                    <Coins className="h-3.5 w-3.5" />
-                    <span className="tabular-nums font-medium">{user.zenCoins.toLocaleString()}</span>
-                    <span className="text-yellow-600/60 transition-colors group-hover:text-yellow-600 dark:text-yellow-400/60 dark:group-hover:text-yellow-300">+</span>
-                  </Link>
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-primary">
-                    <Gem className="h-3.5 w-3.5" />
-                    <span className="tabular-nums font-medium">{user.zenShards.toLocaleString()}</span>
-                  </span>
-                </div>
+                <NavbarZenBalance
+                  initialCoins={user.zenCoins}
+                  initialShards={user.zenShards}
+                />
                 <NavbarNotifications initialUnread={unreadNotificationsCount} />
                 <UserMenu
                   displayName={displayName}

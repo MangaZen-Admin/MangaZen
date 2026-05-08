@@ -1695,5 +1695,29 @@
     "favorite": "お気に入り ({count})",
     "like": "いいね ({count})",
     "dislike": "よくない ({count})"
+  },
+  "mangaDonate": {
+    "button": "コインを寄付",
+    "loginRequired": "コインを寄付するにはログインしてください。",
+    "modalTitle": "スキャングループにコインを寄付",
+    "modalSubtitle": "あなたの寄付はこのマンガを翻訳するグループに直接届きます。",
+    "selectScan": "寄付先を選択",
+    "lastUploader": "最新話",
+    "chapters": "話",
+    "currencyLabel": "通貨",
+    "amountLabel": "金額",
+    "balanceLabel": "残高",
+    "insufficientBalance": "残高不足",
+    "insufficientCoins": "Zen Coinsが不足しています。",
+    "insufficientShards": "Zen Shardsが不足しています。",
+    "coinsNotAllowed": "スキャングループはZen Shardsのみ受け取れます。",
+    "errorDonate": "寄付を完了できませんでした。もう一度お試しください。",
+    "successMessage": "{name}に{amount} {currency}を寄付しました！",
+    "directDonationReminder": "💡 お気に入りのスキャングループのプロフィールから直接支援することもできます。",
+    "cancel": "キャンセル",
+    "confirmButton": "{amount} {currency}を寄付",
+    "unknownScan": "不明なスキャン",
+    "reauthHint": "この操作を確認するにはパスワードが必要です。",
+    "reauthLabel": "パスワード"
   }
 }

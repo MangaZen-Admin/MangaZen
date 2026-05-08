@@ -1695,5 +1695,29 @@
     "favorite": "Favorite ({count})",
     "like": "Like ({count})",
     "dislike": "Dislike ({count})"
+  },
+  "mangaDonate": {
+    "button": "Donate coins",
+    "loginRequired": "Log in to donate coins.",
+    "modalTitle": "Donate coins to the scan group",
+    "modalSubtitle": "Your donation goes directly to the group translating this manga.",
+    "selectScan": "Choose who to donate to",
+    "lastUploader": "Latest chapter",
+    "chapters": "Chapters",
+    "currencyLabel": "Currency",
+    "amountLabel": "Amount",
+    "balanceLabel": "Your balance",
+    "insufficientBalance": "Insufficient balance",
+    "insufficientCoins": "You don't have enough Zen Coins.",
+    "insufficientShards": "You don't have enough Zen Shards.",
+    "coinsNotAllowed": "Scan groups can only receive Zen Shards.",
+    "errorDonate": "Could not complete the donation. Please try again.",
+    "successMessage": "You donated {amount} {currency} to {name}!",
+    "directDonationReminder": "💡 You can also support your favourite scans directly from their personal profile.",
+    "cancel": "Cancel",
+    "confirmButton": "Donate {amount} {currency}",
+    "unknownScan": "Unknown scan",
+    "reauthHint": "This action requires your password to confirm.",
+    "reauthLabel": "Password"
   }
 }

@@ -1695,5 +1695,29 @@
     "favorite": "즐겨찾기 ({count})",
     "like": "좋아요 ({count})",
     "dislike": "싫어요 ({count})"
+  },
+  "mangaDonate": {
+    "button": "코인 기부",
+    "loginRequired": "코인을 기부하려면 로그인하세요.",
+    "modalTitle": "스캔 그룹에 코인 기부",
+    "modalSubtitle": "기부금은 이 만화를 번역하는 그룹에 직접 전달됩니다.",
+    "selectScan": "기부할 대상 선택",
+    "lastUploader": "최신 화",
+    "chapters": "화",
+    "currencyLabel": "통화",
+    "amountLabel": "금액",
+    "balanceLabel": "잔액",
+    "insufficientBalance": "잔액 부족",
+    "insufficientCoins": "Zen Coins가 부족합니다.",
+    "insufficientShards": "Zen Shards가 부족합니다.",
+    "coinsNotAllowed": "스캔 그룹은 Zen Shards만 받을 수 있습니다.",
+    "errorDonate": "기부를 완료할 수 없습니다. 다시 시도해 주세요.",
+    "successMessage": "{name}에게 {amount} {currency}를 기부했습니다!",
+    "directDonationReminder": "💡 좋아하는 스캔의 개인 프로필에서 직접 지원할 수도 있습니다.",
+    "cancel": "취소",
+    "confirmButton": "{amount} {currency} 기부",
+    "unknownScan": "알 수 없는 스캔",
+    "reauthHint": "이 작업을 확인하려면 비밀번호가 필요합니다.",
+    "reauthLabel": "비밀번호"
   }
 }

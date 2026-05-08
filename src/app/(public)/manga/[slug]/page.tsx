@@ -9,6 +9,7 @@ import { prisma } from "@/lib/db";
 import { MangaReactions } from "@/components/manga/MangaReactions";
 import { MangaReadingStatus } from "@/components/manga/MangaReadingStatus";
 import { MangaReportButton } from "@/components/manga/MangaReportButton";
+import { MangaDonateButton } from "@/components/manga/MangaDonateButton";
 import { MangaPrimaryReadCta } from "@/components/manga/MangaPrimaryReadCta";
 import { MangaChaptersWithComments } from "@/components/manga/MangaChaptersWithComments";
 import { MangaReaderCounter } from "@/components/manga/MangaReaderCounter";
@@ -107,6 +108,23 @@ async function getMangaBySlug(slug: string) {
             select: {
               pages: true,
             },
+          },
+          uploads: {
+            select: {
+              uploaderId: true,
+              status: true,
+              uploader: {
+                select: {
+                  id: true,
+                  name: true,
+                  username: true,
+                  image: true,
+                  role: true,
+                },
+              },
+            },
+            where: { status: "APPROVED" },
+            take: 1,
           },
         },
       },
@@ -291,7 +309,7 @@ export default async function MangaDetailPage({ params }: PageProps) {
     sessionUserId
       ? prisma.user.findUnique({
           where: { id: sessionUserId },
-          select: { id: true, isPro: true, role: true },
+          select: { id: true, isPro: true, role: true, zenCoins: true, zenShards: true },
         })
       : Promise.resolve(null),
   ]);
@@ -405,6 +423,46 @@ export default async function MangaDetailPage({ params }: PageProps) {
       ? manga.uploader.externalDonationLink
       : null;
 
+  // Calcular contributors para el botón de donación
+  const lastChapter = manga.chapters[0]; // ya vienen ordenados por number desc
+  const lastUploaderId = lastChapter?.uploads[0]?.uploaderId ?? null;
+
+  const contributorMap = new Map<string, {
+    id: string;
+    name: string | null;
+    username: string | null;
+    image: string | null;
+    role: string;
+    chapterNumbers: number[];
+  }>();
+
+  for (const chapter of manga.chapters) {
+    const upload = chapter.uploads[0];
+    if (!upload) continue;
+    const uploader = upload.uploader;
+    if (!["SCAN", "CREATOR", "ADMIN"].includes(uploader.role)) continue;
+    const existing = contributorMap.get(uploader.id);
+    if (existing) {
+      existing.chapterNumbers.push(chapter.number);
+    } else {
+      contributorMap.set(uploader.id, {
+        id: uploader.id,
+        name: uploader.name,
+        username: uploader.username,
+        image: uploader.image,
+        role: uploader.role,
+        chapterNumbers: [chapter.number],
+      });
+    }
+  }
+
+  const contributors = Array.from(contributorMap.values())
+    .sort((a, b) => b.chapterNumbers.length - a.chapterNumbers.length)
+    .map((c) => ({
+      ...c,
+      isLastUploader: c.id === lastUploaderId && contributorMap.size > 1,
+    }));
+
   return (
     <main className="w-full">
       {/* ── HERO ── */}
@@ -449,7 +507,16 @@ export default async function MangaDetailPage({ params }: PageProps) {
 
           {/* Título y badges */}
           <div className="flex-1 pb-2">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{manga.title}</h1>
+            <div className="flex items-start justify-between gap-3">
+              <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{manga.title}</h1>
+              <div className="shrink-0 pt-1">
+                <MangaReportButton
+                  mangaSlug={manga.slug}
+                  isAuthenticated={isAuthenticated}
+                  initialReportCount={reportCount}
+                />
+              </div>
+            </div>
             {manga.alternativeTitles.length > 0 && (
               <p className="mt-1 text-sm text-muted-foreground italic">
                 {manga.alternativeTitles.map((at) => at.title).join(" · ")}
@@ -584,6 +651,12 @@ export default async function MangaDetailPage({ params }: PageProps) {
                 {tDon("supportTeamButton")}
               </a>
             )}
+            <MangaDonateButton
+              contributors={contributors}
+              isAuthenticated={isAuthenticated}
+              initialZenCoins={currentUser?.zenCoins ?? 0}
+              initialZenShards={currentUser?.zenShards ?? 0}
+            />
           </div>
           <div className="mt-3">
             <MangaPrimaryReadCta
@@ -597,13 +670,6 @@ export default async function MangaDetailPage({ params }: PageProps) {
               mangaSlug={manga.slug}
               initialStatus={userProgress?.status ?? null}
               isAuthenticated={isAuthenticated}
-            />
-          </div>
-          <div className="mt-2">
-            <MangaReportButton
-              mangaSlug={manga.slug}
-              isAuthenticated={isAuthenticated}
-              initialReportCount={reportCount}
             />
           </div>
         </div>

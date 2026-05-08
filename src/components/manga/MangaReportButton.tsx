@@ -86,7 +86,7 @@ export function MangaReportButton({ mangaSlug, isAuthenticated, initialReportCou
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-destructive"
+        className="inline-flex items-center gap-1.5 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-1.5 text-xs font-medium text-destructive transition hover:bg-destructive/10"
       >
         <Flag className="h-3.5 w-3.5" />
         {t("button")}

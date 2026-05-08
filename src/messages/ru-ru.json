@@ -1822,5 +1822,29 @@
     "favorite": "Избранное ({count})",
     "like": "Нравится ({count})",
     "dislike": "Не нравится ({count})"
+  },
+  "mangaDonate": {
+    "button": "Пожертвовать монеты",
+    "loginRequired": "Войдите, чтобы пожертвовать монеты.",
+    "modalTitle": "Пожертвовать монеты группе сканирования",
+    "modalSubtitle": "Ваше пожертвование поступит напрямую группе, переводящей эту мангу.",
+    "selectScan": "Выберите получателя",
+    "lastUploader": "Последняя глава",
+    "chapters": "Главы",
+    "currencyLabel": "Валюта",
+    "amountLabel": "Сумма",
+    "balanceLabel": "Ваш баланс",
+    "insufficientBalance": "Недостаточно средств",
+    "insufficientCoins": "Недостаточно Zen Coins.",
+    "insufficientShards": "Недостаточно Zen Shards.",
+    "coinsNotAllowed": "Группы сканирования могут получать только Zen Shards.",
+    "errorDonate": "Не удалось завершить пожертвование. Попробуйте ещё раз.",
+    "successMessage": "Вы пожертвовали {amount} {currency} пользователю {name}!",
+    "directDonationReminder": "💡 Вы также можете поддержать любимые группы сканирования прямо с их личного профиля.",
+    "cancel": "Отмена",
+    "confirmButton": "Пожертвовать {amount} {currency}",
+    "unknownScan": "Неизвестная группа",
+    "reauthHint": "Для подтверждения этого действия требуется пароль.",
+    "reauthLabel": "Пароль"
   }
 }

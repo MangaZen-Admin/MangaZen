@@ -1695,5 +1695,29 @@
     "favorite": "收藏 ({count})",
     "like": "点赞 ({count})",
     "dislike": "踩 ({count})"
+  },
+  "mangaDonate": {
+    "button": "捐赠代币",
+    "loginRequired": "请登录后捐赠代币。",
+    "modalTitle": "向扫图组捐赠代币",
+    "modalSubtitle": "您的捐赠将直接送达翻译本漫画的团队。",
+    "selectScan": "选择捐赠对象",
+    "lastUploader": "最新章节",
+    "chapters": "章节",
+    "currencyLabel": "货币",
+    "amountLabel": "金额",
+    "balanceLabel": "您的余额",
+    "insufficientBalance": "余额不足",
+    "insufficientCoins": "Zen Coins余额不足。",
+    "insufficientShards": "Zen Shards余额不足。",
+    "coinsNotAllowed": "扫图组只能接收Zen Shards。",
+    "errorDonate": "无法完成捐赠，请重试。",
+    "successMessage": "您向{name}捐赠了{amount} {currency}！",
+    "directDonationReminder": "💡 您也可以直接从您喜欢的扫图组的个人主页支持他们。",
+    "cancel": "取消",
+    "confirmButton": "捐赠 {amount} {currency}",
+    "unknownScan": "未知扫图组",
+    "reauthHint": "此操作需要您的密码确认。",
+    "reauthLabel": "密码"
   }
 }
