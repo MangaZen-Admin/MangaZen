@@ -33,6 +33,7 @@ export async function PublicProfileFull({
   showZen,
   showFavorites,
   showReadingStats,
+  loginStreak,
   donationLinks,
   showAdSlot = false,
 }: {
@@ -43,6 +44,7 @@ export async function PublicProfileFull({
   showZen: boolean;
   showFavorites: boolean;
   showReadingStats: boolean;
+  loginStreak: number;
   donationLinks: { id: string; platform: string; url: string }[];
   /** Slot al pie del perfil (solo visitantes no Pro viendo perfil ajeno). */
   showAdSlot?: boolean;
@@ -312,6 +314,17 @@ export async function PublicProfileFull({
                 <p className="text-sm text-muted-foreground">{t("noProgressYet")}</p>
               )}
             </dl>
+            <div className="mt-3 flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3">
+              <span className="text-2xl">🔥</span>
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  {t("loginStreakLabel")}
+                </p>
+                <p className="text-lg font-semibold tabular-nums text-foreground">
+                  {t("loginStreakValue", { days: loginStreak })}
+                </p>
+              </div>
+            </div>
           </section>
         </>
       )}

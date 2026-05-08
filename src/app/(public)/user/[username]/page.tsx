@@ -96,6 +96,7 @@ export default async function PublicUserPage({ params }: PageProps) {
           showZen={showZen}
           showFavorites={showFavorites}
           showReadingStats={showReadingStats}
+          loginStreak={showReadingStats ? (user.loginStreak ?? 0) : 0}
           donationLinks={donationLinks}
           showAdSlot={showAdSlot}
         />

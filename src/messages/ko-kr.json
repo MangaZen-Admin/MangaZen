@@ -1375,6 +1375,8 @@
     "mostReadManga": "가장 많이 읽은 작품",
     "upToChapter": "{n}화까지",
     "noProgressYet": "아직 읽기 진행이 없습니다.",
+    "loginStreakLabel": "연속 로그인",
+    "loginStreakValue": "{days}일 연속",
     "commentsTitle": "주목할 댓글",
     "commentsEmpty": "아직 댓글이 없습니다.",
     "chapterShort": "화",

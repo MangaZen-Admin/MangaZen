@@ -1375,6 +1375,8 @@
     "mostReadManga": "Más avanzado",
     "upToChapter": "Hasta cap. {n}",
     "noProgressYet": "Todavía no hay progreso de lectura.",
+    "loginStreakLabel": "Racha de login",
+    "loginStreakValue": "{days} días consecutivos",
     "commentsTitle": "Comentarios destacados",
     "commentsEmpty": "Todavía no hay comentarios.",
     "chapterShort": "caps.",

@@ -17,6 +17,7 @@ const publicProfileUserSelect = {
   hideZenFromPublic: true,
   hideFavoritesFromPublic: true,
   hideReadingStatsFromPublic: true,
+  loginStreak: true,
   badges: {
     select: {
       id: true,

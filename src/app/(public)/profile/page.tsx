@@ -8,6 +8,7 @@ import { ProfileSecurityPanel } from "@/components/profile/ProfileSecurityPanel"
 import { TransactionHistory } from "@/components/profile/TransactionHistory";
 import { getAuthenticatedUserIdServer } from "@/lib/auth-session";
 import { BadgeIcon } from "@/components/profile/BadgeIcon";
+import { StreakBadgeNotifier } from "@/components/profile/StreakBadgeNotifier";
 
 export async function generateMetadata() {
   const t = await getTranslations("profile");
@@ -187,6 +188,7 @@ export default async function ProfilePage() {
   return (
     <main className="min-h-[calc(100vh-5rem)] bg-background px-4 py-8 sm:px-6 lg:px-8">
       <section className="mx-auto max-w-5xl space-y-6">
+        <StreakBadgeNotifier />
         <ProfileAccountCard
           userId={user.id}
           initialUsername={user.username}

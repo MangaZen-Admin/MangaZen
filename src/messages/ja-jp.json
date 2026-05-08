@@ -1375,6 +1375,8 @@
     "mostReadManga": "最も進んでいる作品",
     "upToChapter": "第{n}話まで",
     "noProgressYet": "まだ読書の進捗がありません。",
+    "loginStreakLabel": "ログイン連続日数",
+    "loginStreakValue": "{days}日連続",
     "commentsTitle": "注目のコメント",
     "commentsEmpty": "まだコメントがありません。",
     "chapterShort": "話",

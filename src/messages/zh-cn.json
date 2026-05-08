@@ -1375,6 +1375,8 @@
     "mostReadManga": "读得最多",
     "upToChapter": "读到第{n}话",
     "noProgressYet": "暂无阅读进度。",
+    "loginStreakLabel": "连续登录",
+    "loginStreakValue": "连续{days}天",
     "commentsTitle": "精选评论",
     "commentsEmpty": "暂无评论。",
     "chapterShort": "话",

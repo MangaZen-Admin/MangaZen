@@ -1375,6 +1375,8 @@
     "mostReadManga": "Furthest along",
     "upToChapter": "Up to Ch. {n}",
     "noProgressYet": "No reading progress yet.",
+    "loginStreakLabel": "Login streak",
+    "loginStreakValue": "{days} consecutive days",
     "commentsTitle": "Highlighted comments",
     "commentsEmpty": "No comments yet.",
     "chapterShort": "chaps.",

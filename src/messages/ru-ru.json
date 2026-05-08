@@ -262,6 +262,8 @@
     "mostReadManga": "Наибольший прогресс",
     "upToChapter": "до гл. {n}",
     "noProgressYet": "Прогресса ещё нет.",
+    "loginStreakLabel": "Серия входов",
+    "loginStreakValue": "{days} дней подряд",
     "commentsTitle": "Комментарии",
     "commentsEmpty": "Нет комментариев.",
     "chapterShort": "гл.",
