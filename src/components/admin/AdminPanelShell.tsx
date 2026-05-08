@@ -620,8 +620,9 @@ export default function AdminPanelShell({
 
         <TabsContent value="usuarios" className="mt-5 space-y-6">
           <AdminProGrantPanel />
-          <section className="overflow-hidden rounded-xl border border-border bg-card">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+
+          <section className="rounded-xl border border-border bg-card p-5 shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="relative w-full max-w-xs">
                 <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                 <input
@@ -639,261 +640,270 @@ export default function AdminPanelShell({
                 })}
               </p>
             </div>
-            <div className="mt-4 overflow-x-auto rounded-lg border border-border">
-              <table className="w-full text-left text-sm">
-                <thead className="border-b border-border text-xs uppercase tracking-wide text-muted-foreground">
-                  <tr>
-                    <th className="px-3 pb-3 pt-3 font-medium">{t("colAvatar")}</th>
-                    <th className="px-3 pb-3 pt-3 font-medium">{t("colName")}</th>
-                    <th className="px-3 pb-3 pt-3 font-medium">{t("colEmail")}</th>
-                    <th className="px-3 pb-3 pt-3 font-medium">{t("colRole")}</th>
-                    <th className="px-3 pb-3 pt-3 font-medium">{t("colZen")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {paginatedUsers.map((user) => (
-                    <Fragment key={user.id}>
-                      <tr className="border-b border-border/60 transition-colors last:border-0 hover:bg-muted/30">
-                        <td className="px-3 py-3">
-                          <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-border bg-background text-xs font-semibold text-foreground">
-                            {user.image ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img src={user.image} alt="" className="h-full w-full object-cover" />
-                            ) : (
-                              (user.name ?? user.email ?? "U").slice(0, 1).toUpperCase()
-                            )}
-                          </div>
-                        </td>
-                        <td className="px-3 py-3 font-medium text-foreground">
-                          <Link
-                            href={`/${locale}/user/${encodeURIComponent(
-                              getPublicProfileUrlKey({ id: user.id, username: user.username })
-                            )}`}
-                            className="text-primary hover:underline"
-                          >
-                            {user.name ?? t("unknownUser")}
-                          </Link>
-                        </td>
-                        <td className="px-3 py-3 text-muted-foreground">{user.email ?? "-"}</td>
-                        <td className="px-3 py-3">
-                          <Select
-                            value={user.role}
-                            onValueChange={(v) => handleRoleChange(user, v as AdminUser["role"])}
-                            disabled={busyUserId === user.id}
-                          >
-                            <SelectTrigger className="h-8 w-[120px] text-xs">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="USER">USER</SelectItem>
-                              <SelectItem value="SCAN">SCAN</SelectItem>
-                              <SelectItem value="CREATOR">CREATOR</SelectItem>
-                              <SelectItem value="ADMIN">ADMIN</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </td>
-                        <td className="px-3 py-3 text-foreground">
-                          <div className="flex items-center justify-between gap-3">
-                            <div>
-                              <span className="text-xs tabular-nums">
-                                {user.zenCoins.toLocaleString(locale)} ZC
-                              </span>
-                              <span className="block text-xs tabular-nums text-muted-foreground">
-                                {user.zenShards.toLocaleString(locale)} ZS
-                              </span>
+
+            <ul className="mt-5 space-y-3">
+              {paginatedUsers.map((user) => {
+                const isOpen = detailUserId === user.id;
+                return (
+                  <li
+                    key={user.id}
+                    className="overflow-hidden rounded-xl border border-border bg-background transition-shadow hover:shadow-sm"
+                  >
+                    {/* Fila principal */}
+                    <div className="flex flex-wrap items-center gap-4 px-5 py-4">
+                      {/* Avatar */}
+                      <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-muted">
+                        {user.image ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={user.image} alt="" className="h-full w-full object-cover" />
+                        ) : (
+                          <span className="flex h-full w-full items-center justify-center text-sm font-semibold text-primary">
+                            {(user.name ?? user.email ?? "U").slice(0, 1).toUpperCase()}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Info */}
+                      <div className="min-w-0 flex-1">
+                        <Link
+                          href={`/${locale}/user/${encodeURIComponent(
+                            getPublicProfileUrlKey({ id: user.id, username: user.username })
+                          )}`}
+                          className="text-sm font-semibold text-primary hover:underline"
+                        >
+                          {user.name ?? t("unknownUser")}
+                        </Link>
+                        <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                          {user.email ?? "-"}
+                        </p>
+                      </div>
+
+                      {/* Rol */}
+                      <div className="shrink-0">
+                        <Select
+                          value={user.role}
+                          onValueChange={(v) => handleRoleChange(user, v as AdminUser["role"])}
+                          disabled={busyUserId === user.id}
+                        >
+                          <SelectTrigger className="h-8 w-[120px] text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="USER">USER</SelectItem>
+                            <SelectItem value="SCAN">SCAN</SelectItem>
+                            <SelectItem value="CREATOR">CREATOR</SelectItem>
+                            <SelectItem value="ADMIN">ADMIN</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Zen */}
+                      <div className="shrink-0 text-right">
+                        <p className="text-xs font-medium tabular-nums text-foreground">
+                          {user.zenCoins.toLocaleString(locale)} ZC
+                        </p>
+                        <p className="text-xs tabular-nums text-muted-foreground">
+                          {user.zenShards.toLocaleString(locale)} ZS
+                        </p>
+                      </div>
+
+                      {/* Toggle detalle */}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setDetailUserId((prev) => (prev === user.id ? null : user.id))
+                        }
+                        className="shrink-0 rounded-lg border border-border bg-muted/40 px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
+                      >
+                        {isOpen ? tBadges("hideDetail") : tBadges("viewDetail")}
+                      </button>
+                    </div>
+
+                    {/* Panel de detalle expandible */}
+                    {isOpen && (
+                      <div className="border-t border-border bg-muted/20 px-5 py-5">
+                        {(user.role === "SCAN" || user.role === "CREATOR") &&
+                          user.acceptedScanTermsAt && (
+                            <p className="mb-4 text-xs text-muted-foreground">
+                              {t("scanTermsAcceptedAt")}:{" "}
+                              {new Date(user.acceptedScanTermsAt).toLocaleString(locale)}
+                            </p>
+                          )}
+
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          {/* Ajustar ZC */}
+                          <div className="rounded-xl border border-border bg-background p-4">
+                            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                              {t("zenAdjustButton")} — ZC
+                            </p>
+                            <div className="flex items-center gap-2">
+                              <input
+                                value={pointInputs[user.id] ?? ""}
+                                onChange={(e) =>
+                                  setPointInputs((prev) => ({
+                                    ...prev,
+                                    [user.id]: e.target.value,
+                                  }))
+                                }
+                                placeholder={t("zenAdjustPlaceholder")}
+                                className="h-9 w-full rounded-lg border border-border bg-muted/40 px-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/25"
+                              />
+                              <Button
+                                type="button"
+                                size="sm"
+                                disabled={busyUserId === user.id}
+                                onClick={() => void applyPoints(user)}
+                              >
+                                {t("zenApplyButton")}
+                              </Button>
                             </div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setDetailUserId((prev) => (prev === user.id ? null : user.id))
-                              }
-                              className="shrink-0 rounded-md border border-border bg-card px-2 py-1 text-xs text-foreground hover:border-primary"
-                            >
-                              {detailUserId === user.id ? tBadges("hideDetail") : tBadges("viewDetail")}
-                            </button>
                           </div>
-                        </td>
-                      </tr>
-                      {detailUserId === user.id && (
-                        <tr className="bg-muted/20">
-                          <td colSpan={5} className="px-4 py-4">
-                            <div className="grid gap-4 sm:grid-cols-2">
-                              {(user.role === "SCAN" || user.role === "CREATOR") &&
-                                user.acceptedScanTermsAt && (
-                                  <p className="text-xs text-muted-foreground sm:col-span-2">
-                                    {t("scanTermsAcceptedAt")}:{" "}
-                                    {new Date(user.acceptedScanTermsAt).toLocaleString(locale)}
-                                  </p>
-                                )}
-                              <div className="rounded-lg border border-border bg-background/60 p-3">
-                                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                                  {t("zenAdjustButton")} — ZC
-                                </p>
-                                <div className="flex items-center gap-2">
-                                  <input
-                                    value={pointInputs[user.id] ?? ""}
-                                    onChange={(e) =>
-                                      setPointInputs((prev) => ({
-                                        ...prev,
-                                        [user.id]: e.target.value,
-                                      }))
-                                    }
-                                    placeholder={t("zenAdjustPlaceholder")}
-                                    className="h-8 w-24 rounded border border-border bg-background px-2 text-xs text-foreground outline-none"
-                                  />
-                                  <Button
-                                    type="button"
-                                    size="sm"
-                                    disabled={busyUserId === user.id}
-                                    onClick={() => void applyPoints(user)}
-                                  >
-                                    {t("zenApplyButton")}
-                                  </Button>
-                                </div>
-                              </div>
 
-                              <div className="rounded-lg border border-border bg-background/60 p-3">
-                                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                                  {t("zenAdjustButton")} — ZS
-                                </p>
-                                <div className="flex items-center gap-2">
-                                  <input
-                                    value={shardInputs[user.id] ?? ""}
-                                    onChange={(e) =>
-                                      setShardInputs((prev) => ({
-                                        ...prev,
-                                        [user.id]: e.target.value,
-                                      }))
-                                    }
-                                    placeholder={t("zenAdjustPlaceholder")}
-                                    className="h-8 w-24 rounded border border-border bg-background px-2 text-xs text-foreground outline-none"
-                                  />
-                                  <Button
-                                    type="button"
-                                    size="sm"
-                                    disabled={busyUserId === user.id}
-                                    onClick={() => void applyShards(user)}
-                                  >
-                                    {t("zenApplyButton")}
-                                  </Button>
-                                </div>
-                              </div>
+                          {/* Ajustar ZS */}
+                          <div className="rounded-xl border border-border bg-background p-4">
+                            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                              {t("zenAdjustButton")} — ZS
+                            </p>
+                            <div className="flex items-center gap-2">
+                              <input
+                                value={shardInputs[user.id] ?? ""}
+                                onChange={(e) =>
+                                  setShardInputs((prev) => ({
+                                    ...prev,
+                                    [user.id]: e.target.value,
+                                  }))
+                                }
+                                placeholder={t("zenAdjustPlaceholder")}
+                                className="h-9 w-full rounded-lg border border-border bg-muted/40 px-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/25"
+                              />
+                              <Button
+                                type="button"
+                                size="sm"
+                                disabled={busyUserId === user.id}
+                                onClick={() => void applyShards(user)}
+                              >
+                                {t("zenApplyButton")}
+                              </Button>
+                            </div>
+                          </div>
 
-                              <div className="rounded-lg border border-border bg-background/60 p-3">
-                                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                                  {t("badgeAssignButton")}
-                                </p>
-                                <div className="flex items-center gap-2">
-                                  <Select
-                                    value={selectedBadgeByUser[user.id] ?? "__none__"}
-                                    onValueChange={(v) =>
-                                      setSelectedBadgeByUser((prev) => ({
-                                        ...prev,
-                                        [user.id]: v === "__none__" ? "" : v,
-                                      }))
-                                    }
-                                  >
-                                    <SelectTrigger className="h-8 text-xs">
-                                      <SelectValue placeholder={t("badgeAssignPlaceholder")} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="__none__">
-                                        {t("badgeAssignPlaceholder")}
-                                      </SelectItem>
-                                      {badges.map((badge) => (
-                                        <SelectItem key={badge.id} value={badge.id}>
-                                          {badge.name}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                  <Button
+                          {/* Asignar insignia */}
+                          <div className="rounded-xl border border-border bg-background p-4">
+                            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                              {t("badgeAssignButton")}
+                            </p>
+                            <div className="flex items-center gap-2">
+                              <Select
+                                value={selectedBadgeByUser[user.id] ?? "__none__"}
+                                onValueChange={(v) =>
+                                  setSelectedBadgeByUser((prev) => ({
+                                    ...prev,
+                                    [user.id]: v === "__none__" ? "" : v,
+                                  }))
+                                }
+                              >
+                                <SelectTrigger className="h-9 text-xs">
+                                  <SelectValue placeholder={t("badgeAssignPlaceholder")} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="__none__">
+                                    {t("badgeAssignPlaceholder")}
+                                  </SelectItem>
+                                  {badges.map((badge) => (
+                                    <SelectItem key={badge.id} value={badge.id}>
+                                      {badge.name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <Button
+                                type="button"
+                                size="sm"
+                                disabled={
+                                  busyUserId === user.id || !selectedBadgeByUser[user.id]
+                                }
+                                onClick={() =>
+                                  void assignBadge(user, selectedBadgeByUser[user.id] ?? "")
+                                }
+                              >
+                                {t("badgeAssignButton")}
+                              </Button>
+                            </div>
+                          </div>
+
+                          {/* Marco Pro */}
+                          <div className="rounded-xl border border-border bg-background p-4">
+                            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                              {t("proFrameTitle")}
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              {(["none", "bronze", "silver", "gold", "platinum"] as const).map(
+                                (plan) => (
+                                  <button
+                                    key={plan}
                                     type="button"
-                                    size="sm"
-                                    disabled={
-                                      busyUserId === user.id || !selectedBadgeByUser[user.id]
-                                    }
+                                    disabled={busyUserId === user.id}
                                     onClick={() =>
-                                      void assignBadge(user, selectedBadgeByUser[user.id] ?? "")
+                                      void setProFrame(user, plan === "none" ? null : plan)
                                     }
+                                    className={cn(
+                                      "rounded-full border px-3 py-1 text-xs font-medium transition",
+                                      user.proPlan === (plan === "none" ? null : plan)
+                                        ? "border-primary bg-primary/20 text-foreground"
+                                        : "border-border text-muted-foreground hover:border-primary/40"
+                                    )}
                                   >
-                                    {t("badgeAssignButton")}
-                                  </Button>
-                                </div>
-                              </div>
-
-                              {user.badges.length > 0 && (
-                                <div className="rounded-lg border border-border bg-background/60 p-3 sm:col-span-2">
-                                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                                    {tBadges("sectionTitle")}
-                                  </p>
-                                  <ul className="flex flex-col gap-2">
-                                    {user.badges.map((badge) => (
-                                      <li
-                                        key={badge.id}
-                                        className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm"
-                                      >
-                                        <div className="flex min-w-0 flex-1 items-center gap-3">
-                                          <BadgeIcon
-                                            name={badge.name}
-                                            description={badge.description}
-                                            iconUrl={badge.iconUrl}
-                                            iconKey={badge.iconKey}
-                                            isHighlighted={badge.isHighlighted}
-                                          />
-                                        </div>
-                                        <button
-                                          type="button"
-                                          disabled={busyUserId === user.id}
-                                          onClick={() => setRevokeDialog({ user, badge })}
-                                          className="rounded-md border border-destructive/40 bg-destructive/10 px-2 py-1 text-xs font-medium text-destructive hover:bg-destructive/15 disabled:opacity-40"
-                                        >
-                                          {tBadges("revoke")}
-                                        </button>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
+                                    {PLAN_LABELS[plan]}
+                                  </button>
+                                )
                               )}
+                            </div>
+                          </div>
 
-                              <div className="rounded-lg border border-border bg-background/60 p-3 sm:col-span-2">
-                                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                                  {t("proFrameTitle")}
-                                </p>
-                                <div className="flex flex-wrap items-center gap-2">
-                                  {(
-                                    ["none", "bronze", "silver", "gold", "platinum"] as const
-                                  ).map((plan) => (
+                          {/* Insignias asignadas */}
+                          {user.badges.length > 0 && (
+                            <div className="rounded-xl border border-border bg-background p-4 sm:col-span-2">
+                              <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                                {tBadges("sectionTitle")}
+                              </p>
+                              <ul className="flex flex-col gap-2">
+                                {user.badges.map((badge) => (
+                                  <li
+                                    key={badge.id}
+                                    className="flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/30 px-3 py-2"
+                                  >
+                                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                                      <BadgeIcon
+                                        name={badge.name}
+                                        description={badge.description}
+                                        iconUrl={badge.iconUrl}
+                                        iconKey={badge.iconKey}
+                                        isHighlighted={badge.isHighlighted}
+                                      />
+                                    </div>
                                     <button
-                                      key={plan}
                                       type="button"
                                       disabled={busyUserId === user.id}
-                                      onClick={() =>
-                                        void setProFrame(user, plan === "none" ? null : plan)
-                                      }
-                                      className={cn(
-                                        "rounded-full border px-3 py-1 text-xs font-medium transition",
-                                        user.proPlan === (plan === "none" ? null : plan)
-                                          ? "border-primary bg-primary/20 text-foreground"
-                                          : "border-border text-muted-foreground hover:border-primary/40"
-                                      )}
+                                      onClick={() => setRevokeDialog({ user, badge })}
+                                      className="shrink-0 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-1 text-xs font-medium text-destructive transition hover:bg-destructive/20 disabled:opacity-40"
                                     >
-                                      {PLAN_LABELS[plan]}
+                                      {tBadges("revoke")}
                                     </button>
-                                  ))}
-                                </div>
-                              </div>
+                                  </li>
+                                ))}
+                              </ul>
                             </div>
-                          </td>
-                        </tr>
-                      )}
-                    </Fragment>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+
             {hasMoreUsers && (
-              <div className="mt-4 flex justify-center">
+              <div className="mt-5 flex justify-center">
                 <Button
                   type="button"
                   variant="outline"
