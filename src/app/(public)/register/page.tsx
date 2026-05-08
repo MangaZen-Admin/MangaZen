@@ -36,7 +36,7 @@ async function registerAction(formData: FormData) {
 
   const headerList = await headers();
   const ip = getClientIp(headerList) ?? "unknown";
-  const { allowed, remainingMs } = checkRateLimit(`register:${ip}`);
+  const { allowed, remainingMs } = await checkRateLimit(`register:${ip}`);
   if (!allowed) {
     const minutes = Math.ceil(remainingMs / 60000);
     redirect(`/register?error=rate_limited&minutes=${minutes}&next=${encodeURIComponent(next)}`);

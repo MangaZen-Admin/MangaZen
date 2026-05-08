@@ -40,7 +40,7 @@ async function loginAction(formData: FormData) {
   const headerList = await headers();
   const ip = getClientIp(headerList) ?? "unknown";
   const rateLimitKey = `login:${ip}`;
-  const { allowed, remainingMs } = checkRateLimit(rateLimitKey);
+  const { allowed, remainingMs } = await checkRateLimit(rateLimitKey);
   if (!allowed) {
     const minutes = Math.ceil(remainingMs / 60000);
     redirect(`/login?error=rate_limited&minutes=${minutes}&next=${encodeURIComponent(next)}`);
