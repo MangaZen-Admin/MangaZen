@@ -176,7 +176,6 @@ export function ProfileSecurityPanel({
           </button>
         </div>
 
-        {/*
         <div className="flex flex-col gap-2 rounded-xl border border-border bg-background p-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-medium text-foreground">{t("requireEmailCodeLabel")}</p>
@@ -199,7 +198,6 @@ export function ProfileSecurityPanel({
             />
           </button>
         </div>
-        */}
 
         <div className="flex flex-col gap-2 rounded-xl border border-border bg-background p-4 sm:flex-row sm:items-center sm:justify-between">
           <div>

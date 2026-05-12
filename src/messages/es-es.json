@@ -34,9 +34,9 @@
     "loginFooterPrompt": "¿No tienes cuenta?",
     "registerFooterPrompt": "¿Ya tienes cuenta?",
     "errorRateLimited": "Demasiados intentos fallidos. Inténtalo de nuevo en {minutes} minutos.",
+    "errorDisposableEmail": "No se permiten correos temporales o desechables. Usa una dirección de email real.",
     "successPasswordReset": "Tu contraseña ha sido restablecida correctamente. Ya puedes iniciar sesión.",
-    "forgotPasswordLink": "¿Olvidaste tu contraseña?",
-    "passwordResetDisabledNotice": "⚠️ El servicio de restablecimiento de contraseña está temporalmente deshabilitado. Por favor no olvides tu contraseña."
+    "forgotPasswordLink": "¿Olvidaste tu contraseña?"
   },
   "forgotPassword": {
     "title": "Olvidé mi contraseña",

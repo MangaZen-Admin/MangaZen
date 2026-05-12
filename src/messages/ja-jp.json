@@ -34,9 +34,9 @@
     "loginFooterPrompt": "アカウントをお持ちでないですか？",
     "registerFooterPrompt": "すでにアカウントをお持ちですか？",
     "errorRateLimited": "ログイン試行回数が多すぎます。{minutes}分後に再試行してください。",
+    "errorDisposableEmail": "一時的または使い捨てのメールアドレスは使用できません。実際のメールアドレスを使用してください。",
     "successPasswordReset": "パスワードが正常にリセットされました。ログインできます。",
-    "forgotPasswordLink": "パスワードをお忘れですか？",
-    "passwordResetDisabledNotice": "⚠️ パスワードリセットサービスは一時的に無効です。パスワードをお忘れにならないようご注意ください。"
+    "forgotPasswordLink": "パスワードをお忘れですか？"
   },
   "forgotPassword": {
     "title": "パスワードをお忘れですか",

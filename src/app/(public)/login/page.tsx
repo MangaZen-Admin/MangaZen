@@ -150,13 +150,11 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           >
             {tAuth("continue")}
           </button>
-          {/* Temporalmente desactivado hasta tener dominio propio para emails
           <div className="text-right">
             <a href="/forgot-password" className="text-sm text-primary hover:underline">
               {tAuth("forgotPasswordLink")}
             </a>
           </div>
-          */}
         </form>
 
         <p className="mt-4 text-sm text-muted-foreground">

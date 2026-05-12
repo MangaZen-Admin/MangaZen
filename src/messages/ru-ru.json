@@ -34,9 +34,9 @@
     "loginFooterPrompt": "Нет аккаунта?",
     "registerFooterPrompt": "Уже есть аккаунт?",
     "errorRateLimited": "Слишком много неудачных попыток. Повторите через {minutes} минут.",
+    "errorDisposableEmail": "Временные или одноразовые email-адреса не разрешены. Пожалуйста, используйте настоящий адрес.",
     "successPasswordReset": "Пароль успешно сброшен. Теперь вы можете войти.",
-    "forgotPasswordLink": "Забыли пароль?",
-    "passwordResetDisabledNotice": "⚠️ Сервис сброса пароля временно недоступен. Пожалуйста, не забывайте свой пароль."
+    "forgotPasswordLink": "Забыли пароль?"
   },
   "forgotPassword": {
     "title": "Забыли пароль",

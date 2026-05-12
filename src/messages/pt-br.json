@@ -34,9 +34,9 @@
     "loginFooterPrompt": "Não tem uma conta?",
     "registerFooterPrompt": "Já tem uma conta?",
     "errorRateLimited": "Muitas tentativas falhas. Tente novamente em {minutes} minutos.",
+    "errorDisposableEmail": "Endereços de email temporários ou descartáveis não são permitidos. Use um endereço de email real.",
     "successPasswordReset": "Sua senha foi redefinida com sucesso. Você já pode entrar.",
-    "forgotPasswordLink": "Esqueceu sua senha?",
-    "passwordResetDisabledNotice": "⚠️ O serviço de redefinição de senha está temporariamente desabilitado. Por favor, não esqueça sua senha."
+    "forgotPasswordLink": "Esqueceu sua senha?"
   },
   "forgotPassword": {
     "title": "Esqueci minha senha",

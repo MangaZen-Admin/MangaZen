@@ -34,9 +34,9 @@
     "loginFooterPrompt": "还没有账号？",
     "registerFooterPrompt": "已有账号？",
     "errorRateLimited": "登录尝试次数过多，请在 {minutes} 分钟后再试。",
+    "errorDisposableEmail": "不允许使用临时或一次性邮箱地址，请使用真实的邮箱地址。",
     "successPasswordReset": "您的密码已成功重置，现在可以登录了。",
-    "forgotPasswordLink": "忘记密码？",
-    "passwordResetDisabledNotice": "⚠️ 密码重置服务暂时不可用。请妥善保管您的密码，切勿遗忘。"
+    "forgotPasswordLink": "忘记密码？"
   },
   "forgotPassword": {
     "title": "忘记密码",

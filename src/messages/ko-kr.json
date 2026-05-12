@@ -34,9 +34,9 @@
     "loginFooterPrompt": "계정이 없으신가요?",
     "registerFooterPrompt": "이미 계정이 있으신가요?",
     "errorRateLimited": "로그인 시도 횟수가 너무 많습니다. {minutes}분 후에 다시 시도해 주세요.",
+    "errorDisposableEmail": "임시 또는 일회용 이메일 주소는 허용되지 않습니다. 실제 이메일 주소를 사용해 주세요.",
     "successPasswordReset": "비밀번호가 성공적으로 재설정되었습니다. 이제 로그인할 수 있습니다.",
-    "forgotPasswordLink": "비밀번호를 잊으셨나요?",
-    "passwordResetDisabledNotice": "⚠️ 비밀번호 재설정 서비스가 일시적으로 비활성화되어 있습니다. 비밀번호를 잊지 않도록 주의해 주세요."
+    "forgotPasswordLink": "비밀번호를 잊으셨나요?"
   },
   "forgotPassword": {
     "title": "비밀번호를 잊으셨나요",

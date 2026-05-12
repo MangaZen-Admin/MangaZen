@@ -102,13 +102,13 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
 
         {error === "disposable_email" && (
           <div className="mt-3 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-foreground">
-            No se permiten correos temporales o desechables. Por favor usá una dirección de email real.
+            {tAuth("errorDisposableEmail")}
           </div>
         )}
 
         {error === "rate_limited" && (
           <div className="mt-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-foreground">
-            Demasiados intentos. Intentá de nuevo en {params.minutes ?? "15"} minutos.
+            {tAuth("errorRateLimited", { minutes: params.minutes ?? "15" })}
           </div>
         )}
 
@@ -185,9 +185,6 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
             {tProfile("login")}
           </Link>
         </p>
-        <div className="mt-4 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-foreground">
-          {tAuth("passwordResetDisabledNotice")}
-        </div>
       </section>
     </main>
   );

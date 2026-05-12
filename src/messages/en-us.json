@@ -34,9 +34,9 @@
     "loginFooterPrompt": "Don't have an account?",
     "registerFooterPrompt": "Already have an account?",
     "errorRateLimited": "Too many failed attempts. Please try again in {minutes} minutes.",
+    "errorDisposableEmail": "Temporary or disposable email addresses are not allowed. Please use a real email address.",
     "successPasswordReset": "Your password has been reset successfully. You can now log in.",
-    "forgotPasswordLink": "Forgot your password?",
-    "passwordResetDisabledNotice": "⚠️ The password reset service is temporarily disabled. Please do not forget your password."
+    "forgotPasswordLink": "Forgot your password?"
   },
   "forgotPassword": {
     "title": "Forgot your password",
