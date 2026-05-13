@@ -133,6 +133,7 @@ async function getMangaBySlug(slug: string) {
           tag: {
             select: {
               name: true,
+              category: true,
             },
           },
         },
@@ -793,15 +794,34 @@ export default async function MangaDetailPage({ params }: PageProps) {
                 <h3 className="mb-3 text-sm font-semibold uppercase tracking-widest text-muted-foreground">
                   {tPage("genres")}
                 </h3>
-                <div className="flex flex-wrap gap-1.5">
-                  {manga.tags.map((relation) => (
-                    <span
-                      key={relation.tag.name}
-                      className="rounded-full border border-primary/20 bg-primary/8 px-2.5 py-1 text-xs text-foreground/80"
-                    >
-                      {translateTag(relation.tag.name)}
-                    </span>
-                  ))}
+                <div className="space-y-3">
+                  {(["GENRE", "FORMAT", "THEME", "CONTENT"] as const).map((cat) => {
+                    const catTags = manga.tags.filter((r) => r.tag.category === cat);
+                    if (catTags.length === 0) return null;
+                    const catLabel: Record<string, string> = {
+                      GENRE: tCat("tagCategoryGenre"),
+                      FORMAT: tCat("tagCategoryFormat"),
+                      THEME: tCat("tagCategoryTheme"),
+                      CONTENT: tCat("tagCategoryContent"),
+                    };
+                    return (
+                      <div key={cat}>
+                        <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                          {catLabel[cat]}
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {catTags.map((relation) => (
+                            <span
+                              key={relation.tag.name}
+                              className="rounded-full border border-primary/20 bg-primary/8 px-2.5 py-1 text-xs text-foreground/80"
+                            >
+                              {translateTag(relation.tag.name)}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}

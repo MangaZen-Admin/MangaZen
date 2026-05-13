@@ -845,14 +845,14 @@ function MyUploadsSection() {
   const [editBusy, setEditBusy] = useState(false);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
-  const [availableTags, setAvailableTags] = useState<{ id: string; name: string }[]>([]);
+  const [availableTags, setAvailableTags] = useState<TagRow[]>([]);
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 20;
 
   useEffect(() => {
     void fetch("/api/scan/tags")
       .then((r) => r.json())
-      .then((d: { tags?: { id: string; name: string }[] }) => {
+      .then((d: { tags?: TagRow[] }) => {
         setAvailableTags(d.tags ?? []);
       })
       .catch(() => setAvailableTags([]));
@@ -1345,33 +1345,49 @@ function MyUploadsSection() {
                   </div>
                   <div className="sm:col-span-2">
                     <span className="text-xs text-muted-foreground">{t("edit.genres")}</span>
-                    <div className="scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent mt-2 max-h-32 overflow-y-auto rounded-lg border border-border bg-background p-2">
-                      <div className="flex flex-wrap gap-1.5">
-                        {availableTags.map((tag) => (
-                          <button
-                            key={tag.id}
-                            type="button"
-                            onClick={() =>
-                              setEditDraft((prev) =>
-                                prev
-                                  ? {
-                                      ...prev,
-                                      mangaTagIds: prev.mangaTagIds.includes(tag.id)
-                                        ? prev.mangaTagIds.filter((id) => id !== tag.id)
-                                        : [...prev.mangaTagIds, tag.id],
+                    <div className="scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent mt-2 max-h-32 overflow-y-auto rounded-lg border border-border bg-background p-3">
+                      <div className="space-y-3">
+                        {(["GENRE", "FORMAT", "THEME", "CONTENT"] as const).map((cat) => {
+                          const catTags = availableTags.filter((tag) => tag.category === cat);
+                          if (catTags.length === 0) return null;
+                          const catLabel: Record<string, string> = {
+                            GENRE: tCatalog("tagCategoryGenre"),
+                            FORMAT: tCatalog("tagCategoryFormat"),
+                            THEME: tCatalog("tagCategoryTheme"),
+                            CONTENT: tCatalog("tagCategoryContent"),
+                          };
+                          return (
+                            <div key={cat}>
+                              <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                                {catLabel[cat]}
+                              </p>
+                              <div className="flex flex-wrap gap-1.5">
+                                {catTags.map((tag) => (
+                                  <button
+                                    key={tag.id}
+                                    type="button"
+                                    onClick={() =>
+                                      setEditDraft((prev) => {
+                                        if (!prev) return prev;
+                                        const ids = new Set(prev.mangaTagIds);
+                                        if (ids.has(tag.id)) ids.delete(tag.id);
+                                        else ids.add(tag.id);
+                                        return { ...prev, mangaTagIds: Array.from(ids) };
+                                      })
                                     }
-                                  : prev,
-                              )
-                            }
-                            className={`rounded-full border px-2.5 py-1 text-xs font-medium transition ${
-                              editDraft?.mangaTagIds.includes(tag.id)
-                                ? "border-primary bg-primary/20 text-foreground"
-                                : "border-border text-muted-foreground hover:border-primary/40"
-                            }`}
-                          >
-                            {translateCatalogTagName(tag.name, (k) => tCatalog(k))}
-                          </button>
-                        ))}
+                                    className={`rounded-full border px-2.5 py-1 text-xs font-medium transition ${
+                                      editDraft?.mangaTagIds.includes(tag.id)
+                                        ? "border-primary bg-primary/20 text-foreground"
+                                        : "border-border text-muted-foreground hover:border-primary/40"
+                                    }`}
+                                  >
+                                    {translateCatalogTagName(tag.name, (k) => tCatalog(k))}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
@@ -2122,24 +2138,41 @@ function NewMangaSection() {
 
         <div>
           <span className="text-sm font-medium text-foreground">{t("newManga.tags")}</span>
-          <div className="mt-2 max-h-40 overflow-y-auto rounded-lg border border-border bg-background p-2">
-            <div className="flex flex-wrap gap-2">
-              {tags.map((tag) => (
-                <button
-                  key={tag.id}
-                  type="button"
-                  disabled={busy}
-                  onClick={() => toggleTag(tag.id)}
-                  className={`rounded-full border px-2.5 py-1 text-xs font-medium transition ${
-                    tagIds.has(tag.id)
-                      ? "border-primary bg-primary/20 text-foreground"
-                      : "border-border text-muted-foreground hover:border-primary/40"
-                  }`}
-                >
-                  {translateCatalogTagName(tag.name, (k) => tCatalog(k))}
-                </button>
-              ))}
-            </div>
+          <div className="mt-2 space-y-3 rounded-lg border border-border bg-background p-3">
+            {(["GENRE", "FORMAT", "THEME", "CONTENT"] as const).map((cat) => {
+              const catTags = tags.filter((tag) => tag.category === cat);
+              if (catTags.length === 0) return null;
+              const catLabel: Record<string, string> = {
+                GENRE: tCatalog("tagCategoryGenre"),
+                FORMAT: tCatalog("tagCategoryFormat"),
+                THEME: tCatalog("tagCategoryTheme"),
+                CONTENT: tCatalog("tagCategoryContent"),
+              };
+              return (
+                <div key={cat}>
+                  <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    {catLabel[cat]}
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {catTags.map((tag) => (
+                      <button
+                        key={tag.id}
+                        type="button"
+                        disabled={busy}
+                        onClick={() => toggleTag(tag.id)}
+                        className={`rounded-full border px-2.5 py-1 text-xs font-medium transition ${
+                          tagIds.has(tag.id)
+                            ? "border-primary bg-primary/20 text-foreground"
+                            : "border-border text-muted-foreground hover:border-primary/40"
+                        }`}
+                      >
+                        {translateCatalogTagName(tag.name, (k) => tCatalog(k))}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 

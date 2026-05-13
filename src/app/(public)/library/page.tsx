@@ -43,9 +43,8 @@ export default async function LibraryPage({ searchParams }: LibraryPageProps) {
 
   const [genres, mangas] = await Promise.all([
     prisma.tag.findMany({
-      where: { category: "GENRE" },
-      select: { name: true },
-      orderBy: { name: "asc" },
+      select: { name: true, category: true },
+      orderBy: [{ category: "asc" }, { name: "asc" }],
     }),
     prisma.manga.findMany({
       where: {

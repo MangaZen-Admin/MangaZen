@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { translateCatalogTagName } from "@/lib/catalog-tag-i18n";
-import { cn } from "@/lib/utils";
 
 type OrderKey = "latest" | "popular" | "rating" | "title";
 
@@ -14,7 +13,7 @@ const ORDER_KEYS: OrderKey[] = ["latest", "popular", "rating", "title"];
 
 const STATUS_VALUES = ["ONGOING", "COMPLETED", "HIATUS", "CANCELLED"] as const;
 
-type Genre = { name: string };
+type Genre = { name: string; category: string };
 
 type LibraryFilterFormProps = {
   locale: string;
@@ -24,6 +23,81 @@ type LibraryFilterFormProps = {
   initialOrder: OrderKey;
   genres: Genre[];
 };
+
+function TagTabFilter({
+  genres,
+  selectedGenres,
+  setSelectedGenres,
+  labels,
+  translateTag,
+}: {
+  genres: { name: string; category: string }[];
+  selectedGenres: string[];
+  setSelectedGenres: (fn: (prev: string[]) => string[]) => void;
+  labels: Record<string, string>;
+  translateTag: (name: string) => string;
+}) {
+  const categories = (["GENRE", "FORMAT", "THEME", "CONTENT"] as const).filter((cat) =>
+    genres.some((g) => g.category === cat),
+  );
+  const [activeTab, setActiveTab] = useState<string>(categories[0] ?? "GENRE");
+
+  return (
+    <div>
+      <div className="flex flex-wrap border-b border-border/60">
+        {categories.map((cat) => {
+          const selectedInCat = genres.filter(
+            (g) => g.category === cat && selectedGenres.includes(g.name),
+          ).length;
+          return (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setActiveTab(cat)}
+              className={`relative flex items-center gap-1.5 px-3 py-2 text-xs font-medium transition-colors ${
+                activeTab === cat
+                  ? "border-b-2 border-primary text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {labels[cat]}
+              {selectedInCat > 0 && (
+                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                  {selectedInCat}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+      <div className="flex flex-wrap gap-1.5 p-3">
+        {genres
+          .filter((g) => g.category === activeTab)
+          .map((g) => {
+            const isSelected = selectedGenres.includes(g.name);
+            return (
+              <button
+                key={g.name}
+                type="button"
+                onClick={() =>
+                  setSelectedGenres((prev) =>
+                    prev.includes(g.name) ? prev.filter((x) => x !== g.name) : [...prev, g.name],
+                  )
+                }
+                className={`rounded-full border px-2.5 py-1 text-xs font-medium transition ${
+                  isSelected
+                    ? "border-primary bg-primary/15 text-foreground"
+                    : "border-border text-muted-foreground hover:border-primary/40"
+                }`}
+              >
+                {translateTag(g.name)}
+              </button>
+            );
+          })}
+      </div>
+    </div>
+  );
+}
 
 export function LibraryFilterForm({
   locale,
@@ -75,37 +149,20 @@ export function LibraryFilterForm({
         </div>
 
         <div>
-          <label className="mb-1.5 block text-xs text-muted-foreground">{tCat("libraryGenre")}</label>
-          <div className="max-h-48 space-y-1 overflow-y-auto rounded-lg border border-border/60 bg-card p-2 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
-            {genres.map((g) => {
-              const translatedName = translateCatalogTagName(g.name, (k) => tCat(k));
-              const isSelected = selectedGenres.includes(g.name);
-              return (
-                <label
-                  key={g.name}
-                  className={cn(
-                    "flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
-                    isSelected
-                      ? "bg-primary/15 text-foreground"
-                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-                  )}
-                >
-                  <input
-                    type="checkbox"
-                    className="h-3.5 w-3.5 rounded border-border accent-primary"
-                    checked={isSelected}
-                    onChange={() => {
-                      setSelectedGenres((prev) =>
-                        prev.includes(g.name)
-                          ? prev.filter((x) => x !== g.name)
-                          : [...prev, g.name]
-                      );
-                    }}
-                  />
-                  {translatedName}
-                </label>
-              );
-            })}
+          <label className="mb-1.5 block text-xs text-muted-foreground">{tCat("libraryTagFilter")}</label>
+          <div className="rounded-lg border border-border/60 bg-card">
+            <TagTabFilter
+              genres={genres}
+              selectedGenres={selectedGenres}
+              setSelectedGenres={setSelectedGenres}
+              labels={{
+                GENRE: tCat("tagCategoryGenre"),
+                FORMAT: tCat("tagCategoryFormat"),
+                THEME: tCat("tagCategoryTheme"),
+                CONTENT: tCat("tagCategoryContent"),
+              }}
+              translateTag={(name) => translateCatalogTagName(name, (k) => tCat(k))}
+            />
           </div>
           {selectedGenres.length > 0 && (
             <button
