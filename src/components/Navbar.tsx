@@ -55,8 +55,24 @@ export default async function Navbar() {
         <div className="container mx-auto flex h-14 items-center justify-between gap-2 px-3 sm:h-16 sm:gap-4 sm:px-4">
           {/* Logo + links desktop */}
           <div className="flex items-center gap-6">
-            <Link href="/" className="text-xl font-bold tracking-tighter text-foreground sm:text-2xl">
-              MANGA<span className="text-primary">ZEN</span>
+            <Link href="/" aria-label="MangaZen">
+              <svg
+                viewBox="0 0 440 72"
+                height="28"
+                role="img"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <text
+                  x="0"
+                  y="58"
+                  fontFamily="Georgia, 'Times New Roman', serif"
+                  fontSize="64"
+                  fontWeight="700"
+                  letterSpacing="-1"
+                >
+                  <tspan fill="currentColor">MANGA</tspan><tspan fill="#9d4edd">ZEN</tspan>
+                </text>
+              </svg>
             </Link>
             <div className="hidden gap-6 text-sm font-medium text-muted-foreground md:flex">
               <Link href="/library" className="transition-colors hover:text-primary">
