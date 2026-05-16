@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
+    "@aws-sdk/client-s3": "^3.1048.0",
+    "@aws-sdk/s3-request-presigner": "^3.1048.0",
     "@lemonsqueezy/lemonsqueezy.js": "^4.0.0",
     "@libsql/client": "^0.17.2",
     "@prisma/adapter-libsql": "^7.7.0",

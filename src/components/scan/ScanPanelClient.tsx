@@ -390,50 +390,43 @@ function UploadChapterSection({
           if (!pageFile) continue;
 
           // Pedir firma al servidor
-          const sigRes = await fetch("/api/scan/cloudinary-signature", {
+          const ext = pageFile.file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+          const contentType =
+            ext === "png" ? "image/png" :
+            ext === "webp" ? "image/webp" :
+            "image/jpeg";
+          const key = `chapters/${selected.id}/${num}/p${String(i + 1).padStart(3, "0")}.${ext}`;
+
+          const presignRes = await fetch("/api/scan/r2-presign", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              folder: "mangazen/chapters",
-              public_id: `chapters/${selected.id}_${num}_p${String(i + 1).padStart(3, "0")}`,
-            }),
+            body: JSON.stringify({ key, contentType }),
           });
 
-          if (!sigRes.ok) {
+          if (!presignRes.ok) {
             toast.error(t("errors.GENERIC"));
             return;
           }
 
-          const sig = await sigRes.json() as {
-            signature: string;
-            timestamp: number;
-            folder: string;
-            public_id: string;
-            api_key: string;
-            cloud_name: string;
+          const presignData = await presignRes.json();
+          console.log("presign response:", JSON.stringify(presignData));
+          const { presignedUrl, publicUrl } = presignData as {
+            presignedUrl: string;
+            publicUrl: string;
           };
 
-          // Subir imagen directo a Cloudinary
-          const cloudForm = new FormData();
-          cloudForm.append("file", pageFile.file);
-          cloudForm.append("signature", sig.signature);
-          cloudForm.append("timestamp", String(sig.timestamp));
-          cloudForm.append("api_key", sig.api_key);
-          cloudForm.append("folder", sig.folder);
-          if (sig.public_id) cloudForm.append("public_id", sig.public_id);
+          const r2Res = await fetch(presignedUrl, {
+            method: "PUT",
+            headers: { "Content-Type": contentType },
+            body: pageFile.file,
+          });
 
-          const cloudRes = await fetch(
-            `https://api.cloudinary.com/v1_1/${sig.cloud_name}/image/upload`,
-            { method: "POST", body: cloudForm }
-          );
-
-          if (!cloudRes.ok) {
+          if (!r2Res.ok) {
             toast.error(t("errors.GENERIC"));
             return;
           }
 
-          const cloudData = await cloudRes.json() as { secure_url: string };
-          uploadedUrls.push(cloudData.secure_url);
+          uploadedUrls.push(publicUrl);
 
           // Actualizar progreso
           setProgress(Math.round(((i + 1) / pageFiles.length) * 90));

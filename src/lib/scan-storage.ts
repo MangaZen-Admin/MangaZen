@@ -1,7 +1,5 @@
+import { uploadToR2, deleteFromR2 } from "@/lib/r2";
 import { uploadImageToCloudinary, deleteImageFromCloudinary } from "@/lib/cloudinary";
-
-// Mantener estas funciones para compatibilidad con código existente
-// que usa rutas locales en desarrollo
 
 export function chapterUploadDir(chapterId: string): string {
   return `/tmp/chapters/${chapterId}`;
@@ -28,17 +26,21 @@ export async function writeChapterPages(
   const urls: string[] = [];
   for (let i = 0; i < files.length; i += 1) {
     const { buffer, filename } = files[i]!;
-    const publicId = `chapters/${chapterId}/${filename.replace(/\.[^.]+$/, "")}`;
-    const url = await uploadImageToCloudinary(buffer, "mangazen/chapters", publicId);
+    const key = `chapters/${chapterId}/${filename}`;
+    const ext = filename.split(".").pop()?.toLowerCase() ?? "jpg";
+    const contentType =
+      ext === "png" ? "image/png" :
+      ext === "webp" ? "image/webp" :
+      "image/jpeg";
+    const url = await uploadToR2(buffer, key, contentType);
     urls.push(url);
   }
   return urls;
 }
 
 export async function removeChapterUploadDir(chapterId: string): Promise<void> {
-  // Cloudinary no tiene borrado de carpeta directo en el SDK v2 gratuito
-  // Las imágenes se borran individualmente cuando se eliminan páginas
-  // Por ahora es un no-op seguro
+  // No-op — R2 no tiene borrado de carpeta directo
+  // Las páginas se borran individualmente al eliminar el capítulo
 }
 
 export async function writeMangaCover(
@@ -46,6 +48,7 @@ export async function writeMangaCover(
   buffer: Buffer,
   ext: string
 ): Promise<string> {
+  // Las portadas siguen en Cloudinary por ahora
   const url = await uploadImageToCloudinary(
     buffer,
     "mangazen/covers",

@@ -170,14 +170,17 @@ export async function POST(request: Request) {
     }
     // Verificar que todas son URLs válidas de Cloudinary
     const cloudName = process.env.CLOUDINARY_CLOUD_NAME ?? "";
-    for (const url of imageUrls) {
-      if (typeof url !== "string" || !url.startsWith("https://res.cloudinary.com/")) {
-        return NextResponse.json({ error: "INVALID_PAGE_URLS" }, { status: 400 });
+    const r2PublicUrl = process.env.R2_PUBLIC_URL ?? "";
+      for (const url of imageUrls) {
+        if (typeof url !== "string") {
+          return NextResponse.json({ error: "INVALID_PAGE_URLS" }, { status: 400 });
+        }
+        const isCloudinary = url.startsWith("https://res.cloudinary.com/");
+        const isR2 = r2PublicUrl && url.startsWith(r2PublicUrl);
+        if (!isCloudinary && !isR2) {
+          return NextResponse.json({ error: "INVALID_PAGE_URLS" }, { status: 400 });
+        }
       }
-      if (cloudName && !url.includes(`/${cloudName}/`)) {
-        return NextResponse.json({ error: "INVALID_PAGE_URLS" }, { status: 400 });
-      }
-    }
   } else {
     // Flujo legacy: archivos enviados directamente (ZIP o imágenes)
     const buffers: { buffer: Buffer; filename: string }[] = [];
