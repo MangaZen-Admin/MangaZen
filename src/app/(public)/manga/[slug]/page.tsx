@@ -487,9 +487,9 @@ export default async function MangaDetailPage({ params }: PageProps) {
 
       <div className="mx-auto max-w-6xl px-4 pb-16 sm:px-6 lg:px-8">
         {/* ── PORTADA + TÍTULO ── */}
-        <div className="-mt-16 flex flex-col gap-5 sm:flex-row sm:items-end">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
           {/* Portada flotante */}
-          <div className="relative h-44 w-32 shrink-0 overflow-hidden rounded-xl border-2 border-border bg-muted shadow-2xl sm:h-52 sm:w-36">
+          <div className="-mt-16 relative h-44 w-32 shrink-0 overflow-hidden rounded-xl border-2 border-border bg-muted shadow-2xl sm:h-52 sm:w-36 sm:-mt-20">
             {manga.coverImage ? (
               <Image
                 src={manga.coverImage}
@@ -509,7 +509,7 @@ export default async function MangaDetailPage({ params }: PageProps) {
           {/* Título y badges */}
           <div className="flex-1 pb-2">
             <div className="flex items-start justify-between gap-3">
-              <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{manga.title}</h1>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl leading-tight">{manga.title}</h1>
               <div className="shrink-0 pt-1">
                 <MangaReportButton
                   mangaSlug={manga.slug}

@@ -151,95 +151,123 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "CHAPTER_EXISTS" }, { status: 409 });
   }
 
-  const buffers: { buffer: Buffer; filename: string }[] = [];
+  const chapterId = randomUUID();
   let pageSinglesInDouble: boolean[] = [];
 
-  if (src === "zip") {
-    const zipFile = form.get("zip");
-    if (!(zipFile instanceof Blob)) {
-      return NextResponse.json({ error: "ZIP_REQUIRED" }, { status: 400 });
-    }
-    if (zipFile.size > maxZipIn) {
-      return NextResponse.json({ error: "ZIP_TOO_LARGE" }, { status: 400 });
-    }
-    const ab = await zipFile.arrayBuffer();
-    const zipBuf = Buffer.from(ab);
-    if (!isZipLocalFileHeader(zipBuf)) {
-      return NextResponse.json({ error: "ZIP_INVALID" }, { status: 400 });
-    }
+  // Recibir URLs ya subidas a Cloudinary desde el cliente
+  const pageUrlsRaw = form.get("pageUrls");
+  let imageUrls: string[];
 
-    const zip = await JSZip.loadAsync(ab);
-    const names = Object.keys(zip.files)
-      .filter((n) => !zip.files[n].dir && isImageFilename(n))
-      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" }));
-
-    if (names.length === 0 || names.length > maxPages) {
-      return NextResponse.json({ error: "ZIP_IMAGES" }, { status: 400 });
+  if (typeof pageUrlsRaw === "string" && pageUrlsRaw.length > 0) {
+    // Nuevo flujo: cliente subió directo a Cloudinary
+    try {
+      imageUrls = JSON.parse(pageUrlsRaw) as string[];
+    } catch {
+      return NextResponse.json({ error: "INVALID_PAGE_URLS" }, { status: 400 });
     }
-    pageSinglesInDouble = names.map(() => false);
-
-    let uncompressedTotal = 0;
-    for (let i = 0; i < names.length; i += 1) {
-      const name = names[i];
-      const data = await zip.files[name].async("nodebuffer");
-      uncompressedTotal += data.length;
-      if (uncompressedTotal > maxZipRaw) {
-        return NextResponse.json({ error: "ZIP_DECOMPRESSED_LIMIT" }, { status: 400 });
+    if (!Array.isArray(imageUrls) || imageUrls.length === 0 || imageUrls.length > maxPages) {
+      return NextResponse.json({ error: "INVALID_PAGE_URLS" }, { status: 400 });
+    }
+    // Verificar que todas son URLs válidas de Cloudinary
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME ?? "";
+    for (const url of imageUrls) {
+      if (typeof url !== "string" || !url.startsWith("https://res.cloudinary.com/")) {
+        return NextResponse.json({ error: "INVALID_PAGE_URLS" }, { status: 400 });
       }
-
-      const kind = detectImageKind(data);
-      if (!kind) {
-        return NextResponse.json({ error: "INVALID_IMAGE" }, { status: 400 });
+      if (cloudName && !url.includes(`/${cloudName}/`)) {
+        return NextResponse.json({ error: "INVALID_PAGE_URLS" }, { status: 400 });
       }
-      const ext = `.${fileExtensionForImageKind(kind)}`;
-      const filename = `${String(i + 1).padStart(3, "0")}${ext}`;
-      const wm = await watermarkImage(data, planUser);
-      buffers.push({ buffer: wm, filename });
     }
   } else {
-    const files = form.getAll("pages") as unknown[];
-    const list: File[] = files.filter(
-      (f): f is File => typeof f !== "string" && f != null && typeof (f as File).arrayBuffer === "function"
-    );
+    // Flujo legacy: archivos enviados directamente (ZIP o imágenes)
+    const buffers: { buffer: Buffer; filename: string }[] = [];
+    let pageSinglesInDoubleLocal: boolean[] = [];
 
-    if (list.length === 0 || list.length > maxPages) {
-      return NextResponse.json({ error: "FILES_REQUIRED" }, { status: 400 });
+    if (src === "zip") {
+      const zipFile = form.get("zip");
+      if (!(zipFile instanceof Blob)) {
+        return NextResponse.json({ error: "ZIP_REQUIRED" }, { status: 400 });
+      }
+      if (zipFile.size > maxZipIn) {
+        return NextResponse.json({ error: "ZIP_TOO_LARGE" }, { status: 400 });
+      }
+      const ab = await zipFile.arrayBuffer();
+      const zipBuf = Buffer.from(ab);
+      if (!isZipLocalFileHeader(zipBuf)) {
+        return NextResponse.json({ error: "ZIP_INVALID" }, { status: 400 });
+      }
+
+      const zip = await JSZip.loadAsync(ab);
+      const names = Object.keys(zip.files)
+        .filter((n) => !zip.files[n].dir && isImageFilename(n))
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" }));
+
+      if (names.length === 0 || names.length > maxPages) {
+        return NextResponse.json({ error: "ZIP_IMAGES" }, { status: 400 });
+      }
+      pageSinglesInDoubleLocal = names.map(() => false);
+
+      let uncompressedTotal = 0;
+      for (let i = 0; i < names.length; i += 1) {
+        const name = names[i];
+        const data = await zip.files[name].async("nodebuffer");
+        uncompressedTotal += data.length;
+        if (uncompressedTotal > maxZipRaw) {
+          return NextResponse.json({ error: "ZIP_DECOMPRESSED_LIMIT" }, { status: 400 });
+        }
+        const kind = detectImageKind(data);
+        if (!kind) {
+          return NextResponse.json({ error: "INVALID_IMAGE" }, { status: 400 });
+        }
+        const ext = `.${fileExtensionForImageKind(kind)}`;
+        const filename = `${String(i + 1).padStart(3, "0")}${ext}`;
+        const wm = await watermarkImage(data, planUser);
+        buffers.push({ buffer: wm, filename });
+      }
+    } else {
+      const files = form.getAll("pages") as unknown[];
+      const list: File[] = files.filter(
+        (f): f is File => typeof f !== "string" && f != null && typeof (f as File).arrayBuffer === "function"
+      );
+
+      if (list.length === 0 || list.length > maxPages) {
+        return NextResponse.json({ error: "FILES_REQUIRED" }, { status: 400 });
+      }
+      pageSinglesInDoubleLocal = list.map((_, i) => {
+        const isSingle = form.get(`pages[${i}][isSingleInDoublePage]`);
+        return isSingle === "1";
+      });
+
+      for (let i = 0; i < list.length; i += 1) {
+        const file = list[i];
+        if (file.size > maxImage) {
+          return NextResponse.json({ error: "IMAGE_TOO_LARGE" }, { status: 400 });
+        }
+        if (!isAllowedImageContentType(file.type)) {
+          return NextResponse.json({ error: "INVALID_FILE_TYPE" }, { status: 400 });
+        }
+        const ab = await file.arrayBuffer();
+        const buf = Buffer.from(ab);
+        const v = validateImageUpload(buf, file.type);
+        if (!v.ok) {
+          return NextResponse.json({ error: "INVALID_IMAGE" }, { status: 400 });
+        }
+        const kind = v.kind;
+        const ext = `.${fileExtensionForImageKind(kind)}`;
+        const filename = `${String(i + 1).padStart(3, "0")}${ext}`;
+        const wm = await watermarkImage(buf, planUser);
+        buffers.push({ buffer: wm, filename });
+      }
     }
-    pageSinglesInDouble = list.map((_, i) => {
-      const isSingle = form.get(`pages[${i}][isSingleInDoublePage]`);
-      return isSingle === "1";
-    });
 
-    for (let i = 0; i < list.length; i += 1) {
-      const file = list[i];
-      if (file.size > maxImage) {
-        return NextResponse.json({ error: "IMAGE_TOO_LARGE" }, { status: 400 });
-      }
-      if (!isAllowedImageContentType(file.type)) {
-        return NextResponse.json({ error: "INVALID_FILE_TYPE" }, { status: 400 });
-      }
-      const ab = await file.arrayBuffer();
-      const buf = Buffer.from(ab);
-      const v = validateImageUpload(buf, file.type);
-      if (!v.ok) {
-        return NextResponse.json({ error: "INVALID_IMAGE" }, { status: 400 });
-      }
-      const kind = v.kind;
-      const ext = `.${fileExtensionForImageKind(kind)}`;
-      const filename = `${String(i + 1).padStart(3, "0")}${ext}`;
-      const wm = await watermarkImage(buf, planUser);
-      buffers.push({ buffer: wm, filename });
+    pageSinglesInDouble = pageSinglesInDoubleLocal;
+
+    try {
+      imageUrls = await writeChapterPages(chapterId, buffers);
+    } catch {
+      await removeChapterUploadDir(chapterId);
+      return NextResponse.json({ error: "WRITE_FAILED" }, { status: 500 });
     }
-  }
-
-  const chapterId = randomUUID();
-
-  let imageUrls: string[];
-  try {
-    imageUrls = await writeChapterPages(chapterId, buffers);
-  } catch {
-    await removeChapterUploadDir(chapterId);
-    return NextResponse.json({ error: "WRITE_FAILED" }, { status: 500 });
   }
 
   try {

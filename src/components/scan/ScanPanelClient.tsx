@@ -375,32 +375,110 @@ function UploadChapterSection({
       return;
     }
 
-    const form = new FormData();
-    form.set("mangaId", selected.id);
-    form.set("number", String(num));
-    if (chapterTitle.trim()) form.set("title", chapterTitle.trim());
-    form.set("locale", chapterLocale);
-    form.set("source", source);
-    form.set("startsWithSinglePage", startsWithSinglePage ? "1" : "0");
-    form.set("earlyAccess", earlyAccessEnabled ? "1" : "0");
-    if (earlyAccessEnabled) {
-      form.set("earlyAccessDays", earlyAccessDays.trim());
-      form.set("earlyAccessPrice", earlyAccessPrice.trim());
-      form.set("earlyAccessCurrency", canUseCoins ? earlyAccessCurrency : "shards");
-    }
-    if (source === "zip" && zipFile) {
-      form.set("zip", zipFile);
-    } else {
-      pageFiles.forEach((p, i) => {
-        form.append("pages", p.file);
-        form.append(`pages[${i}][isSingleInDoublePage]`, p.isSingleInDoublePage ? "1" : "0");
-      });
-    }
-
     setBusy(true);
     setProgress(0);
+
     try {
-      const { ok, body } = await postFormDataWithProgress("/api/scan/chapter", form, setProgress);
+      let pageUrls: string[] | null = null;
+
+      // Subida directa a Cloudinary (solo para imágenes sueltas)
+      if (source === "files" && pageFiles.length > 0) {
+        const uploadedUrls: string[] = [];
+
+        for (let i = 0; i < pageFiles.length; i++) {
+          const pageFile = pageFiles[i];
+          if (!pageFile) continue;
+
+          // Pedir firma al servidor
+          const sigRes = await fetch("/api/scan/cloudinary-signature", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              folder: "mangazen/chapters",
+              public_id: `chapters/${selected.id}_${num}_p${String(i + 1).padStart(3, "0")}`,
+            }),
+          });
+
+          if (!sigRes.ok) {
+            toast.error(t("errors.GENERIC"));
+            return;
+          }
+
+          const sig = await sigRes.json() as {
+            signature: string;
+            timestamp: number;
+            folder: string;
+            public_id: string;
+            api_key: string;
+            cloud_name: string;
+          };
+
+          // Subir imagen directo a Cloudinary
+          const cloudForm = new FormData();
+          cloudForm.append("file", pageFile.file);
+          cloudForm.append("signature", sig.signature);
+          cloudForm.append("timestamp", String(sig.timestamp));
+          cloudForm.append("api_key", sig.api_key);
+          cloudForm.append("folder", sig.folder);
+          if (sig.public_id) cloudForm.append("public_id", sig.public_id);
+
+          const cloudRes = await fetch(
+            `https://api.cloudinary.com/v1_1/${sig.cloud_name}/image/upload`,
+            { method: "POST", body: cloudForm }
+          );
+
+          if (!cloudRes.ok) {
+            toast.error(t("errors.GENERIC"));
+            return;
+          }
+
+          const cloudData = await cloudRes.json() as { secure_url: string };
+          uploadedUrls.push(cloudData.secure_url);
+
+          // Actualizar progreso
+          setProgress(Math.round(((i + 1) / pageFiles.length) * 90));
+        }
+
+        pageUrls = uploadedUrls;
+      }
+
+      // Armar FormData para la API del capítulo
+      const form = new FormData();
+      form.set("mangaId", selected.id);
+      form.set("number", String(num));
+      if (chapterTitle.trim()) form.set("title", chapterTitle.trim());
+      form.set("locale", chapterLocale);
+      form.set("source", source);
+      form.set("startsWithSinglePage", startsWithSinglePage ? "1" : "0");
+      form.set("earlyAccess", earlyAccessEnabled ? "1" : "0");
+      if (earlyAccessEnabled) {
+        form.set("earlyAccessDays", earlyAccessDays.trim());
+        form.set("earlyAccessPrice", earlyAccessPrice.trim());
+        form.set("earlyAccessCurrency", canUseCoins ? earlyAccessCurrency : "shards");
+      }
+
+      if (pageUrls) {
+        // Nuevo flujo: mandar URLs
+        form.set("pageUrls", JSON.stringify(pageUrls));
+        // Mandar también los flags de página simple
+        pageFiles.forEach((p, i) => {
+          form.append(`pages[${i}][isSingleInDoublePage]`, p.isSingleInDoublePage ? "1" : "0");
+        });
+      } else if (source === "zip" && zipFile) {
+        // Flujo legacy ZIP
+        form.set("zip", zipFile);
+      } else {
+        // Flujo legacy archivos
+        pageFiles.forEach((p, i) => {
+          form.append("pages", p.file);
+          form.append(`pages[${i}][isSingleInDoublePage]`, p.isSingleInDoublePage ? "1" : "0");
+        });
+      }
+
+      const { ok, body } = await postFormDataWithProgress("/api/scan/chapter", form, (pct) => {
+        setProgress(90 + Math.round(pct * 0.1));
+      });
+
       if (ok) {
         setProgress(100);
         toast.success(t("upload.success"));
