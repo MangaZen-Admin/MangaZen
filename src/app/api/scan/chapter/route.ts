@@ -144,7 +144,7 @@ export async function POST(request: Request) {
   }
 
   const duplicate = await prisma.chapter.findFirst({
-    where: { mangaId: mid, number },
+    where: { mangaId: mid, number, status: { not: "REJECTED" } },
     select: { id: true },
   });
   if (duplicate) {
