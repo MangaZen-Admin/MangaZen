@@ -213,7 +213,7 @@ export function ScanStatsPanel() {
             <h3 className="text-sm font-semibold text-foreground">{t("chartTitle")}</h3>
             <div className="mt-4 h-64 w-full min-w-0">
               {chartData.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height={256} minWidth={0}>
                   <BarChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
                     <CartesianGrid
                       strokeDasharray="3 3"
