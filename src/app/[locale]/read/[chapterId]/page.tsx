@@ -76,6 +76,12 @@ export default async function ReadChapterPage({ params, searchParams }: ReadPage
       })
     : null;
 
+  // Requerir autenticación para leer
+    if (!sessionUserId) {
+      const { redirect } = await import("next/navigation");
+      redirect(`/${locale}/login?next=/${locale}/read/${chapterId}`);
+    }
+
   if (
     !canViewMangaInCatalog({
       reviewStatus: chapter.manga.reviewStatus,
