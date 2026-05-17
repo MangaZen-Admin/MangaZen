@@ -688,7 +688,8 @@
       "countryUS": "Estados Unidos 🇺🇸",
       "countryFR": "França 🇫🇷",
       "countryOther": "Outro...",
-      "countryCustomPlaceholder": "Digite o país..."
+      "countryCustomPlaceholder": "Digite o país...",
+      "descriptionHint": "Se não houver sinopse para um idioma, será exibida a em inglês ou a original."
     },
     "mangaStatus": {
       "ONGOING": "Em publicação",
@@ -1608,7 +1609,9 @@
     "newScan": "Novo scan",
     "newCreator": "Novo creator",
     "chapterLabel": "Cap. {number}",
-    "unknownScan": "Scan desconhecido"
+    "unknownScan": "Scan desconhecido",
+    "seeMore": "Ver mais", 
+    "seeLess": "Ver menos"
   },
   "billing": {
     "metaTitle": "Comprar Zen Coins — MangaZen",

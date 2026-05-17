@@ -85,6 +85,8 @@ type EditChapterDraft = {
   mangaReleaseYear: number;
   mangaAltTitles: { locale: string; title: string }[];
   mangaTagIds: string[];
+  mangaDescriptions: Record<string, string>;
+  _editDescTab?: string;
 };
 
 type TagRow = { id: string; name: string; category: string };
@@ -1083,6 +1085,7 @@ function MyUploadsSection() {
                                   mangaReleaseYear: data.releaseYear ?? new Date().getFullYear(),
                                   mangaAltTitles: data.alternativeTitles ?? [],
                                   mangaTagIds: (data.tags ?? []).map((t: { id: string }) => t.id),
+                                  mangaDescriptions: {},
                                 });
                               } catch {
                                 toast.error(t("errors.GENERIC"));
@@ -1213,16 +1216,47 @@ function MyUploadsSection() {
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground">{t("edit.mangaDescription")}</label>
-                  <textarea
-                    rows={3}
-                    value={editDraft.mangaDescription}
-                    onChange={(e) =>
-                      setEditDraft((prev) =>
-                        prev ? { ...prev, mangaDescription: e.target.value } : prev,
-                      )
-                    }
-                    className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
-                  />
+                  <div className="mt-1 rounded-lg border border-border bg-background">
+                    <div className="flex flex-wrap border-b border-border">
+                      {(["es-ar","es-es","en-us","en-gb","pt-br","ja-jp","ko-kr","zh-cn","ru-ru"] as const).map((loc) => (
+                        <button
+                          key={loc}
+                          type="button"
+                          onClick={() => setEditDraft((prev) => prev ? { ...prev, _editDescTab: loc } : prev)}
+                          className={`px-3 py-1.5 text-xs font-medium transition-colors relative ${
+                            (editDraft._editDescTab ?? "es-ar") === loc
+                              ? "border-b-2 border-primary text-foreground"
+                              : "text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          {loc}
+                          {editDraft.mangaDescriptions?.[loc] && (
+                            <span className="ml-1 text-primary">•</span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                    <textarea
+                      rows={3}
+                      value={editDraft.mangaDescriptions?.[(editDraft._editDescTab ?? "es-ar")] ?? ""}
+                      onChange={(e) =>
+                        setEditDraft((prev) => {
+                          if (!prev) return prev;
+                          const tab = prev._editDescTab ?? "es-ar";
+                          return {
+                            ...prev,
+                            mangaDescriptions: {
+                              ...prev.mangaDescriptions,
+                              [tab]: e.target.value,
+                            },
+                          };
+                        })
+                      }
+                      placeholder={editDraft.mangaDescription}
+                      className="w-full rounded-b-lg bg-transparent px-3 py-2 text-sm text-foreground outline-none"
+                    />
+                  </div>
+                  <p className="mt-1 text-xs text-muted-foreground">{t("newManga.descriptionHint")}</p>
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
@@ -1512,6 +1546,14 @@ function MyUploadsSection() {
                       mgForm.append(`altTitles[${i}][locale]`, at.locale);
                       mgForm.append(`altTitles[${i}][title]`, at.title);
                     });
+                    if (editDraft.mangaDescriptions) {
+                      Object.entries(editDraft.mangaDescriptions).forEach(([locale, desc], i) => {
+                        if (desc.trim()) {
+                          mgForm.append(`descriptions[${i}][locale]`, locale);
+                          mgForm.append(`descriptions[${i}][description]`, desc.trim());
+                        }
+                      });
+                    }
                     mgForm.set("tagIds", JSON.stringify(editDraft.mangaTagIds));
                     const mgRes = await fetch(`/api/scan/manga/${editDraft.mangaSlug}`, {
                       method: "PATCH",
@@ -1856,6 +1898,8 @@ function NewMangaSection() {
   const [tagIds, setTagIds] = useState<Set<string>>(new Set());
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [descriptions, setDescriptions] = useState<Record<string, string>>({});
+  const [descTab, setDescTab] = useState("es-ar");
   const [author, setAuthor] = useState("");
   const [artist, setArtist] = useState("");
   const [releaseYear, setReleaseYear] = useState("");
@@ -1922,6 +1966,13 @@ function NewMangaSection() {
       formData.append(`altTitles[${i}][title]`, at.title);
     });
 
+    Object.entries(descriptions).forEach(([locale, desc], i) => {
+      if (desc.trim()) {
+        formData.append(`descriptions[${i}][locale]`, locale);
+        formData.append(`descriptions[${i}][description]`, desc.trim());
+      }
+    });
+
     setBusy(true);
     setProgress(0);
     try {
@@ -1940,6 +1991,8 @@ function NewMangaSection() {
         setCountry("");
         setCustomCountry("");
         setAltTitles([]);
+        setDescriptions({});
+        setDescTab("es-ar");
       } else {
         setProgress(0);
         const code = typeof body?.error === "string" ? body.error : "GENERIC";
@@ -2041,14 +2094,39 @@ function NewMangaSection() {
           </div>
           <div className="sm:col-span-2">
             <label className="text-sm font-medium text-foreground">{t("newManga.description")}</label>
-            <textarea
-              required
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={4}
-              className="mt-1.5 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
-              disabled={busy}
-            />
+            <div className="mt-1.5 rounded-lg border border-border bg-background">
+              <div className="flex flex-wrap border-b border-border">
+                {(["es-ar","es-es","en-us","en-gb","pt-br","ja-jp","ko-kr","zh-cn","ru-ru"] as const).map((loc) => (
+                  <button
+                    key={loc}
+                    type="button"
+                    onClick={() => setDescTab(loc)}
+                    className={`px-3 py-1.5 text-xs font-medium transition-colors relative ${
+                      descTab === loc
+                        ? "border-b-2 border-primary text-foreground"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                    disabled={busy}
+                  >
+                    {loc}
+                    {descriptions[loc] && (
+                      <span className="ml-1 text-primary">•</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+              <textarea
+                value={descriptions[descTab] ?? ""}
+                onChange={(e) =>
+                  setDescriptions((prev) => ({ ...prev, [descTab]: e.target.value }))
+                }
+                rows={4}
+                placeholder={descriptions["es-ar"] ?? ""}
+                className="w-full rounded-b-lg bg-transparent px-3 py-2 text-sm text-foreground outline-none"
+                disabled={busy}
+              />
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">{t("newManga.descriptionHint")}</p>
           </div>
           <div>
             <label className="text-sm font-medium text-foreground">{t("newManga.author")}</label>

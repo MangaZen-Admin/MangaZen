@@ -81,6 +81,9 @@ async function getMangaBySlug(slug: string) {
         select: { locale: true, title: true },
       },
       description: true,
+      descriptions: {
+        select: { locale: true, description: true },
+      },
       coverImage: true,
       type: true,
       status: true,
@@ -424,6 +427,13 @@ export default async function MangaDetailPage({ params }: PageProps) {
       ? manga.uploader.externalDonationLink
       : null;
 
+      // Resolver sinopsis según locale con fallback
+  const descTranslations = manga.descriptions ?? [];
+  const resolvedDescription =
+    descTranslations.find((d) => d.locale === locale)?.description ??
+    descTranslations.find((d) => d.locale === "en-us")?.description ??
+    manga.description;
+
   // Calcular contributors para el botón de donación
   const lastChapter = manga.chapters[0]; // ya vienen ordenados por number desc
   const lastUploaderId = lastChapter?.uploads[0]?.uploaderId ?? null;
@@ -684,8 +694,8 @@ export default async function MangaDetailPage({ params }: PageProps) {
               <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
                 {tCat("mangaDetailSynopsis")}
               </h2>
-              <p className="mt-3 text-sm leading-7 text-foreground/90">
-                {manga.description ?? tCat("mangaDetailSynopsisEmpty")}
+              <p className="mt-3 text-sm leading-7 text-foreground/90 whitespace-pre-wrap">
+                {resolvedDescription ?? tCat("mangaDetailSynopsisEmpty")}
               </p>
             </div>
 

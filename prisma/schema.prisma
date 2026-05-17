@@ -379,6 +379,7 @@ model Manga {
   favorites   UserFavorite[]
   progress    MangaProgress[]
   alternativeTitles MangaAlternativeTitle[]
+  descriptions MangaDescriptionTranslation[]
   reports             MangaReport[]
 }
 
@@ -826,4 +827,15 @@ model RateLimit {
   updatedAt DateTime @updatedAt
 
   @@index([key, resetAt])
+}
+
+model MangaDescriptionTranslation {
+  id          String @id @default(cuid())
+  mangaId     String
+  locale      String
+  description String
+  manga       Manga  @relation(fields: [mangaId], references: [id], onDelete: Cascade)
+
+  @@unique([mangaId, locale])
+  @@index([mangaId])
 }

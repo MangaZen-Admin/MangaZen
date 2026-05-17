@@ -279,6 +279,9 @@ function AnnouncementCard({
   dfLocale: Locale;
   t: TFn;
 }) {
+  const [expanded, setExpanded] = useState(false);
+  const isLong = item.body.length > 200;
+
   return (
     <article
       className={cn(
@@ -306,7 +309,18 @@ function AnnouncementCard({
             </span>
           </div>
           <h3 className="mt-1 text-sm font-semibold text-foreground">{item.title}</h3>
-          <p className="mt-1 text-sm leading-relaxed text-muted-foreground line-clamp-3">{item.body}</p>
+          <p className={cn("mt-1 text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap", !expanded && isLong && "line-clamp-3")}>
+            {item.body}
+          </p>
+          {isLong && (
+            <button
+              type="button"
+              onClick={() => setExpanded((p) => !p)}
+              className="mt-1 text-xs text-primary hover:underline"
+            >
+              {expanded ? t("seeLess") : t("seeMore")}
+            </button>
+          )}
         </div>
       </div>
     </article>

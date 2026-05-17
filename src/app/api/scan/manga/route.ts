@@ -164,6 +164,29 @@ export async function POST(request: Request) {
           skipDuplicates: true,
         });
       }
+      
+      // Guardar sinopsis por idioma
+      const descriptionsEntries: { locale: string; description: string }[] = [];
+      let di = 0;
+      while (form.get(`descriptions[${di}][locale]`)) {
+        const locale = String(form.get(`descriptions[${di}][locale]`) ?? "");
+        const desc = String(form.get(`descriptions[${di}][description]`) ?? "").trim();
+        if (locale && desc) {
+          descriptionsEntries.push({ locale, description: desc });
+        }
+        di++;
+      }
+
+      if (descriptionsEntries.length > 0) {
+        await tx.mangaDescriptionTranslation.createMany({
+          data: descriptionsEntries.map((d) => ({
+            mangaId: manga.id,
+            locale: d.locale,
+            description: d.description,
+          })),
+          skipDuplicates: true,
+        });
+      }
 
       if (tagIds.length > 0) {
         await tx.mangaTag.createMany({

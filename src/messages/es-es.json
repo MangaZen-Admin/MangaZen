@@ -688,7 +688,8 @@
       "countryUS": "Estados Unidos 🇺🇸",
       "countryFR": "Francia 🇫🇷",
       "countryOther": "Otro...",
-      "countryCustomPlaceholder": "Escribí el país..."
+      "countryCustomPlaceholder": "Escribí el país...",
+      "descriptionHint": "Si no cargas una sinopsis en un idioma, se mostrará la de inglés o la original."
     },
     "mangaStatus": {
       "ONGOING": "En emisión",
@@ -1058,7 +1059,9 @@
       "loadError": "Error al cargar anuncios.",
       "saveError": "Error al guardar.",
       "deleteError": "Error al eliminar.",
-      "missingFields": "Título y contenido son obligatorios."
+      "missingFields": "Título y contenido son obligatorios.",
+      "seeMore": "Ver más", 
+      "seeLess": "Ver menos"
     },
     "globalBanner": {
       "title": "Mensaje Global",

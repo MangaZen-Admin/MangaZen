@@ -688,7 +688,8 @@
       "countryUS": "美国 🇺🇸",
       "countryFR": "法国 🇫🇷",
       "countryOther": "其他...",
-      "countryCustomPlaceholder": "输入国家..."
+      "countryCustomPlaceholder": "输入国家...",
+      "descriptionHint": "若某语言没有简介，将显示英文或原始简介。"
     },
     "mangaStatus": {
       "ONGOING": "连载中",
@@ -1608,7 +1609,9 @@
     "newScan": "新汉化组",
     "newCreator": "新创作者",
     "chapterLabel": "第{number}话",
-    "unknownScan": "未知汉化组"
+    "unknownScan": "未知汉化组",
+    "seeMore": "查看更多", 
+    "seeLess": "收起"
   },
   "billing": {
     "metaTitle": "购买Zen Coins — MangaZen",

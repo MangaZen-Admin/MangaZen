@@ -144,6 +144,32 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ma
     }
   }
 
+  // Guardar sinopsis por idioma
+  const descriptionsEntries: { locale: string; description: string }[] = [];
+  let di = 0;
+  while (form.get(`descriptions[${di}][locale]`)) {
+    const locale = String(form.get(`descriptions[${di}][locale]`) ?? "");
+    const desc = String(form.get(`descriptions[${di}][description]`) ?? "").trim();
+    if (locale && desc) descriptionsEntries.push({ locale, description: desc });
+    di++;
+  }
+
+  if (descriptionsEntries.length > 0 || form.get("descriptions[0][locale]") !== null) {
+    await prisma.mangaDescriptionTranslation.deleteMany({
+      where: { mangaId: manga.id },
+    });
+    if (descriptionsEntries.length > 0) {
+      await prisma.mangaDescriptionTranslation.createMany({
+        data: descriptionsEntries.map((d) => ({
+          mangaId: manga.id,
+          locale: d.locale,
+          description: d.description,
+        })),
+        skipDuplicates: true,
+      });
+    }
+  }
+  
   // Actualizar tags si se enviaron
   const tagIdsRaw = form.get("tagIds");
   if (tagIdsRaw) {

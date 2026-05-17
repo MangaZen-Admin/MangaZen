@@ -688,7 +688,8 @@
       "countryUS": "アメリカ 🇺🇸",
       "countryFR": "フランス 🇫🇷",
       "countryOther": "その他...",
-      "countryCustomPlaceholder": "国を入力..."
+      "countryCustomPlaceholder": "国を入力...",
+      "descriptionHint": "言語のあらすじがない場合、英語または元のあらすじが表示されます。"
     },
     "mangaStatus": {
       "ONGOING": "連載中",
@@ -1608,7 +1609,9 @@
     "newScan": "新スキャン",
     "newCreator": "新クリエイター",
     "chapterLabel": "第{number}話",
-    "unknownScan": "不明なスキャン"
+    "unknownScan": "不明なスキャン",
+    "seeMore": "もっと見る", 
+    "seeLess": "閉じる"
   },
   "billing": {
     "metaTitle": "Zen Coinsを購入 — MangaZen",
