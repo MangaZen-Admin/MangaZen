@@ -589,7 +589,7 @@ function UploadChapterSection({
             <input
               type="number"
               min={1}
-              step={1}
+              step={0.1}
               required
               value={chapterNumber}
               onChange={(e) => setChapterNumber(e.target.value)}
