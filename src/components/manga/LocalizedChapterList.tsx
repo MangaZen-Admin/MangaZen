@@ -226,11 +226,8 @@ export function LocalizedChapterList({
                   </div>
                 </button>
 
-                <div
-                  className={`overflow-hidden px-3 transition-all duration-300 ease-out ${
-                    isOpen ? "max-h-[900px] pb-3 pt-1 opacity-100" : "max-h-0 py-0 opacity-0"
-                  }`}
-                >
+                {isOpen && (
+                <div className="overflow-hidden px-3 pb-3 pt-1">
                   <div className="mb-2 flex items-center justify-between gap-2">
                     <p className="text-xs text-muted-foreground">{tCat("mangaChapterPreviewCaption")}</p>
                     <Link
@@ -275,6 +272,7 @@ export function LocalizedChapterList({
                     })}
                   </div>
                 </div>
+                )}
               </article>
             );
           })

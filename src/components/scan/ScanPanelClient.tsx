@@ -74,7 +74,7 @@ type UploadRow = {
 type EditChapterDraft = {
   chapterId: string;
   mangaSlug: string;
-  chapterNumber: number;
+  chapterNumber: number | string;
   chapterTitle: string;
   mangaTitle: string;
   mangaDescription: string;
@@ -1145,7 +1145,7 @@ function MyUploadsSection() {
 
       {editDraft && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border border-border bg-card p-5 shadow-lg">
+          <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-xl border border-border bg-card p-5 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-lg font-semibold">{t("edit.title")}</h3>
               <button
@@ -1170,10 +1170,11 @@ function MyUploadsSection() {
                   <label className="text-xs text-muted-foreground">{t("edit.chapterNumber")}</label>
                   <input
                     type="number"
+                    step={0.1}
                     value={editDraft.chapterNumber}
                     onChange={(e) =>
                       setEditDraft((prev) =>
-                        prev ? { ...prev, chapterNumber: Number(e.target.value) } : prev,
+                        prev ? { ...prev, chapterNumber: e.target.value } : prev,
                       )
                     }
                     className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/30 focus:ring-2"
@@ -1524,7 +1525,7 @@ function MyUploadsSection() {
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({
                         title: editDraft.chapterTitle,
-                        number: editDraft.chapterNumber,
+                        number: Number(editDraft.chapterNumber),
                       }),
                     });
                     const chData = (await chRes.json()) as { pendingReview?: boolean };
