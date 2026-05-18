@@ -321,7 +321,7 @@ function FeaturedHero({
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_200px]">
         {/* Tarjeta principal grande */}
         <Link
-          href={`/manga/${main.slug}`}
+          href={`/${locale}/manga/${main.slug}`}
           className="group relative overflow-hidden rounded-xl border border-border bg-card aspect-[16/7] flex items-end"
         >
           {main.coverImage && (
@@ -371,7 +371,7 @@ function FeaturedHero({
           {rest.map((manga) => (
             <Link
               key={manga.id}
-              href={`/manga/${manga.slug}`}
+              href={`/${locale}/manga/${manga.slug}`}
               className="group flex items-center gap-3 rounded-lg border border-border bg-card p-2.5 transition-colors hover:bg-muted/50"
             >
               {manga.coverImage && (
@@ -464,7 +464,7 @@ function TrendingSection({
         {mangas.map((manga, index) => (
           <Link
             key={manga.id}
-            href={`/manga/${manga.slug}`}
+            href={`/${locale}/manga/${manga.slug}`}
             className="group flex items-center gap-3 rounded-lg border border-border bg-card p-3 transition-colors hover:bg-muted/50"
           >
             {/* Número de ranking */}

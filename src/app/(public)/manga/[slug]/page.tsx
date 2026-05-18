@@ -427,11 +427,20 @@ export default async function MangaDetailPage({ params }: PageProps) {
       ? manga.uploader.externalDonationLink
       : null;
 
-      // Resolver sinopsis según locale con fallback
-  const descTranslations = manga.descriptions ?? [];
+      // Resolver sinopsis según locale con fallback regional
+const descTranslations = manga.descriptions ?? [];
+  const localeVariant: Record<string, string> = {
+    "es-es": "es-ar",
+    "es-ar": "es-es",
+    "en-us": "en-gb",
+    "en-gb": "en-us",
+  };
   const resolvedDescription =
     descTranslations.find((d) => d.locale === locale)?.description ??
+    descTranslations.find((d) => d.locale === localeVariant[locale])?.description ??
     descTranslations.find((d) => d.locale === "en-us")?.description ??
+    descTranslations.find((d) => d.locale === "en-gb")?.description ??
+    descTranslations[0]?.description ??
     manga.description;
 
   // Calcular contributors para el botón de donación
@@ -528,11 +537,15 @@ export default async function MangaDetailPage({ params }: PageProps) {
                 />
               </div>
             </div>
-            {manga.alternativeTitles.length > 0 && (
-              <p className="mt-1 text-sm text-muted-foreground italic">
-                {manga.alternativeTitles.map((at) => at.title).join(" · ")}
-              </p>
-            )}
+            {(() => {
+              const altTitle =
+                manga.alternativeTitles.find((at) => at.locale === locale)?.title ??
+                manga.alternativeTitles.find((at) => at.locale === "en-us")?.title ??
+                null;
+              return altTitle ? (
+                <p className="mt-1 text-sm text-muted-foreground italic">{altTitle}</p>
+              ) : null;
+            })()}
             {manga.uploader && (
               <div className="mt-2">
                 <Link
