@@ -411,7 +411,6 @@ function UploadChapterSection({
           }
 
           const presignData = await presignRes.json();
-          console.log("presign response:", JSON.stringify(presignData));
           const { presignedUrl, publicUrl } = presignData as {
             presignedUrl: string;
             publicUrl: string;

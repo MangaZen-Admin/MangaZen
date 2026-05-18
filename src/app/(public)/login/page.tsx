@@ -151,9 +151,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             {tAuth("continue")}
           </button>
           <div className="text-right">
-            <a href="/forgot-password" className="text-sm text-primary hover:underline">
+            <Link href="/forgot-password" className="text-sm text-primary hover:underline">
               {tAuth("forgotPasswordLink")}
-            </a>
+            </Link>
           </div>
         </form>
 
