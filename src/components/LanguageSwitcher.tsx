@@ -11,7 +11,7 @@ import { getLocaleFlagIconUrl } from "@/lib/locale-flags";
 import { cn } from "@/lib/utils";
 
 const LOCALE_NAMES: Record<string, string> = {
-  "es-ar": "Español (Argentina)",
+  "es-ar": "Español (latino)",
   "es-es": "Español (España)",
   "en-us": "English (US)",
   "en-gb": "English (UK)",
@@ -74,7 +74,7 @@ export default function LanguageSwitcher() {
             onClick={() => setOpen(false)}
             aria-hidden
           />
-          <div className="fixed right-2 top-16 z-[100] flex flex-wrap gap-1 rounded-lg border border-border bg-card p-1.5 shadow-lg dark:shadow-2xl sm:absolute sm:right-0 sm:top-auto sm:mt-2">
+          <div className="fixed right-2 top-16 z-[100] flex flex-col gap-0.5 rounded-lg border border-border bg-card p-1.5 shadow-lg dark:shadow-2xl sm:absolute sm:right-0 sm:top-auto sm:mt-2 min-w-[180px]">
           {routing.locales.map((locale) => (
             <button
               key={locale}
@@ -82,15 +82,20 @@ export default function LanguageSwitcher() {
               title={LOCALE_NAMES[locale] ?? locale}
               aria-label={LOCALE_NAMES[locale] ?? locale}
               onClick={() => handleLocaleChange(locale)}
-              className="rounded-md p-1.5 transition-colors duration-200 hover:bg-primary/15"
+              className={cn(
+                "flex items-center gap-2 rounded-md px-2 py-1.5 text-xs transition-colors duration-200 hover:bg-primary/15 w-full",
+                locale === activeLocale && "bg-primary/10 text-foreground font-medium",
+                locale !== activeLocale && "text-muted-foreground"
+              )}
             >
               <Image
                 src={getLocaleFlagIconUrl(locale)}
                 alt={locale}
                 width={16}
                 height={16}
-                className="h-4 w-4 rounded-[2px]"
+                className="h-4 w-4 shrink-0 rounded-[2px]"
               />
+              <span>{LOCALE_NAMES[locale] ?? locale}</span>
             </button>
           ))}
           </div>
