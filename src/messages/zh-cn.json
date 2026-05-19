@@ -667,6 +667,7 @@
       "demographicNone": "未指定",
       "contentRating": "内容分级",
       "tags": "题材 / 标签",
+      "tagSearchPlaceholder": "搜索标签...",
       "cover": "封面图",
       "coverRequired": "必须提供封面图。",
       "progress": "{pct}% 完成",

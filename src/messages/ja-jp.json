@@ -667,6 +667,7 @@
       "demographicNone": "未指定",
       "contentRating": "コンテンツ区分",
       "tags": "ジャンル / タグ",
+      "tagSearchPlaceholder": "タグを検索...",
       "cover": "表紙画像",
       "coverRequired": "表紙画像は必須です。",
       "progress": "{pct}% 完了",

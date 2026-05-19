@@ -667,6 +667,7 @@
       "demographicNone": "Sin especificar",
       "contentRating": "Clasificación de contenido",
       "tags": "Géneros / etiquetas",
+      "tagSearchPlaceholder": "Buscar tag...",
       "cover": "Portada (imagen)",
       "coverRequired": "La portada es obligatoria.",
       "progress": "{pct}% completado",

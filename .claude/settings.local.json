@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "PowerShell($env:DATABASE_URL = \\(Get-Content .env | Select-String \"DATABASE_URL\"\\).ToString\\(\\).Split\\(\"=\",2\\)[1].Trim\\('\"'\\); npx prisma migrate dev --name add_chapter_title_translations)",
+      "Bash(mkdir -p \"c:/Users/Valentin/mangazen/src/app/api/scan/chapter/[chapterId]/reorder-pages\")",
+      "Bash(npx prisma *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\Valentin\\mangazen\\src\\app\\api\\scan\\chapter\\[chapterId]"
     ]
   }
 }

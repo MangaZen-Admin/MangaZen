@@ -11,7 +11,6 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ch
 
   const { chapterId } = await params;
 
-  // Verificar acceso al capítulo
   const chapter_check = await prisma.chapter.findUnique({
     where: { id: chapterId },
     select: {
@@ -23,15 +22,12 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ch
     return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
   }
 
-  // Admin puede editar cualquier capítulo
-  // SCAN/CREATOR solo puede editar capítulos de sus mangas
   if (
     gate.user.role !== "ADMIN" &&
     chapter_check.manga.uploaderId !== gate.user.id
   ) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
-  // needsReview crea ChangeRequest; admin/trusted aplican directo.
 
   const requester = await prisma.user.findUnique({
     where: { id: gate.user.id },
@@ -41,12 +37,13 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ch
 
   const currentChapter = await prisma.chapter.findUnique({
     where: { id: chapterId },
-    select: { title: true, number: true },
+    select: { title: true, number: true, locale: true },
   });
 
   const previousData = {
     title: currentChapter?.title ?? null,
     number: currentChapter?.number ?? null,
+    locale: currentChapter?.locale ?? null,
   };
 
   let body: unknown;
@@ -56,7 +53,14 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ch
     return NextResponse.json({ error: "INVALID_JSON" }, { status: 400 });
   }
 
-  const { title, number } = body as { title?: string; number?: number };
+  const o = body as Record<string, unknown>;
+  const { title, number, locale, titleTranslations, pageUpdates } = o as {
+    title?: string;
+    number?: number;
+    locale?: string;
+    titleTranslations?: { locale: string; title: string }[];
+    pageUpdates?: { pageId: string; isSingleInDoublePage: boolean }[];
+  };
 
   const updated = await prisma.chapter.update({
     where: { id: chapterId },
@@ -65,9 +69,37 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ch
         ? { title: sanitizeScanPlainText(String(title), 500) || null }
         : {}),
       ...(number !== undefined && Number.isFinite(number) ? { number } : {}),
+      ...(locale && typeof locale === "string" ? { locale, language: locale.slice(0, 2).toUpperCase() } : {}),
     },
-    select: { id: true, title: true, number: true },
+    select: { id: true, title: true, number: true, locale: true },
   });
+
+  // Guardar traducciones de título
+  if (Array.isArray(titleTranslations) && titleTranslations.length > 0) {
+    await prisma.chapterTitleTranslation.deleteMany({ where: { chapterId } });
+    await prisma.chapterTitleTranslation.createMany({
+      data: titleTranslations
+        .filter((t) => t.locale && t.title?.trim())
+        .map((t) => ({
+          chapterId,
+          locale: t.locale,
+          title: t.title.trim(),
+        })),
+      skipDuplicates: true,
+    });
+  }
+
+  // Actualizar isSingleInDoublePage por página
+  if (Array.isArray(pageUpdates) && pageUpdates.length > 0) {
+    await Promise.all(
+      pageUpdates.map((pu) =>
+        prisma.page.update({
+          where: { id: pu.pageId },
+          data: { isSingleInDoublePage: pu.isSingleInDoublePage },
+        })
+      )
+    );
+  }
 
   if (needsReview) {
     await prisma.changeRequest.create({
@@ -79,6 +111,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ch
         newData: {
           title: updated.title,
           number: updated.number,
+          locale: updated.locale,
         },
         requesterId: gate.user.id,
       },

@@ -449,8 +449,9 @@ model Chapter {
   uploads          ChapterUpload[]
   votes            Vote[]
   comments         Comment[]
-  lastReadProgress MangaProgress[] @relation("ProgressLastChapter")
-  unlocks          ChapterUnlock[]
+  lastReadProgress  MangaProgress[] @relation("ProgressLastChapter")
+  unlocks           ChapterUnlock[]
+  titleTranslations ChapterTitleTranslation[]
 }
 
 /// Desbloqueo permanente de un capítulo Early Access pagado con Zen-Points.
@@ -838,4 +839,15 @@ model MangaDescriptionTranslation {
 
   @@unique([mangaId, locale])
   @@index([mangaId])
+}
+
+model ChapterTitleTranslation {
+  id        String  @id @default(cuid())
+  chapterId String
+  locale    String
+  title     String
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@unique([chapterId, locale])
+  @@index([chapterId])
 }

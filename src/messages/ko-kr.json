@@ -667,6 +667,7 @@
       "demographicNone": "미지정",
       "contentRating": "콘텐츠 등급",
       "tags": "장르 / 태그",
+      "tagSearchPlaceholder": "태그 검색...",
       "cover": "표지 이미지",
       "coverRequired": "표지 이미지는 필수입니다.",
       "progress": "{pct}% 완료",

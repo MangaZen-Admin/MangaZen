@@ -667,6 +667,7 @@
       "demographicNone": "Not specified",
       "contentRating": "Content rating",
       "tags": "Genres / tags",
+      "tagSearchPlaceholder": "Search tag...",
       "cover": "Cover image",
       "coverRequired": "Cover image is required.",
       "progress": "{pct}% complete",

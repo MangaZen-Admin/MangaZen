@@ -667,6 +667,7 @@
       "demographicNone": "Не указано",
       "contentRating": "Возрастной рейтинг",
       "tags": "Жанры",
+      "tagSearchPlaceholder": "Поиск тега...",
       "cover": "Обложка",
       "coverRequired": "Обложка обязательна.",
       "progress": "{pct}%",

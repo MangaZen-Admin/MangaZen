@@ -920,6 +920,7 @@ function MyUploadsSection() {
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [availableTags, setAvailableTags] = useState<TagRow[]>([]);
+  const [editTagSearch, setEditTagSearch] = useState("");
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 20;
 
@@ -1494,9 +1495,16 @@ function MyUploadsSection() {
                   <div className="sm:col-span-2">
                     <span className="text-xs text-muted-foreground">{t("edit.genres")}</span>
                     <div className="scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent mt-2 max-h-32 overflow-y-auto rounded-lg border border-border bg-background p-3">
+                      <input
+                        type="search"
+                        value={editTagSearch}
+                        onChange={(e) => setEditTagSearch(e.target.value)}
+                        placeholder={t("newManga.tagSearchPlaceholder")}
+                        className="mb-3 w-full rounded-lg border border-border/60 bg-card py-1.5 px-3 text-xs outline-none focus:border-primary focus:ring-2 focus:ring-primary/25"
+                      />
                       <div className="space-y-3">
                         {(["GENRE", "FORMAT", "THEME", "CONTENT"] as const).map((cat) => {
-                          const catTags = availableTags.filter((tag) => tag.category === cat);
+                          const catTags = availableTags.filter((tag) => tag.category === cat && (editTagSearch.trim() === "" || translateCatalogTagName(tag.name, (k) => tCatalog(k)).toLowerCase().includes(editTagSearch.trim().toLowerCase()) || tag.name.toLowerCase().includes(editTagSearch.trim().toLowerCase())));
                           if (catTags.length === 0) return null;
                           const catLabel: Record<string, string> = {
                             GENRE: tCatalog("tagCategoryGenre"),
@@ -1957,6 +1965,7 @@ function NewMangaSection() {
   const [cover, setCover] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [tagSearch, setSearch] = useState("");
 
   useEffect(() => {
     void (async () => {
@@ -2330,9 +2339,18 @@ function NewMangaSection() {
 
         <div>
           <span className="text-sm font-medium text-foreground">{t("newManga.tags")}</span>
-          <div className="mt-2 space-y-3 rounded-lg border border-border bg-background p-3">
+          <div className="mt-2 rounded-lg border border-border bg-background p-3">
+                <input
+                  type="search"
+                  value={tagSearch}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder={t("newManga.tagSearchPlaceholder")}
+                  className="mb-3 w-full rounded-lg border border-border/60 bg-card py-1.5 px-3 text-xs outline-none focus:border-primary focus:ring-2 focus:ring-primary/25"
+                  disabled={busy}
+                />
+                <div className="space-y-3">
             {(["GENRE", "FORMAT", "THEME", "CONTENT"] as const).map((cat) => {
-              const catTags = tags.filter((tag) => tag.category === cat);
+              const catTags = tags.filter((tag) => tag.category === cat && (tagSearch.trim() === "" || translateCatalogTagName(tag.name, (k) => tCatalog(k)).toLowerCase().includes(tagSearch.trim().toLowerCase()) || tag.name.toLowerCase().includes(tagSearch.trim().toLowerCase())));
               if (catTags.length === 0) return null;
               const catLabel: Record<string, string> = {
                 GENRE: tCatalog("tagCategoryGenre"),
@@ -2365,6 +2383,7 @@ function NewMangaSection() {
                 </div>
               );
             })}
+                </div>
           </div>
         </div>
 
