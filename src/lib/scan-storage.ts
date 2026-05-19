@@ -39,8 +39,23 @@ export async function writeChapterPages(
 }
 
 export async function removeChapterUploadDir(chapterId: string): Promise<void> {
-  // No-op — R2 no tiene borrado de carpeta directo
-  // Las páginas se borran individualmente al eliminar el capítulo
+  try {
+    const { prisma } = await import("@/lib/db");
+    const pages = await prisma.page.findMany({
+      where: { chapterId },
+      select: { imageUrl: true },
+    });
+
+    const r2PublicUrl = process.env.R2_PUBLIC_URL ?? "";
+    for (const page of pages) {
+      if (r2PublicUrl && page.imageUrl.startsWith(r2PublicUrl)) {
+        const key = page.imageUrl.slice(r2PublicUrl.length + 1);
+        await deleteFromR2(key).catch(() => {});
+      }
+    }
+  } catch {
+    // silencioso — no bloquear el borrado aunque falle R2
+  }
 }
 
 export async function writeMangaCover(
