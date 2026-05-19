@@ -10,7 +10,6 @@ import { AdminCreatorRequestsPanel } from "@/components/admin/AdminCreatorReques
 import { AdminFeedbackPanel } from "@/components/admin/AdminFeedbackPanel";
 import { AdminMangaRequestsPanel } from "@/components/admin/AdminMangaRequestsPanel";
 import { AdminAdsPanel } from "@/components/admin/AdminAdsPanel";
-import { AdminModerationPanel } from "@/components/admin/AdminModerationPanel";
 import { AdminPendingChaptersPanel } from "@/components/admin/AdminPendingChaptersPanel";
 import { AdminScanStatsTab } from "@/components/admin/AdminScanStatsTab";
 import { AdminPendingMangasPanel } from "@/components/admin/AdminPendingMangasPanel";
@@ -70,6 +69,10 @@ export default async function AdminPage({ params, searchParams }: AdminPageProps
         isTrusted: true,
         zenCoins: true,
         zenShards: true,
+        isBanned: true,
+        banReason: true,
+        suspendedUntil: true,
+        suspendReason: true,
         createdAt: true,
         badges: {
           select: {
@@ -294,7 +297,17 @@ export default async function AdminPage({ params, searchParams }: AdminPageProps
           }
           pendingScanChaptersCount={pendingScanChaptersCount}
           pendingCreatorCount={pendingCreatorRequests.length}
-          tabScans={<AdminScanStatsTab />}
+          tabUsuarios={
+            <>
+              <AdminScanStatsTab />
+              <AdminCreatorRequestsPanel
+                initialRequests={pendingCreatorRequests.map((r) => ({
+                  ...r,
+                  createdAt: r.createdAt.toISOString(),
+                }))}
+              />
+            </>
+          }
           tabContenido={
             <>
               <AdminPendingMangasPanel
@@ -338,22 +351,19 @@ export default async function AdminPage({ params, searchParams }: AdminPageProps
             </>
           }
           tabEdiciones={<AdminEditionsPanel />}
+          tabComunicacion={
+            <>
+              <AdminAnnouncementsPanel />
+              <AdminGlobalBannerPanel />
+            </>
+          }
           tabComunidad={
             <>
-              <AdminCreatorRequestsPanel
-                initialRequests={pendingCreatorRequests.map((r) => ({
-                  ...r,
-                  createdAt: r.createdAt.toISOString(),
-                }))}
-              />
               <AdminMangaRequestsPanel initialRows={adminMangaRequestRows} />
               <AdminFeedbackPanel initialRows={adminFeedbackRows} />
             </>
           }
           tabInsignias={<AdminBadgeCatalogPanel initialBadges={badges} />}
-          tabNovedades={<AdminAnnouncementsPanel />}
-          tabMensajes={<AdminGlobalBannerPanel />}
-          tabModeracion={<AdminModerationPanel />}
           tabPublicidad={<AdminAdsPanel />}
         />
       </section>

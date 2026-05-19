@@ -29,7 +29,21 @@ export async function GET(request: Request) {
       status: true,
       type: true,
       author: true,
+      artist: true,
+      publisher: true,
+      country: true,
+      releaseYear: true,
       reviewStatus: true,
+      description: true,
+      descriptions: {
+        select: { locale: true, description: true },
+      },
+      alternativeTitles: {
+        select: { locale: true, title: true },
+      },
+      tags: {
+        select: { tag: { select: { name: true } } },
+      },
     },
   });
 

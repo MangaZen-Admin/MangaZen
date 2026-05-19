@@ -299,72 +299,70 @@ export function AdminBadgeCatalogPanel({ initialBadges }: Props) {
         </div>
       </form>
 
-      <div className="mt-6 overflow-x-auto">
-        <table className="min-w-full text-sm">
-          <thead className="border-b border-border text-left text-xs uppercase text-muted-foreground">
-            <tr>
-              <th className="px-2 py-2">{t("catalogColIcon")}</th>
-              <th className="px-2 py-2">{t("catalogColName")}</th>
-              <th className="px-2 py-2">{t("catalogColTrigger")}</th>
-              <th className="px-2 py-2">{t("catalogColDescription")}</th>
-              <th className="px-2 py-2">{t("catalogColActions")}</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {badges.map((b) => (
-              <tr key={b.id} className="align-top">
-                <td className="px-2 py-3">
-                  <BadgeIcon
-                    name={b.name}
-                    description={b.description}
-                    iconUrl={b.iconUrl}
-                    iconKey={b.iconKey}
-                    isHighlighted={b.isHighlighted}
-                  />
-                </td>
-                <td className="px-2 py-3 font-medium text-foreground">
-                  {b.name}
-                  {b.isHighlighted ? (
-                    <span className="ml-2 rounded bg-primary/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-primary">
-                      {t("catalogHighlightedTag")}
-                    </span>
-                  ) : null}
-                </td>
-                <td className="whitespace-nowrap px-2 py-3 text-xs text-muted-foreground">
-                  {b.triggerType
-                    ? `${isBadgeTriggerType(b.triggerType) ? t(`triggerType.${b.triggerType}`) : b.triggerType}${
-                        b.triggerThreshold != null && badgeTriggerShowsThreshold(b.triggerType)
-                          ? ` ≥ ${b.triggerThreshold}`
-                          : ""
-                      }`
-                    : "—"}
-                </td>
-                <td className="max-w-md px-2 py-3 text-muted-foreground">{b.description}</td>
-                <td className="px-2 py-3">
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      disabled={busy}
-                      onClick={() => loadBadgeForEdit(b)}
-                      className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2 py-1 text-xs text-foreground hover:border-primary disabled:opacity-50"
-                    >
-                      <Pencil className="h-3 w-3" />
-                      {t("catalogEdit")}
-                    </button>
-                    <button
-                      type="button"
-                      disabled={busy}
-                      onClick={() => setDeleteTarget({ id: b.id, name: b.name })}
-                      className="rounded-md border border-destructive/40 bg-destructive/10 px-2 py-1 text-xs font-medium text-destructive hover:bg-destructive/15 disabled:opacity-50"
-                    >
-                      {t("catalogDelete")}
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+        {badges.map((b) => (
+          <div
+            key={b.id}
+            className={`group relative flex flex-col items-center gap-2 rounded-xl border p-3 text-center transition ${
+              editingId === b.id
+                ? "border-primary bg-primary/5"
+                : "border-border bg-background/50 hover:border-primary/40"
+            }`}
+          >
+            {/* X para eliminar */}
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => setDeleteTarget({ id: b.id, name: b.name })}
+              className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-white opacity-0 transition-opacity group-hover:opacity-100 disabled:opacity-50"
+              aria-label={`Eliminar ${b.name}`}
+            >
+              ✕
+            </button>
+
+            {/* Ícono */}
+            <BadgeIcon
+              name={b.name}
+              description={b.description}
+              iconUrl={b.iconUrl}
+              iconKey={b.iconKey}
+              isHighlighted={b.isHighlighted}
+            />
+
+            {/* Nombre */}
+            <p className="line-clamp-2 text-xs font-medium leading-tight text-foreground">
+              {b.name}
+            </p>
+
+            {/* Badge destacada */}
+            {b.isHighlighted && (
+              <span className="rounded bg-primary/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-primary">
+                {t("catalogHighlightedTag")}
+              </span>
+            )}
+
+            {/* Trigger */}
+            {b.triggerType && (
+              <p className="text-[10px] text-muted-foreground">
+                {isBadgeTriggerType(b.triggerType) ? t(`triggerType.${b.triggerType}`) : b.triggerType}
+                {b.triggerThreshold != null && badgeTriggerShowsThreshold(b.triggerType)
+                  ? ` ≥ ${b.triggerThreshold}`
+                  : ""}
+              </p>
+            )}
+
+            {/* Botón editar */}
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => loadBadgeForEdit(b)}
+              className="mt-1 inline-flex items-center gap-1 rounded-md border border-border bg-card px-2 py-1 text-xs text-foreground opacity-0 transition-opacity hover:border-primary group-hover:opacity-100 disabled:opacity-50"
+            >
+              <Pencil className="h-3 w-3" />
+              {t("catalogEdit")}
+            </button>
+          </div>
+        ))}
       </div>
 
       <Dialog

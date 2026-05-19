@@ -7,6 +7,7 @@ import { formatDistanceToNow } from "date-fns";
 import {
   Bell,
   FileEdit,
+  Loader2,
   Megaphone,
   Newspaper,
   Search,
@@ -23,7 +24,6 @@ import { getPublicProfileUrlKey } from "@/lib/public-profile-url";
 import { dateFnsLocaleFromAppLocale } from "@/lib/date-fns-locale";
 import { cn } from "@/lib/utils";
 import { ReauthDialog } from "@/components/security/ReauthDialog";
-import { AdminProGrantPanel } from "@/components/admin/AdminProGrantPanel";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -39,14 +39,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const TAB_VALUES = [
   "resumen",
   "usuarios",
-  "scans",
   "contenido",
   "ediciones",
+  "comunicacion",
   "comunidad",
   "insignias",
-  "novedades",
-  "mensajes",
-  "moderacion",
   "publicidad",
 ] as const;
 export type AdminTabValue = (typeof TAB_VALUES)[number];
@@ -78,6 +75,10 @@ type AdminUser = {
   zenCoins: number;
   zenShards: number;
   badges: Badge[];
+  isBanned?: boolean;
+  banReason?: string | null;
+  suspendedUntil?: Date | string | null;
+  suspendReason?: string | null;
 };
 
 type RadarEvent = {
@@ -102,14 +103,12 @@ export type AdminPanelShellProps = {
   /** Subidas pendientes atribuibles a usuarios SCAN/CREATOR (badge pestaña Scans). */
   pendingScanChaptersCount: number;
   pendingCreatorCount: number;
-  tabScans: ReactNode;
+  tabUsuarios: ReactNode;
   tabContenido: ReactNode;
   tabEdiciones: ReactNode;
+  tabComunicacion: ReactNode;
   tabComunidad: ReactNode;
   tabInsignias: ReactNode;
-  tabNovedades: ReactNode;
-  tabMensajes: ReactNode;
-  tabModeracion: ReactNode;
   tabPublicidad: ReactNode;
 };
 
@@ -122,14 +121,12 @@ export default function AdminPanelShell({
   pendingContentReviewCount,
   pendingScanChaptersCount,
   pendingCreatorCount,
-  tabScans,
+  tabUsuarios,
   tabContenido,
   tabEdiciones,
+  tabComunicacion,
   tabComunidad,
   tabInsignias,
-  tabNovedades,
-  tabMensajes,
-  tabModeracion,
   tabPublicidad,
 }: AdminPanelShellProps) {
   const t = useTranslations("admin.shell");
@@ -166,6 +163,7 @@ export default function AdminPanelShell({
   const [users, setUsers] = useState(initialUsers);
   const [pointInputs, setPointInputs] = useState<Record<string, string>>({});
   const [shardInputs, setShardInputs] = useState<Record<string, string>>({});
+  const [proInputs, setProInputs] = useState<Record<string, string>>({});
   const [selectedBadgeByUser, setSelectedBadgeByUser] = useState<Record<string, string>>({});
   const [radarEvents, setRadarEvents] = useState(initialRadarEvents);
   const [busyUserId, setBusyUserId] = useState<string | null>(null);
@@ -176,6 +174,14 @@ export default function AdminPanelShell({
   const [pendingZen, setPendingZen] = useState<{ user: AdminUser; delta: number } | null>(null);
   const [pendingZenType, setPendingZenType] = useState<"coins" | "shards">("coins");
   const [revokeDialog, setRevokeDialog] = useState<{ user: AdminUser; badge: Badge } | null>(null);
+  const [moderationDialog, setModerationDialog] = useState<{
+    userId: string;
+    userName: string;
+    type: "ban" | "suspend" | "delete";
+  } | null>(null);
+  const [moderationReason, setModerationReason] = useState("");
+  const [moderationDays, setModerationDays] = useState("7");
+  const [moderationBusy, setModerationBusy] = useState(false);
   const [userSearch, setUserSearch] = useState("");
   const [userPage, setUserPage] = useState(1);
   const USER_PAGE_SIZE = 20;
@@ -385,6 +391,125 @@ export default function AdminPanelShell({
     }
   }
 
+  async function refreshUsers() {
+    try {
+      const res = await fetch("/api/admin/users/list");
+      if (!res.ok) return;
+      const data = (await res.json()) as { users?: AdminUser[] };
+      if (data.users) setUsers(data.users);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  async function grantProToUser(userId: string, days: number) {
+    setBusyUserId(userId);
+    try {
+      const res = await fetch("/api/admin/pro-grant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, days }),
+      });
+      if (res.ok) {
+        toast.success(t("proGrantSuccess"));
+        await refreshUsers();
+      } else {
+        toast.error(t("proGrantError"));
+      }
+    } catch {
+      toast.error(t("proGrantError"));
+    } finally {
+      setBusyUserId(null);
+    }
+  }
+
+  async function revokeProFromUser(userId: string) {
+    setBusyUserId(userId);
+    try {
+      const res = await fetch("/api/admin/pro-grant", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+      if (res.ok) {
+        toast.success(t("proRevokeSuccess"));
+        await refreshUsers();
+      } else {
+        toast.error(t("proRevokeError"));
+      }
+    } catch {
+      toast.error(t("proRevokeError"));
+    } finally {
+      setBusyUserId(null);
+    }
+  }
+
+  async function liftUserSanction(userId: string, action: "unban" | "unsuspend") {
+    setBusyUserId(userId);
+    try {
+      const res = await fetch(`/api/admin/moderation/users/${userId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action }),
+      });
+      if (res.ok) {
+        toast.success(t("moderationSanctionLifted"));
+        await refreshUsers();
+      } else {
+        toast.error(t("moderationActionError"));
+      }
+    } catch {
+      toast.error(t("moderationActionError"));
+    } finally {
+      setBusyUserId(null);
+    }
+  }
+
+  async function submitModerationAction() {
+    if (!moderationDialog) return;
+    setModerationBusy(true);
+    try {
+      if (moderationDialog.type === "delete") {
+        const res = await fetch(`/api/admin/moderation/users/${moderationDialog.userId}`, {
+          method: "DELETE",
+        });
+        if (res.ok) {
+          toast.success(t("moderationUserDeleted"));
+          await refreshUsers();
+          setModerationDialog(null);
+        } else {
+          toast.error(t("moderationActionError"));
+        }
+        return;
+      }
+      const res = await fetch(`/api/admin/moderation/users/${moderationDialog.userId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: moderationDialog.type,
+          reason: moderationReason.trim() || undefined,
+          ...(moderationDialog.type === "suspend" ? { days: Number(moderationDays) } : {}),
+        }),
+      });
+      if (res.ok) {
+        toast.success(
+          moderationDialog.type === "ban"
+            ? t("moderationUserBanned")
+            : t("moderationUserSuspended")
+        );
+        await refreshUsers();
+        setModerationDialog(null);
+        setModerationReason("");
+      } else {
+        toast.error(t("moderationActionError"));
+      }
+    } catch {
+      toast.error(t("moderationActionError"));
+    } finally {
+      setModerationBusy(false);
+    }
+  }
+
   async function confirmZenReauth(password: string) {
     if (!pendingZen) return;
     setReauthBusy(true);
@@ -534,10 +659,6 @@ export default function AdminPanelShell({
           <TabsTrigger value="usuarios" className="gap-1.5">
             {t("tabUsuarios")}
           </TabsTrigger>
-          <TabsTrigger value="scans" className="gap-1.5">
-            {t("tabScans")}
-            <TabBadge count={pendingScanChaptersCount} />
-          </TabsTrigger>
           <TabsTrigger value="contenido" className="gap-1.5">
             {t("tabContenido")}
             <TabBadge count={pendingContentReviewCount} />
@@ -546,24 +667,15 @@ export default function AdminPanelShell({
             <FileEdit className="h-3.5 w-3.5" aria-hidden />
             {t("tabEdiciones")}
           </TabsTrigger>
+          <TabsTrigger value="comunicacion" className="gap-1.5">
+            {t("tabComunicacion")}
+          </TabsTrigger>
           <TabsTrigger value="comunidad" className="gap-1.5">
             {t("tabComunidad")}
             <TabBadge count={pendingCreatorCount} />
           </TabsTrigger>
           <TabsTrigger value="insignias" className="gap-1.5">
             {t("tabInsignias")}
-          </TabsTrigger>
-          <TabsTrigger value="novedades" className="gap-1.5">
-            <Newspaper className="h-3.5 w-3.5" aria-hidden />
-            {t("tabNovedades")}
-          </TabsTrigger>
-          <TabsTrigger value="mensajes" className="gap-1.5">
-            <Bell className="h-3.5 w-3.5" aria-hidden />
-            {t("tabMensajes")}
-          </TabsTrigger>
-          <TabsTrigger value="moderacion" className="gap-1.5">
-            <Shield className="h-3.5 w-3.5" aria-hidden />
-            {t("tabModeracion")}
           </TabsTrigger>
           <TabsTrigger value="publicidad" className="gap-1.5">
             <Megaphone className="h-3.5 w-3.5" aria-hidden />
@@ -619,7 +731,7 @@ export default function AdminPanelShell({
         </TabsContent>
 
         <TabsContent value="usuarios" className="mt-5 space-y-6">
-          <AdminProGrantPanel />
+          {tabUsuarios}
 
           <section className="rounded-xl border border-border bg-card p-5 shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-3">
@@ -831,8 +943,143 @@ export default function AdminPanelShell({
                             </div>
                           </div>
 
-                          {/* Marco Pro */}
-                          <div className="rounded-xl border border-border bg-background p-4">
+                            {/* Asignar Pro */}
+                            <div className="rounded-xl border border-border bg-background p-4">
+                              <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                                {t("proGrantTitle")}
+                              </p>
+                              <div className="flex flex-wrap items-center gap-2">
+                                <Select
+                                  value={proInputs[user.id] ?? "30"}
+                                  onValueChange={(v) =>
+                                    setProInputs((prev) => ({ ...prev, [user.id]: v }))
+                                  }
+                                >
+                                  <SelectTrigger className="h-9 w-32 text-xs">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="7">7 días</SelectItem>
+                                    <SelectItem value="30">30 días</SelectItem>
+                                    <SelectItem value="90">90 días</SelectItem>
+                                    <SelectItem value="365">1 año</SelectItem>
+                                    <SelectItem value="36500">Permanente</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  disabled={busyUserId === user.id}
+                                  onClick={() => void grantProToUser(user.id, Number(proInputs[user.id] ?? "30"))}
+                                >
+                                  {t("proGrantButton")}
+                                </Button>
+                                {(user as any).isPro && (
+                                  <Button
+                                    type="button"
+                                    size="sm"
+                                    variant="outline"
+                                    disabled={busyUserId === user.id}
+                                    onClick={() => void revokeProFromUser(user.id)}
+                                  >
+                                    {t("proRevokeButton")}
+                                  </Button>
+                                )}
+                                {(user as any).isPro && (
+                                  <span className="text-xs text-emerald-600 dark:text-emerald-400">
+                                    ✓ Pro activo
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Moderación */}
+                            <div className="rounded-xl border border-border bg-background p-4">
+                              <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                                {t("moderationTitle")}
+                              </p>
+                              <div className="flex flex-wrap items-center gap-2">
+                                {user.isBanned ? (
+                                  <Button
+                                    type="button"
+                                    size="sm"
+                                    variant="outline"
+                                    disabled={busyUserId === user.id}
+                                    onClick={() => void liftUserSanction(user.id, "unban")}
+                                  >
+                                    {t("moderationUnban")}
+                                  </Button>
+                                ) : user.suspendedUntil && new Date(user.suspendedUntil) > new Date() ? (
+                                  <Button
+                                    type="button"
+                                    size="sm"
+                                    variant="outline"
+                                    disabled={busyUserId === user.id}
+                                    onClick={() => void liftUserSanction(user.id, "unsuspend")}
+                                  >
+                                    {t("moderationUnsuspend")}
+                                  </Button>
+                                ) : (
+                                  <>
+                                    <Button
+                                      type="button"
+                                      size="sm"
+                                      variant="outline"
+                                      disabled={busyUserId === user.id}
+                                      onClick={() =>
+                                        setModerationDialog({
+                                          userId: user.id,
+                                          userName: user.name ?? user.email ?? "",
+                                          type: "suspend",
+                                        })
+                                      }
+                                    >
+                                      {t("moderationSuspend")}
+                                    </Button>
+                                    <Button
+                                      type="button"
+                                      size="sm"
+                                      variant="outline"
+                                      className="border-red-500/40 text-red-700 hover:bg-red-500/10 dark:text-red-300"
+                                      disabled={busyUserId === user.id}
+                                      onClick={() =>
+                                        setModerationDialog({
+                                          userId: user.id,
+                                          userName: user.name ?? user.email ?? "",
+                                          type: "ban",
+                                        })
+                                      }
+                                    >
+                                      {t("moderationBan")}
+                                    </Button>
+                                  </>
+                                )}
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant="outline"
+                                  className="border-destructive/40 text-destructive hover:bg-destructive/10"
+                                  disabled={busyUserId === user.id}
+                                  onClick={() =>
+                                    setModerationDialog({
+                                      userId: user.id,
+                                      userName: user.name ?? user.email ?? "",
+                                      type: "delete",
+                                    })
+                                  }
+                                >
+                                  {t("moderationDelete")}
+                                </Button>
+                                {(user.isBanned || (user.suspendedUntil && new Date(user.suspendedUntil) > new Date())) && (
+                                  <span className="text-xs text-destructive">
+                                    {user.isBanned ? t("moderationBannedStatus") : t("moderationSuspendedStatus")}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Marco Pro */}
+                            <div className="rounded-xl border border-border bg-background p-4">
                             <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                               {t("proFrameTitle")}
                             </p>
@@ -862,36 +1109,35 @@ export default function AdminPanelShell({
 
                           {/* Insignias asignadas */}
                           {user.badges.length > 0 && (
-                            <div className="rounded-xl border border-border bg-background p-4 sm:col-span-2">
-                              <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                            <div className="rounded-xl border border-border bg-background p-3 sm:col-span-2">
+                              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                                 {tBadges("sectionTitle")}
                               </p>
-                              <ul className="flex flex-col gap-2">
+                              <div className="flex flex-wrap gap-2">
                                 {user.badges.map((badge) => (
-                                  <li
+                                  <div
                                     key={badge.id}
-                                    className="flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/30 px-3 py-2"
+                                    className="group relative"
                                   >
-                                    <div className="flex min-w-0 flex-1 items-center gap-3">
-                                      <BadgeIcon
-                                        name={badge.name}
-                                        description={badge.description}
-                                        iconUrl={badge.iconUrl}
-                                        iconKey={badge.iconKey}
-                                        isHighlighted={badge.isHighlighted}
-                                      />
-                                    </div>
+                                    <BadgeIcon
+                                      name={badge.name}
+                                      description={badge.description}
+                                      iconUrl={badge.iconUrl}
+                                      iconKey={badge.iconKey}
+                                      isHighlighted={badge.isHighlighted}
+                                    />
                                     <button
                                       type="button"
                                       disabled={busyUserId === user.id}
                                       onClick={() => setRevokeDialog({ user, badge })}
-                                      className="shrink-0 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-1 text-xs font-medium text-destructive transition hover:bg-destructive/20 disabled:opacity-40"
+                                      className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-white opacity-0 transition-opacity group-hover:opacity-100 disabled:opacity-50"
+                                      aria-label={`Quitar ${badge.name}`}
                                     >
-                                      {tBadges("revoke")}
+                                      ✕
                                     </button>
-                                  </li>
+                                  </div>
                                 ))}
-                              </ul>
+                              </div>
                             </div>
                           )}
                         </div>
@@ -917,10 +1163,6 @@ export default function AdminPanelShell({
           </section>
         </TabsContent>
 
-        <TabsContent value="scans" className="mt-5 space-y-5">
-          {tabScans}
-        </TabsContent>
-
         <TabsContent value="contenido" className="mt-5 space-y-5">
           {tabContenido}
         </TabsContent>
@@ -929,24 +1171,16 @@ export default function AdminPanelShell({
           {tabEdiciones}
         </TabsContent>
 
+        <TabsContent value="comunicacion" className="mt-5 space-y-5">
+          {tabComunicacion}
+        </TabsContent>
+
         <TabsContent value="comunidad" className="mt-5 space-y-5">
           {tabComunidad}
         </TabsContent>
 
         <TabsContent value="insignias" className="mt-5">
           {tabInsignias}
-        </TabsContent>
-
-        <TabsContent value="novedades" className="mt-5 space-y-5">
-          {tabNovedades}
-        </TabsContent>
-
-        <TabsContent value="mensajes" className="mt-5 space-y-5">
-          {tabMensajes}
-        </TabsContent>
-
-        <TabsContent value="moderacion" className="mt-5 space-y-5">
-          {tabModeracion}
         </TabsContent>
 
         <TabsContent value="publicidad" className="mt-5 space-y-5">
@@ -984,6 +1218,54 @@ export default function AdminPanelShell({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {moderationDialog && (
+        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-xl border border-border bg-card p-5 shadow-lg">
+            <h3 className="text-lg font-semibold text-foreground">
+              {moderationDialog.type === "ban" && t("moderationConfirmBan")}
+              {moderationDialog.type === "suspend" && t("moderationConfirmSuspend")}
+              {moderationDialog.type === "delete" && t("moderationConfirmDelete")}
+            </h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {t("moderationConfirmTarget")}: <span className="font-medium text-foreground">{moderationDialog.userName}</span>
+            </p>
+            {moderationDialog.type === "suspend" && (
+              <div className="mt-3">
+                <label className="text-xs text-muted-foreground">{t("moderationDaysLabel")}</label>
+                <input
+                  type="number"
+                  min={1}
+                  max={365}
+                  value={moderationDays}
+                  onChange={(e) => setModerationDays(e.target.value)}
+                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/25"
+                />
+              </div>
+            )}
+            {moderationDialog.type !== "delete" && (
+              <div className="mt-3">
+                <label className="text-xs text-muted-foreground">{t("moderationReasonLabel")}</label>
+                <textarea
+                  rows={3}
+                  value={moderationReason}
+                  onChange={(e) => setModerationReason(e.target.value)}
+                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/25"
+                />
+              </div>
+            )}
+            <div className="mt-4 flex justify-end gap-2">
+              <Button type="button" variant="outline" onClick={() => setModerationDialog(null)} disabled={moderationBusy}>
+                {t("moderationCancel")}
+              </Button>
+              <Button type="button" variant="destructive" disabled={moderationBusy} onClick={() => void submitModerationAction()}>
+                {moderationBusy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                {t("moderationConfirm")}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <ReauthDialog
         key={reauthMountKey}
