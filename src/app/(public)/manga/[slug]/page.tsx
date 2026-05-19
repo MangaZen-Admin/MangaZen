@@ -14,6 +14,7 @@ import { MangaPrimaryReadCta } from "@/components/manga/MangaPrimaryReadCta";
 import { MangaChaptersWithComments } from "@/components/manga/MangaChaptersWithComments";
 import { MangaReaderCounter } from "@/components/manga/MangaReaderCounter";
 import { RelatedMangas } from "@/components/manga/RelatedMangas";
+import { AdminMangaEditModal } from "@/components/manga/AdminMangaEditModal";
 import { getAuthenticatedUserIdServer } from "@/lib/auth-session";
 import { canViewMangaInCatalog } from "@/lib/manga-visibility";
 import { pickStartChapter } from "@/lib/manga-read-path";
@@ -681,6 +682,23 @@ const descTranslations = manga.descriptions ?? [];
               initialZenCoins={currentUser?.zenCoins ?? 0}
               initialZenShards={currentUser?.zenShards ?? 0}
             />
+            {currentUser?.role === "ADMIN" && (
+              <AdminMangaEditModal
+                mangaSlug={manga.slug}
+                initialData={{
+                  title: manga.title,
+                  description: manga.description,
+                  author: manga.author,
+                  artist: manga.artist ?? null,
+                  publisher: manga.publisher,
+                  country: manga.country,
+                  releaseYear: manga.releaseYear,
+                  alternativeTitles: manga.alternativeTitles,
+                  descriptions: manga.descriptions,
+                  tagNames: manga.tags.map((r) => r.tag.name),
+                }}
+              />
+            )}
           </div>
           <div className="mt-3">
             <MangaPrimaryReadCta

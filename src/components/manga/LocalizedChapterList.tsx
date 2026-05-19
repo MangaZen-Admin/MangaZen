@@ -69,15 +69,36 @@ export function LocalizedChapterList({
     }
   }, [sortOrder]);
 
+  const localeVariants: Record<string, string[]> = {
+    "es-ar": ["es-ar", "es-es"],
+    "es-es": ["es-es", "es-ar"],
+    "en-us": ["en-us", "en-gb"],
+    "en-gb": ["en-gb", "en-us"],
+    "pt-br": ["pt-br"],
+    "ja-jp": ["ja-jp"],
+    "ko-kr": ["ko-kr"],
+    "zh-cn": ["zh-cn"],
+    "ru-ru": ["ru-ru"],
+  };
+  const englishLocales = ["en-us", "en-gb"];
+
   const filtered = useMemo(() => {
-    const scoped = onlyMyLocale
-      ? chapters.filter((chapter) => isSameLocale(userLocale, chapter.locale))
-      : chapters;
-    const sorted = [...scoped].sort((a, b) => {
-      if (sortOrder === "asc") return a.number - b.number;
-      return b.number - a.number;
-    });
-    return sorted;
+    let scoped: typeof chapters;
+    if (onlyMyLocale) {
+      const preferred = localeVariants[userLocale] ?? [userLocale];
+      const byPreferred = chapters.filter((c) => preferred.includes(c.locale));
+      if (byPreferred.length > 0) {
+        scoped = byPreferred;
+      } else {
+        const byEnglish = chapters.filter((c) => englishLocales.includes(c.locale));
+        scoped = byEnglish.length > 0 ? byEnglish : chapters;
+      }
+    } else {
+      scoped = chapters;
+    }
+    return [...scoped].sort((a, b) =>
+      sortOrder === "asc" ? a.number - b.number : b.number - a.number
+    );
   }, [chapters, onlyMyLocale, sortOrder, userLocale]);
 
   return (

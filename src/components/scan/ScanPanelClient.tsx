@@ -909,6 +909,8 @@ function MyUploadsSection() {
   const t = useTranslations("scanPanel");
   const tCatalog = useTranslations("catalog");
   const locale = useLocale();
+  const searchParams = useSearchParams();
+  const adminEditSlug = searchParams.get("adminEdit");
   const [rows, setRows] = useState<UploadRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -951,6 +953,47 @@ function MyUploadsSection() {
   useEffect(() => {
     void load();
   }, [load]);
+
+  useEffect(() => {
+    if (!adminEditSlug || rows.length === 0) return;
+    // Buscar el manga por slug en la API y abrir el modal
+    void (async () => {
+      try {
+        const res = await fetch(`/api/scan/manga-detail?slug=${encodeURIComponent(adminEditSlug)}`);
+        if (!res.ok) return;
+        const data = (await res.json()) as {
+          title?: string;
+          description?: string;
+          author?: string;
+          artist?: string | null;
+          publisher?: string;
+          country?: string;
+          releaseYear?: number;
+          alternativeTitles?: { locale: string; title: string }[];
+          tags?: { id: string; name: string }[];
+          chapterId?: string;
+        };
+        setEditDraft({
+          chapterId: "",
+          mangaSlug: adminEditSlug,
+          chapterNumber: 0,
+          chapterTitle: "",
+          mangaTitle: data.title ?? adminEditSlug,
+          mangaDescription: data.description ?? "",
+          mangaAuthor: data.author ?? "",
+          mangaArtist: data.artist ?? "",
+          mangaPublisher: data.publisher ?? "",
+          mangaCountry: data.country ?? "",
+          mangaReleaseYear: data.releaseYear ?? new Date().getFullYear(),
+          mangaAltTitles: data.alternativeTitles ?? [],
+          mangaTagIds: (data.tags ?? []).map((t: { id: string }) => t.id),
+          mangaDescriptions: {},
+        });
+      } catch {
+        // silencioso
+      }
+    })();
+  }, [adminEditSlug, rows]);
 
   function statusLabel(prefix: "status" | "chapterStatus", value: string) {
     const key = `${prefix}.${value}`;
@@ -1145,7 +1188,7 @@ function MyUploadsSection() {
 
       {editDraft && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-xl border border-border bg-card p-5 shadow-lg">
+          <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-xl border border-border bg-card p-5 shadow-lg scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-lg font-semibold">{t("edit.title")}</h3>
               <button

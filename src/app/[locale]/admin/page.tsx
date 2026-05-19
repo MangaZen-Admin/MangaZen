@@ -14,12 +14,13 @@ import { AdminModerationPanel } from "@/components/admin/AdminModerationPanel";
 import { AdminPendingChaptersPanel } from "@/components/admin/AdminPendingChaptersPanel";
 import { AdminScanStatsTab } from "@/components/admin/AdminScanStatsTab";
 import { AdminPendingMangasPanel } from "@/components/admin/AdminPendingMangasPanel";
+import { AdminMangaEditPanel } from "@/components/admin/AdminMangaEditPanel";
 import { getAuthenticatedUserIdServer } from "@/lib/auth-session";
 import { prisma } from "@/lib/db";
 
 type AdminPageProps = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ tab?: string | string[] }>;
+  searchParams: Promise<{ tab?: string | string[]; edit?: string | string[] }>;
 };
 
 export default async function AdminPage({ params, searchParams }: AdminPageProps) {
@@ -333,6 +334,7 @@ export default async function AdminPage({ params, searchParams }: AdminPageProps
                   earlyAccessPrice: c.earlyAccessPrice,
                 }))}
               />
+              <AdminMangaEditPanel editSlug={sp.edit as string | undefined} />
             </>
           }
           tabEdiciones={<AdminEditionsPanel />}
