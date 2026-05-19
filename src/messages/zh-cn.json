@@ -1112,6 +1112,8 @@
       "expiresAt": "过期: {date}",
       "sent": "消息已发送。",
       "deactivated": "横幅已停用。",
+      "activated": "横幅已激活。",
+      "activate": "激活",
       "sendError": "发送消息时出错。",
       "deactivateError": "停用时出错。",
       "missingMessage": "消息不能为空。"

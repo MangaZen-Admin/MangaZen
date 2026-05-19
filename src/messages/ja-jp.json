@@ -1112,6 +1112,8 @@
       "expiresAt": "期限: {date}",
       "sent": "メッセージを送信しました。",
       "deactivated": "バナーを無効化しました。",
+      "activated": "バナーを有効化しました。",
+      "activate": "有効化",
       "sendError": "メッセージの送信に失敗しました。",
       "deactivateError": "無効化に失敗しました。",
       "missingMessage": "メッセージは空にできません。"

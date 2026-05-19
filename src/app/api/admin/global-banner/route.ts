@@ -36,11 +36,11 @@ export async function GET(request: Request) {
   const adminId = await requireAdmin(request);
   if (!adminId) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
-  const banner = await prisma.globalBanner.findFirst({
+  const banners = await prisma.globalBanner.findMany({
     orderBy: { createdAt: "desc" },
     include: { translations: true },
   });
-  return NextResponse.json({ banner: banner ?? null });
+  return NextResponse.json({ banners, banner: banners.find((b) => b.isActive) ?? null });
 }
 
 export async function POST(request: Request) {
@@ -94,6 +94,65 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({ banner });
+}
+
+export async function PATCH(request: Request) {
+  const adminId = await requireAdmin(request);
+  if (!adminId) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "INVALID_JSON" }, { status: 400 });
+  }
+
+  const o = body as Record<string, unknown>;
+  const id = typeof o.id === "string" ? o.id : null;
+  if (!id) return NextResponse.json({ error: "MISSING_ID" }, { status: 400 });
+
+  const banner = await prisma.globalBanner.findUnique({ where: { id } });
+  if (!banner) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+
+  // Activar/desactivar
+  if (typeof o.isActive === "boolean") {
+    if (o.isActive) {
+      await prisma.globalBanner.updateMany({
+        where: { isActive: true },
+        data: { isActive: false },
+      });
+    }
+    await prisma.globalBanner.update({
+      where: { id },
+      data: { isActive: o.isActive },
+    });
+  }
+
+  // Editar contenido
+  if (o.translations) {
+    const rows = parseMessages(o.translations);
+    if (rows.length > 0) {
+      await prisma.globalBannerTranslation.deleteMany({ where: { bannerId: id } });
+      await prisma.globalBannerTranslation.createMany({
+        data: rows.map((r) => ({ ...r, bannerId: id })),
+      });
+    }
+  }
+
+  if (typeof o.type === "string" && ["info", "warning", "urgent"].includes(o.type)) {
+    await prisma.globalBanner.update({ where: { id }, data: { type: o.type } });
+  }
+
+  if (typeof o.isDismissible === "boolean") {
+    await prisma.globalBanner.update({ where: { id }, data: { isDismissible: o.isDismissible } });
+  }
+
+  const updated = await prisma.globalBanner.findUnique({
+    where: { id },
+    include: { translations: true },
+  });
+
+  return NextResponse.json({ banner: updated });
 }
 
 export async function DELETE(request: Request) {

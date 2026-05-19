@@ -1112,6 +1112,8 @@
       "expiresAt": "Expires: {date}",
       "sent": "Message sent.",
       "deactivated": "Banner deactivated.",
+      "activated": "Banner activated.",
+      "activate": "Activate",
       "sendError": "Error sending message.",
       "deactivateError": "Error deactivating.",
       "missingMessage": "Message cannot be empty."

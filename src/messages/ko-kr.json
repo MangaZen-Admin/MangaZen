@@ -1112,6 +1112,8 @@
       "expiresAt": "만료: {date}",
       "sent": "메시지가 전송되었습니다.",
       "deactivated": "배너가 비활성화되었습니다.",
+      "activated": "배너가 활성화되었습니다.",
+      "activate": "활성화",
       "sendError": "메시지 전송 오류.",
       "deactivateError": "비활성화 오류.",
       "missingMessage": "메시지는 비워둘 수 없습니다."
