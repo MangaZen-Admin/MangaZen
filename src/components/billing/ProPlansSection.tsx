@@ -63,6 +63,9 @@ export function ProPlansSection({ plans, isPro }: Props) {
       });
       const data = (await res.json()) as { checkoutUrl?: string; error?: string };
       if (!res.ok || !data.checkoutUrl) throw new Error(data.error ?? t("errorUnexpected"));
+      if (!data.checkoutUrl.startsWith("https://checkout.lemonsqueezy.com/") && !data.checkoutUrl.startsWith("https://lemonsqueezy.com/")) {
+        throw new Error("URL de pago inválida");
+      }
       window.location.href = data.checkoutUrl;
     } catch (e) {
       setError(e instanceof Error ? e.message : t("errorUnexpected"));

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
 type AdSlotProps = {
@@ -10,27 +10,51 @@ type AdSlotProps = {
   adScripts?: string[];
 };
 
-function SingleAd({ script }: { script: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
+const ALLOWED_AD_DOMAINS = [
+  "effectivecpmnetwork.com",
+  "highperformanceformat.com",
+  "hilltopads.net",
+  "hilltopads.com",
+  "monetag.com",
+  "adsterra.com",
+  "googlesyndication.com",
+];
 
-  useEffect(() => {
-    if (!containerRef.current) return;
-    containerRef.current.innerHTML = script;
-    const scripts = containerRef.current.querySelectorAll("script");
-    scripts.forEach((oldScript) => {
-      const newScript = document.createElement("script");
-      Array.from(oldScript.attributes).forEach((attr) =>
-        newScript.setAttribute(attr.name, attr.value)
-      );
-      newScript.textContent = oldScript.textContent;
-      oldScript.parentNode?.replaceChild(newScript, oldScript);
+function isAllowedScript(script: string): boolean {
+  try {
+    const srcMatch = script.match(/src=["']([^"']+)["']/g);
+    if (!srcMatch) return true; // script inline sin src externo
+    return srcMatch.every((src) => {
+      const url = src.replace(/src=["']/, "").replace(/["']$/, "");
+      try {
+        const { hostname } = new URL(url);
+        return ALLOWED_AD_DOMAINS.some((domain) => hostname.endsWith(domain));
+      } catch {
+        return false;
+      }
     });
-  }, [script]);
+  } catch {
+    return false;
+  }
+}
+
+function SingleAd({ script }: { script: string }) {
+  if (!isAllowedScript(script)) {
+    console.warn("[AdSlot] Script bloqueado por dominio no permitido.");
+    return null;
+  }
+
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{margin:0;padding:0;display:flex;align-items:center;justify-content:center;}</style></head><body>${script}</body></html>`;
+  const blob = new Blob([html], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
 
   return (
-    <div
-      ref={containerRef}
-      className="flex flex-1 items-center justify-center overflow-hidden"
+    <iframe
+      src={url}
+      sandbox="allow-scripts allow-same-origin"
+      className="flex flex-1 items-center justify-center overflow-hidden border-0"
+      style={{ minHeight: 60 }}
+      onLoad={() => URL.revokeObjectURL(url)}
     />
   );
 }

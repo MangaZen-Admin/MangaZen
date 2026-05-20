@@ -4,7 +4,9 @@
       "Bash(npx tsc *)",
       "PowerShell($env:DATABASE_URL = \\(Get-Content .env | Select-String \"DATABASE_URL\"\\).ToString\\(\\).Split\\(\"=\",2\\)[1].Trim\\('\"'\\); npx prisma migrate dev --name add_chapter_title_translations)",
       "Bash(mkdir -p \"c:/Users/Valentin/mangazen/src/app/api/scan/chapter/[chapterId]/reorder-pages\")",
-      "Bash(npx prisma *)"
+      "Bash(npx prisma *)",
+      "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\Valentin\\\\mangazen\" -Recurse -ErrorAction SilentlyContinue | Where-Object {$_.Extension -in @\\('.ts', '.tsx', '.js'\\)} | Select-Object -ExpandProperty FullName | Select-Object -First 50)",
+      "Bash(git -C \"c:\\\\Users\\\\Valentin\\\\mangazen\" log --all --oneline --diff-filter=A -- .env)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Valentin\\mangazen\\src\\app\\api\\scan\\chapter\\[chapterId]"

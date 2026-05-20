@@ -102,6 +102,9 @@ export function BillingPageClient({
         return;
       }
 
+      if (!data.checkoutUrl.startsWith("https://checkout.lemonsqueezy.com/") && !data.checkoutUrl.startsWith("https://lemonsqueezy.com/")) {
+        throw new Error("URL de pago inválida");
+      }
       window.location.href = data.checkoutUrl;
     } catch {
       setError(t("errorGeneric"));
