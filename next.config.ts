@@ -36,6 +36,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "cdn.jsdelivr.net" },
       { protocol: "https", hostname: "res.cloudinary.com" },
       { protocol: "https", hostname: "pub-13ee2aba70b8404dade797b046f163bd.r2.dev" },
+      { protocol: "https", hostname: "cdn.mangaze.lat" },
     ],
   },
   async headers() {
