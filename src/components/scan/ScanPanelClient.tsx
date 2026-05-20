@@ -45,6 +45,7 @@ import {
 } from "@/lib/scan-manga-constants";
 import { ScanStatsPanel } from "@/components/scan/ScanStatsPanel";
 import { translateCatalogTagName } from "@/lib/catalog-tag-i18n";
+import { ScanMangaEditModal } from "@/components/scan/ScanMangaEditModal";
 
 type TabId = "stats" | "upload" | "myUploads" | "boost" | "newManga";
 
@@ -1090,54 +1091,11 @@ function MyUploadsSection() {
                         >
                           {t("myUploads.read")}
                         </Link>
-                        <button
-                          type="button"
-                          className="text-xs font-medium text-primary hover:underline"
-                          onClick={() => {
-                            void (async () => {
-                              try {
-                                const res = await fetch(
-                                  `/api/scan/manga-detail?slug=${encodeURIComponent(r.mangaSlug)}`,
-                                );
-                                if (!res.ok) {
-                                  toast.error(await getApiErrorMessage(res, t, "errors.GENERIC"));
-                                  return;
-                                }
-                                const data = (await res.json()) as {
-                                  title?: string;
-                                  description?: string;
-                                  author?: string;
-                                  artist?: string | null;
-                                  publisher?: string;
-                                  country?: string;
-                                  releaseYear?: number;
-                                  alternativeTitles?: { locale: string; title: string }[];
-                                  tags?: { id: string; name: string }[];
-                                };
-                                setEditDraft({
-                                  chapterId: r.chapterId,
-                                  mangaSlug: r.mangaSlug,
-                                  chapterNumber: r.chapterNumber,
-                                  chapterTitle: r.chapterTitle ?? "",
-                                  mangaTitle: data.title ?? r.mangaTitle,
-                                  mangaDescription: data.description ?? "",
-                                  mangaAuthor: data.author ?? "",
-                                  mangaArtist: data.artist ?? "",
-                                  mangaPublisher: data.publisher ?? "",
-                                  mangaCountry: data.country ?? "",
-                                  mangaReleaseYear: data.releaseYear ?? new Date().getFullYear(),
-                                  mangaAltTitles: data.alternativeTitles ?? [],
-                                  mangaTagIds: (data.tags ?? []).map((t: { id: string }) => t.id),
-                                  mangaDescriptions: {},
-                                });
-                              } catch {
-                                toast.error(t("errors.GENERIC"));
-                              }
-                            })();
-                          }}
-                        >
-                          {t("edit.button")}
-                        </button>
+                        <ScanMangaEditModal
+                          mangaSlug={r.mangaSlug}
+                          mangaTitle={r.mangaTitle}
+                          onSaved={() => void load()}
+                        />
                         {confirmId === r.uploadId ? (
                           <>
                             <button
