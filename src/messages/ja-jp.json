@@ -527,7 +527,8 @@
       "myUploads": "自分のアップロード",
       "newManga": "マンガを追加",
       "boost": "プロモート",
-      "unsavedWarning": "アップロードフォームに未保存の変更があります。本当に離れますか？"
+      "unsavedWarning": "アップロードフォームに未保存の変更があります。本当に離れますか？",
+      "configuracion": "設定"
     },
     "stats": {
       "heading": "統計",
@@ -787,6 +788,12 @@
       "saveSuccess": "変更が保存されました",
       "pendingReview": "変更が管理者に送信されました。",
       "saveError": "変更の保存中にエラーが発生しました"
+    },
+    "configuracion": {
+      "title": "設定",
+      "subtitle": "アップロードの設定。",
+      "singlePageDefault": "デフォルトで最初のページを単独表示",
+      "singlePageDefaultHint": "有効にすると、アップロードしたチャプターは最初のページが単独で表示されます。"
     }
   },
   "admin": {
@@ -1641,7 +1648,7 @@
     "newCreator": "新クリエイター",
     "chapterLabel": "第{number}話",
     "unknownScan": "不明なスキャン",
-    "seeMore": "もっと見る", 
+    "seeMore": "もっと見る",
     "seeLess": "閉じる"
   },
   "billing": {

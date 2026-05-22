@@ -527,7 +527,8 @@
       "myUploads": "Mis subidas",
       "newManga": "Agregar manga",
       "boost": "Promocionar",
-      "unsavedWarning": "Tenés cambios sin guardar en el formulario de subida. ¿Querés salir de todas formas?"
+      "unsavedWarning": "Tenés cambios sin guardar en el formulario de subida. ¿Querés salir de todas formas?",
+      "configuracion": "Configuración"
     },
     "stats": {
       "heading": "Estadísticas",
@@ -787,6 +788,12 @@
       "saveSuccess": "Cambios guardados",
       "pendingReview": "Tus cambios fueron enviados al admin para revisión.",
       "saveError": "Error al guardar los cambios"
+    },
+    "configuracion": {
+      "title": "Configuración",
+      "subtitle": "Preferencias para tus subidas.",
+      "singlePageDefault": "Primera página sola por defecto",
+      "singlePageDefaultHint": "Si está activado, los capítulos que subas comenzarán con la primera página sola. Útil para manga que no empieza con doble página."
     }
   },
   "admin": {
@@ -1089,7 +1096,7 @@
       "saveError": "Error al guardar.",
       "deleteError": "Error al eliminar.",
       "missingFields": "Título y contenido son obligatorios.",
-      "seeMore": "Ver más", 
+      "seeMore": "Ver más",
       "seeLess": "Ver menos"
     },
     "globalBanner": {

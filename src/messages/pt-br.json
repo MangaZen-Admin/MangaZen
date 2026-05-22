@@ -527,7 +527,8 @@
       "myUploads": "Meus envios",
       "newManga": "Adicionar manga",
       "boost": "Promover",
-      "unsavedWarning": "Você tem alterações não salvas no formulário de envio. Deseja sair mesmo assim?"
+      "unsavedWarning": "Você tem alterações não salvas no formulário de envio. Deseja sair mesmo assim?",
+      "configuracion": "Configurações"
     },
     "stats": {
       "heading": "Estatísticas",
@@ -787,6 +788,12 @@
       "saveSuccess": "Alterações salvas",
       "pendingReview": "Suas alterações foram enviadas ao admin para revisão.",
       "saveError": "Erro ao salvar as alterações"
+    },
+    "configuracion": {
+      "title": "Configurações",
+      "subtitle": "Preferências para seus uploads.",
+      "singlePageDefault": "Primeira página sozinha por padrão",
+      "singlePageDefaultHint": "Se ativado, os capítulos que você enviar começarão com a primeira página sozinha."
     }
   },
   "admin": {
@@ -1641,7 +1648,7 @@
     "newCreator": "Novo creator",
     "chapterLabel": "Cap. {number}",
     "unknownScan": "Scan desconhecido",
-    "seeMore": "Ver mais", 
+    "seeMore": "Ver mais",
     "seeLess": "Ver menos"
   },
   "billing": {

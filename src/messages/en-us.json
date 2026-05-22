@@ -527,7 +527,8 @@
       "myUploads": "My uploads",
       "newManga": "Add manga",
       "boost": "Boost",
-      "unsavedWarning": "You have unsaved changes in the upload form. Are you sure you want to leave?"
+      "unsavedWarning": "You have unsaved changes in the upload form. Are you sure you want to leave?",
+      "configuracion": "Settings"
     },
     "stats": {
       "heading": "Statistics",
@@ -787,6 +788,12 @@
       "saveSuccess": "Changes saved",
       "pendingReview": "Your changes have been sent to the admin for review.",
       "saveError": "Error saving changes"
+    },
+    "configuracion": {
+      "title": "Settings",
+      "subtitle": "Preferences for your uploads.",
+      "singlePageDefault": "First page single by default",
+      "singlePageDefaultHint": "If enabled, chapters you upload will start with a single page. Useful for manga that doesn't start with a double page spread."
     }
   },
   "admin": {

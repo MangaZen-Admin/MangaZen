@@ -527,7 +527,8 @@
       "myUploads": "我的上传",
       "newManga": "添加漫画",
       "boost": "推广",
-      "unsavedWarning": "上传表单中有未保存的更改，确定要离开吗？"
+      "unsavedWarning": "上传表单中有未保存的更改，确定要离开吗？",
+      "configuracion": "设置"
     },
     "stats": {
       "heading": "统计",
@@ -787,6 +788,12 @@
       "saveSuccess": "更改已保存",
       "pendingReview": "您的更改已发送给管理员审核。",
       "saveError": "保存更改时出错"
+    },
+    "configuracion": {
+      "title": "设置",
+      "subtitle": "上传偏好设置。",
+      "singlePageDefault": "默认首页单页显示",
+      "singlePageDefaultHint": "启用后，您上传的章节将以单页开始。"
     }
   },
   "admin": {
@@ -1641,7 +1648,7 @@
     "newCreator": "新创作者",
     "chapterLabel": "第{number}话",
     "unknownScan": "未知汉化组",
-    "seeMore": "查看更多", 
+    "seeMore": "查看更多",
     "seeLess": "收起"
   },
   "billing": {

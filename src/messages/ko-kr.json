@@ -527,7 +527,8 @@
       "myUploads": "내 업로드",
       "newManga": "만화 추가",
       "boost": "부스트",
-      "unsavedWarning": "업로드 양식에 저장되지 않은 변경 사항이 있습니다. 정말 떠나시겠습니까?"
+      "unsavedWarning": "업로드 양식에 저장되지 않은 변경 사항이 있습니다. 정말 떠나시겠습니까?",
+      "configuracion": "설정"
     },
     "stats": {
       "heading": "통계",
@@ -787,6 +788,12 @@
       "saveSuccess": "변경 사항이 저장되었습니다",
       "pendingReview": "변경 사항이 검토를 위해 관리자에게 전송되었습니다.",
       "saveError": "변경 사항 저장 중 오류가 발생했습니다"
+    },
+    "configuracion": {
+      "title": "설정",
+      "subtitle": "업로드 환경 설정.",
+      "singlePageDefault": "기본적으로 첫 페이지 단독 표시",
+      "singlePageDefaultHint": "활성화하면 업로드한 챕터가 첫 페이지를 단독으로 시작합니다."
     }
   },
   "admin": {

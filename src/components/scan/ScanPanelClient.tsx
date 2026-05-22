@@ -15,6 +15,7 @@ import {
   GripVertical,
   Info,
   Loader2,
+  Settings,
   Trash2,
   Upload,
   Library,
@@ -47,7 +48,7 @@ import { ScanStatsPanel } from "@/components/scan/ScanStatsPanel";
 import { translateCatalogTagName } from "@/lib/catalog-tag-i18n";
 import { ScanMangaEditModal } from "@/components/scan/ScanMangaEditModal";
 
-type TabId = "stats" | "upload" | "myUploads" | "boost" | "newManga";
+type TabId = "stats" | "upload" | "myUploads" | "boost" | "newManga" | "configuracion";
 
 type MangaHit = { id: string; title: string; slug: string; coverImage: string | null };
 
@@ -127,7 +128,7 @@ function postFormDataWithProgress(
   });
 }
 
-const VALID_TABS: TabId[] = ["stats", "upload", "myUploads", "boost", "newManga"];
+const VALID_TABS: TabId[] = ["stats", "upload", "myUploads", "boost", "newManga", "configuracion"];
 
 export default function ScanPanelClient({ role }: { role: UserRole }) {
   const t = useTranslations("scanPanel");
@@ -186,6 +187,12 @@ export default function ScanPanelClient({ role }: { role: UserRole }) {
               icon={BookPlus}
               label={t("tabs.newManga")}
             />
+            <TabButton
+              active={tab === "configuracion"}
+              onClick={() => handleTabChange("configuracion")}
+              icon={Settings}
+              label={t("tabs.configuracion")}
+            />
           </nav>
         </header>
 
@@ -194,6 +201,7 @@ export default function ScanPanelClient({ role }: { role: UserRole }) {
         {tab === "myUploads" && <MyUploadsSection />}
         {tab === "boost" && <BoostSection />}
         {tab === "newManga" && <NewMangaSection />}
+        {tab === "configuracion" && <ConfiguracionSection />}
       </section>
     </main>
   );
@@ -255,12 +263,24 @@ function UploadChapterSection({
   const [dragFrom, setDragFrom] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [startsWithSinglePage, setStartsWithSinglePage] = useState(true);
+  const [startsWithSinglePage, setStartsWithSinglePage] = useState(false);
+  const [prefLoaded, setPrefLoaded] = useState(false);
   const [earlyAccessEnabled, setEarlyAccessEnabled] = useState(false);
   const [earlyAccessDays, setEarlyAccessDays] = useState("7");
   const [earlyAccessPrice, setEarlyAccessPrice] = useState("50");
   const [earlyAccessCurrency, setEarlyAccessCurrency] = useState<"coins" | "shards">("shards");
   const canUseCoins = role === "CREATOR" || role === "ADMIN";
+
+  useEffect(() => {
+    void fetch("/api/scan/preferences")
+      .then((r) => r.json())
+      .then((d: { startsWithSinglePageDefault?: boolean }) => {
+        setStartsWithSinglePage(d.startsWithSinglePageDefault ?? false);
+        setPrefLoaded(true);
+      })
+      .catch(() => setPrefLoaded(true));
+  }, []);
+
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pageFilesRef = useRef(pageFiles);
   pageFilesRef.current = pageFiles;
@@ -2388,6 +2408,68 @@ function NewMangaSection() {
           )}
         </Button>
       </form>
+    </div>
+  );
+}
+
+function ConfiguracionSection() {
+  const t = useTranslations("scanPanel");
+  const [startsWithSinglePage, setStartsWithSinglePage] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    void fetch("/api/scan/preferences")
+      .then((r) => r.json())
+      .then((d: { startsWithSinglePageDefault?: boolean }) => {
+        setStartsWithSinglePage(d.startsWithSinglePageDefault ?? false);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  async function handleToggle() {
+    const next = !startsWithSinglePage;
+    setStartsWithSinglePage(next);
+    setSaving(true);
+    try {
+      await fetch("/api/scan/preferences", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ startsWithSinglePageDefault: next }),
+      });
+    } catch {
+      setStartsWithSinglePage(!next);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
+      <h2 className="text-lg font-semibold text-foreground">{t("configuracion.title")}</h2>
+      <p className="mt-1 text-sm text-muted-foreground">{t("configuracion.subtitle")}</p>
+
+      <div className="mt-6 space-y-4">
+        <div className="flex items-center justify-between rounded-lg border border-border bg-background/50 p-4">
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium text-foreground">{t("configuracion.singlePageDefault")}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">{t("configuracion.singlePageDefaultHint")}</p>
+          </div>
+          <button
+            type="button"
+            disabled={loading || saving}
+            onClick={() => void handleToggle()}
+            className={`relative ml-4 inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none disabled:opacity-50 ${
+              startsWithSinglePage ? "bg-primary" : "bg-muted"
+            }`}
+          >
+            <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+              startsWithSinglePage ? "translate-x-5" : "translate-x-0"
+            }`} />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
