@@ -794,6 +794,9 @@
       "subtitle": "Preferências para seus uploads.",
       "singlePageDefault": "Primeira página sozinha por padrão",
       "singlePageDefaultHint": "Se ativado, os capítulos que você enviar começarão com a primeira página sozinha."
+    },
+    "announcements": {
+      "dismiss": "Fechar"
     }
   },
   "admin": {
@@ -1231,6 +1234,33 @@
       "days30": "30 dias",
       "days90": "90 dias",
       "year1": "1 ano"
+    },
+    "systemAnnouncements": {
+      "title": "Quadro de avisos",
+      "subtitle": "Mensagens internas para scans e creators.",
+      "new": "Novo aviso",
+      "createForm": "Criar aviso",
+      "editForm": "Editar aviso",
+      "fieldTitle": "Título",
+      "fieldContent": "Conteúdo",
+      "fieldTarget": "Destinatários",
+      "roleAllStaff": "Toda a equipe",
+      "roleScan": "Apenas scans",
+      "roleCreator": "Apenas creators",
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "empty": "Nenhum aviso.",
+      "inactive": "Inativo",
+      "activate": "Ativar",
+      "deactivate": "Desativar",
+      "created": "Aviso criado.",
+      "updated": "Aviso atualizado.",
+      "deleted": "Aviso excluído.",
+      "deleteConfirm": "Excluir este aviso?",
+      "loadError": "Não foi possível carregar os avisos.",
+      "saveError": "Erro ao salvar.",
+      "deleteError": "Erro ao excluir.",
+      "missingFields": "Título e conteúdo são obrigatórios."
     }
   },
   "notifications": {

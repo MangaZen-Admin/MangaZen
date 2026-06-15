@@ -794,6 +794,9 @@
       "subtitle": "アップロードの設定。",
       "singlePageDefault": "デフォルトで最初のページを単独表示",
       "singlePageDefaultHint": "有効にすると、アップロードしたチャプターは最初のページが単独で表示されます。"
+    },
+    "announcements": {
+      "dismiss": "閉じる"
     }
   },
   "admin": {
@@ -1231,6 +1234,33 @@
       "days30": "30日間",
       "days90": "90日間",
       "year1": "1年"
+    },
+    "systemAnnouncements": {
+      "title": "お知らせ掲示板",
+      "subtitle": "スキャンとクリエイター向けの内部メッセージ。",
+      "new": "新しいお知らせ",
+      "createForm": "お知らせを作成",
+      "editForm": "お知らせを編集",
+      "fieldTitle": "タイトル",
+      "fieldContent": "内容",
+      "fieldTarget": "対象",
+      "roleAllStaff": "全スタッフ",
+      "roleScan": "スキャンのみ",
+      "roleCreator": "クリエイターのみ",
+      "save": "保存",
+      "cancel": "キャンセル",
+      "empty": "お知らせはありません。",
+      "inactive": "非アクティブ",
+      "activate": "有効化",
+      "deactivate": "無効化",
+      "created": "お知らせを作成しました。",
+      "updated": "お知らせを更新しました。",
+      "deleted": "お知らせを削除しました。",
+      "deleteConfirm": "このお知らせを削除しますか？",
+      "loadError": "お知らせを読み込めませんでした。",
+      "saveError": "保存エラー。",
+      "deleteError": "削除エラー。",
+      "missingFields": "タイトルと内容は必須です。"
     }
   },
   "notifications": {

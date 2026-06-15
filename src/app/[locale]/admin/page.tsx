@@ -4,6 +4,7 @@ import { AdminEditionsPanel } from "@/components/admin/AdminEditionsPanel";
 import { AdminAnnouncementsPanel } from "@/components/admin/AdminAnnouncementsPanel";
 import { AdminBadgeCatalogPanel } from "@/components/admin/AdminBadgeCatalogPanel";
 import { AdminGlobalBannerPanel } from "@/components/admin/AdminGlobalBannerPanel";
+import { AdminSystemAnnouncementsPanel } from "@/components/admin/AdminSystemAnnouncementsPanel";
 import AdminPanelShell from "@/components/admin/AdminPanelShell";
 import { AdminChaptersEarlyAccessPanel } from "@/components/admin/AdminChaptersEarlyAccessPanel";
 import { AdminCreatorRequestsPanel } from "@/components/admin/AdminCreatorRequestsPanel";
@@ -353,6 +354,7 @@ export default async function AdminPage({ params, searchParams }: AdminPageProps
           tabEdiciones={<AdminEditionsPanel />}
           tabComunicacion={
             <>
+              <AdminSystemAnnouncementsPanel />
               <AdminAnnouncementsPanel />
               <AdminGlobalBannerPanel />
             </>

@@ -794,6 +794,9 @@
       "subtitle": "Preferencias para tus subidas.",
       "singlePageDefault": "Primera página sola por defecto",
       "singlePageDefaultHint": "Si está activado, los capítulos que subas comenzarán con la primera página sola. Útil para manga que no empieza con doble página."
+    },
+    "announcements": {
+      "dismiss": "Cerrar"
     }
   },
   "admin": {
@@ -1233,6 +1236,33 @@
       "days30": "30 días",
       "days90": "90 días",
       "year1": "1 año"
+    },
+    "systemAnnouncements": {
+      "title": "Tablón de anuncios",
+      "subtitle": "Mensajes internos para scans y creators.",
+      "new": "Nuevo anuncio",
+      "createForm": "Crear anuncio",
+      "editForm": "Editar anuncio",
+      "fieldTitle": "Título",
+      "fieldContent": "Contenido",
+      "fieldTarget": "Destinatarios",
+      "roleAllStaff": "Todo el staff",
+      "roleScan": "Solo scans",
+      "roleCreator": "Solo creators",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "empty": "No hay anuncios.",
+      "inactive": "Inactivo",
+      "activate": "Activar",
+      "deactivate": "Desactivar",
+      "created": "Anuncio creado.",
+      "updated": "Anuncio actualizado.",
+      "deleted": "Anuncio eliminado.",
+      "deleteConfirm": "¿Eliminar este anuncio?",
+      "loadError": "No se pudieron cargar los anuncios.",
+      "saveError": "Error al guardar.",
+      "deleteError": "Error al eliminar.",
+      "missingFields": "El título y el contenido son obligatorios."
     }
   },
   "notifications": {

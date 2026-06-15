@@ -794,6 +794,9 @@
       "subtitle": "上传偏好设置。",
       "singlePageDefault": "默认首页单页显示",
       "singlePageDefaultHint": "启用后，您上传的章节将以单页开始。"
+    },
+    "announcements": {
+      "dismiss": "关闭"
     }
   },
   "admin": {
@@ -1231,6 +1234,33 @@
       "days30": "30天",
       "days90": "90天",
       "year1": "1年"
+    },
+    "systemAnnouncements": {
+      "title": "公告板",
+      "subtitle": "面向扫描组和创作者的内部消息。",
+      "new": "新公告",
+      "createForm": "创建公告",
+      "editForm": "编辑公告",
+      "fieldTitle": "标题",
+      "fieldContent": "内容",
+      "fieldTarget": "接收对象",
+      "roleAllStaff": "全体staff",
+      "roleScan": "仅扫描组",
+      "roleCreator": "仅创作者",
+      "save": "保存",
+      "cancel": "取消",
+      "empty": "暂无公告。",
+      "inactive": "未激活",
+      "activate": "激活",
+      "deactivate": "停用",
+      "created": "公告已创建。",
+      "updated": "公告已更新。",
+      "deleted": "公告已删除。",
+      "deleteConfirm": "删除此公告？",
+      "loadError": "无法加载公告。",
+      "saveError": "保存失败。",
+      "deleteError": "删除失败。",
+      "missingFields": "标题和内容为必填项。"
     }
   },
   "notifications": {

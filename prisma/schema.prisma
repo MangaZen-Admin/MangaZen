@@ -88,6 +88,7 @@ model User {
   inventory       UserInventory[]
   changeRequests  ChangeRequest[] @relation("ChangeRequestRequester")
   mangaReports    MangaReport[]
+  announcementDismissals AnnouncementDismissal[]
 }
 
 model DonationLink {
@@ -859,4 +860,33 @@ model ChapterTitleTranslation {
 
   @@unique([chapterId, locale])
   @@index([chapterId])
+}
+
+model SystemAnnouncement {
+  id         String   @id @default(cuid())
+  title      String
+  content    String
+  /// Rol destinatario: SCAN | CREATOR | ALL_STAFF
+  targetRole String
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  dismissals AnnouncementDismissal[]
+
+  @@index([targetRole, isActive])
+  @@index([createdAt])
+}
+
+model AnnouncementDismissal {
+  id             String   @id @default(cuid())
+  announcementId String
+  userId         String
+  dismissedAt    DateTime @default(now())
+
+  announcement SystemAnnouncement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([announcementId, userId])
+  @@index([userId])
 }

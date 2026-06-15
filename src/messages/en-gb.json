@@ -794,6 +794,9 @@
       "subtitle": "Preferences for your uploads.",
       "singlePageDefault": "First page single by default",
       "singlePageDefaultHint": "If enabled, chapters you upload will start with a single page. Useful for manga that doesn't start with a double page spread."
+    },
+    "announcements": {
+      "dismiss": "Dismiss"
     }
   },
   "admin": {
@@ -1231,6 +1234,33 @@
       "days30": "30 days",
       "days90": "90 days",
       "year1": "1 year"
+    },
+    "systemAnnouncements": {
+      "title": "Notice board",
+      "subtitle": "Internal messages for scans and creators.",
+      "new": "New announcement",
+      "createForm": "Create announcement",
+      "editForm": "Edit announcement",
+      "fieldTitle": "Title",
+      "fieldContent": "Content",
+      "fieldTarget": "Recipients",
+      "roleAllStaff": "All staff",
+      "roleScan": "Scans only",
+      "roleCreator": "Creators only",
+      "save": "Save",
+      "cancel": "Cancel",
+      "empty": "No announcements.",
+      "inactive": "Inactive",
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "created": "Announcement created.",
+      "updated": "Announcement updated.",
+      "deleted": "Announcement deleted.",
+      "deleteConfirm": "Delete this announcement?",
+      "loadError": "Could not load announcements.",
+      "saveError": "Error saving.",
+      "deleteError": "Error deleting.",
+      "missingFields": "Title and content are required."
     }
   },
   "notifications": {

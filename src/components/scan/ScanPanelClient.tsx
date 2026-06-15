@@ -47,6 +47,7 @@ import {
 import { ScanStatsPanel } from "@/components/scan/ScanStatsPanel";
 import { translateCatalogTagName } from "@/lib/catalog-tag-i18n";
 import { ScanMangaEditModal } from "@/components/scan/ScanMangaEditModal";
+import { ScanAnnouncementsBanner } from "@/components/scan/ScanAnnouncementsBanner";
 
 type TabId = "stats" | "upload" | "myUploads" | "boost" | "newManga" | "configuracion";
 
@@ -195,7 +196,7 @@ export default function ScanPanelClient({ role }: { role: UserRole }) {
             />
           </nav>
         </header>
-
+        <ScanAnnouncementsBanner />
         {tab === "stats" && <ScanStatsPanel />}
         {tab === "upload" && <UploadChapterSection role={role} onDirtyChange={setUploadDirty} />}
         {tab === "myUploads" && <MyUploadsSection />}

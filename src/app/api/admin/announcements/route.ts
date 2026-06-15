@@ -44,7 +44,7 @@ function parseTranslationRows(
   return rows;
 }
 
-export async function GET(request: Request) {
+export async function GET(request: Request): Promise<NextResponse> {
   const adminId = await requireAdmin(request);
   if (!adminId) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
@@ -56,7 +56,7 @@ export async function GET(request: Request) {
   return NextResponse.json({ announcements });
 }
 
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<NextResponse> {
   const adminId = await requireAdmin(request);
   if (!adminId) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
@@ -68,37 +68,30 @@ export async function POST(request: Request) {
   }
 
   const o = body as Record<string, unknown>;
-  const isPinned = o.isPinned === true;
+  const isPinned = typeof o.isPinned === "boolean" ? o.isPinned : false;
   const publishedAt =
     typeof o.publishedAt === "string" && o.publishedAt
       ? new Date(o.publishedAt)
-      : undefined;
+      : new Date();
+
   const fallbackImage =
     typeof o.imageUrl === "string" && o.imageUrl.trim() ? o.imageUrl.trim() : null;
+  const translationRows = parseTranslationRows(o.translations, fallbackImage);
 
-  const rows = parseTranslationRows(o.translations, fallbackImage);
-  if (rows.length === 0) {
+  if (translationRows.length === 0) {
     return NextResponse.json({ error: "MISSING_TRANSLATIONS" }, { status: 400 });
   }
 
   const created = await prisma.announcement.create({
     data: {
       isPinned,
-      ...(publishedAt ? { publishedAt } : {}),
+      publishedAt,
+      translations: {
+        create: translationRows,
+      },
     },
-  });
-
-  await prisma.announcementTranslation.createMany({
-    data: rows.map((r) => ({ ...r, announcementId: created.id })),
-  });
-
-  const announcement = await prisma.announcement.findUnique({
-    where: { id: created.id },
     include: { translations: true },
   });
-  if (!announcement) {
-    return NextResponse.json({ error: "CREATE_FAILED" }, { status: 500 });
-  }
 
-  return NextResponse.json({ announcement });
+  return NextResponse.json({ announcement: created });
 }

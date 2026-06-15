@@ -39,14 +39,21 @@ function isAllowedScript(script: string): boolean {
 }
 
 function SingleAd({ script }: { script: string }) {
-  if (!isAllowedScript(script)) {
-    console.warn("[AdSlot] Script bloqueado por dominio no permitido.");
-    return null;
-  }
+  const [url, setUrl] = useState<string | null>(null);
 
-  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{margin:0;padding:0;display:flex;align-items:center;justify-content:center;}</style></head><body>${script}</body></html>`;
-  const blob = new Blob([html], { type: "text/html" });
-  const url = URL.createObjectURL(blob);
+  useEffect(() => {
+    if (!isAllowedScript(script)) {
+      console.warn("[AdSlot] Script bloqueado por dominio no permitido.");
+      return;
+    }
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{margin:0;padding:0;display:flex;align-items:center;justify-content:center;}</style></head><body>${script}</body></html>`;
+    const blob = new Blob([html], { type: "text/html" });
+    const blobUrl = URL.createObjectURL(blob);
+    setUrl(blobUrl);
+    return () => URL.revokeObjectURL(blobUrl);
+  }, [script]);
+
+  if (!url) return null;
 
   return (
     <iframe
@@ -54,7 +61,6 @@ function SingleAd({ script }: { script: string }) {
       sandbox="allow-scripts allow-same-origin"
       className="flex flex-1 items-center justify-center overflow-hidden border-0"
       style={{ minHeight: 60 }}
-      onLoad={() => URL.revokeObjectURL(url)}
     />
   );
 }

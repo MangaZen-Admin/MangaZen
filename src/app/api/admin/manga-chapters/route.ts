@@ -24,6 +24,9 @@ export async function GET(request: Request): Promise<NextResponse> {
           number: true,
           title: true,
           status: true,
+          isEarlyAccess: true,
+          earlyAccessUntil: true,
+          earlyAccessPrice: true,
           locale: true,
           titleTranslations: {
             select: { locale: true, title: true },

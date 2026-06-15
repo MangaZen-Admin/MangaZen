@@ -66,7 +66,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ch
     where: { id: chapterId },
     data: {
       ...(title !== undefined
-        ? { title: sanitizeScanPlainText(String(title), 500) || null }
+        ? { title: title === null || title === "" ? null : sanitizeScanPlainText(String(title), 500) || null }
         : {}),
       ...(number !== undefined && Number.isFinite(number) ? { number } : {}),
       ...(locale && typeof locale === "string" ? { locale, language: locale.slice(0, 2).toUpperCase() } : {}),
